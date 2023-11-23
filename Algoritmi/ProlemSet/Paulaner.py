@@ -14,10 +14,7 @@ def Paulaner(P,B):
             while(B[j]!='A'):
                 j+=1
             B[j], B[j-1] = B[j-1], B[j]
-        
-    print(P)
-    print("\n")
-    print(B)
+    return B
 
 
 
@@ -25,4 +22,7 @@ def Paulaner(P,B):
 
 P = ['M','M','M','F','F','F']
 B = ['A','A','A','B','B','B']
-Paulaner(P,B)
+B = Paulaner(P,B)
+print(P)
+print(B)
+
