@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
 
   // Controllo del numero di argomenti
   if (argc != 3) { // file in input, file di output, e nome del file stesso
+                   // (perche bisogna dire errore nel file x)
     // Stampa un messaggio di errore se il numero di argomenti non è corretto
     fprintf(stderr,
             "Errore di sintassi. Uso: %s input_file_path output_file_path\n",
@@ -36,9 +37,10 @@ int main(int argc, char *argv[]) {
   // Creazione del file di output
   // Nota: equivalenza tra
   // - creat(path, mode);
-  // - open(path, O_WRONLY | O_CREAT | O_TRUNC, mode);
-  // YES: Ken Thompson, the creator of Unix, once joked that the missing letter
-  // was his largest regret in the design of Unix.
+  // - open(path, O_WRONLY | O_CREAT | O_TRUNC, mode); //O_CREAT crea il file
+  // mentre O_TRUNC se un file  con lo stesso nome ha qualcosa all'interno lo
+  // cancella YES: Ken Thompson, the creator of Unix, once joked that the
+  // missing letter was his largest regret in the design of Unix.
   out_fd = creat(argv[2], OUTPUT_MODE); // Crea il file di destinazione
   if (out_fd < 0)
     exit(3); // Se non può crearlo, esce
