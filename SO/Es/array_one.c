@@ -37,7 +37,7 @@ void *posone() {
 
     int i = rand() % 11;
     buffer[i] = 1;
-    printf("Imposto %d 1\n", i);
+    printf("Set %d 1\n", i);
 
     modified = 1;
 
@@ -53,7 +53,7 @@ void *negone() {
 
     int i = rand() % 11;
     buffer[i] = -1;
-    printf("Imposto %d -1\n", i);
+    printf("Set %d -1\n", i);
 
     modified = 1;
 
@@ -72,19 +72,29 @@ void *controlone() {
     }
 
     int c = 0;
+    int p = 0;
+    int n = 0;
     for (int i = 0; i < 11; i++) {
-      if (buffer[i] != 0) {
+      if (buffer[i] == 1) {
         c++;
+        p++;
+      } else if (buffer[i] == -1) {
+        c++;
+        n++;
       }
       printf("%d : %d\n", i, buffer[i]);
     }
-    printf("\n");
     if (c == 11) {
+      if (n > p) {
+        printf("There are more negative ones (%d,%d)", n, p);
+      } else {
+        printf("There are more positive ones (%d,%d)", n, p);
+      }
       pthread_cancel(pos);
       pthread_cancel(neg);
       pthread_exit(0);
     }
-
+    printf("\n");
     modified = 0;
     pthread_mutex_unlock(&mutex);
     sleep(rand() % 4);
