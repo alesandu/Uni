@@ -36,6 +36,7 @@ elem *initElem() {
   n->nd = *t;
   n->prev = NULL;
   return n;
+  free(t);
 }
 
 void printElem(elem *e) { printNode(&e->nd); }
@@ -53,12 +54,13 @@ elem *pop(stack *);
 elem *top(stack *);
 
 void printStack(stack *p) {
-  elem *t;
+  elem *t = initElem();
   t = p->en;
   while (t != NULL) {
     printElem(t);
     t = t->prev;
   }
+  free(t);
 }
 
 stack *initStack() {
@@ -80,10 +82,11 @@ void push(stack *p, elem *e) {
 }
 
 elem *pop(stack *p) {
-  elem *t;
+  elem *t = initElem();
   t = p->en;
   p->en = t->prev;
   return t;
+  free(t);
 }
 
 elem *top(stack *p) { return p->en; }
@@ -102,12 +105,13 @@ elem *dequeue(queue *);
 elem *first(queue *);
 
 void printQueue(queue *p) {
-  elem *t;
+  elem *t = initElem();
   t = p->st;
   while (t != NULL) {
     printElem(t);
     t = t->prev;
   }
+  free(t);
 }
 
 queue *initQueue() {
@@ -135,10 +139,11 @@ void enqueue(queue *p, elem *e) {
 }
 
 elem *dequeue(queue *p) {
-  elem *t;
+  elem *t = initElem();
   t = p->st;
   p->st = t->prev;
   return t;
+  free(t);
 }
 
 elem *first(queue *p) { return p->st; }
@@ -232,9 +237,9 @@ int main() {
   a->value = 1;
   l->value = 2;
   b->value = 3;
-  e->value = 4;
-  r->value = 5;
-  o->value = 6;
+  e->value=4;
+  r->value=5;
+  o->value=6;
   a->sin = l;
   a->des = b;
   l->sin = e;
@@ -244,10 +249,10 @@ int main() {
   visitaDFS(t->r);
   printf("\n");
 
-  //visitaBFS(t->r);
+  visitaBFS(t->r);
   printf("\n");
-
-  //visitaDFSricorsiva(t->r);
+  
+  visitaDFSricorsiva(t->r);
 
   return 0;
 }

@@ -31,12 +31,13 @@ elem *dequeue(queue *);
 elem *first(queue *);
 
 void printQueue(queue *p) {
-  elem *t;
+  elem *t = initElem();
   t = p->st;
   while (t != NULL) {
     printf("%d ", t->value);
     t = t->prev;
   }
+  free(t);
 }
 
 queue *initQueue() {
