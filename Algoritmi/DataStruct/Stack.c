@@ -30,12 +30,13 @@ elem *pop(stack *);
 elem *top(stack *);
 
 void printStack(stack *p) {
-  elem *t;
+  elem *t = initElem();
   t = p->st;
   while (t != NULL) {
     printf("%d ", t->value);
     t = t->prev;
   }
+  free(t);
 }
 
 stack *initStack() {
