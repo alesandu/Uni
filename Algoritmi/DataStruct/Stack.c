@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct elem{
+typedef struct elem {
   int value;
   struct elem *prev;
-}elem;
+} elem;
 
 elem *initElem();
-void printElem(elem*);
+void printElem(elem *);
 
 elem *initElem() {
   elem *n = malloc(sizeof(elem));
@@ -18,20 +18,20 @@ elem *initElem() {
 
 void printElem(elem *nd) { printf("Data: %d\n", nd->value); }
 
-typedef struct stack{
-  elem *en;
-}stack; 
+typedef struct stack {
+  elem *st;
+} stack;
 
-void printStack(stack*);
+void printStack(stack *);
 stack *initStack();
-void push(stack*, elem*);
-int isStackEmpty(stack*);
-elem *pop(stack*);
-elem *top(stack*);
+void push(stack *, elem *);
+int isStackEmpty(stack *);
+elem *pop(stack *);
+elem *top(stack *);
 
 void printStack(stack *p) {
   elem *t = initElem();
-  t = p->en;
+  t = p->st;
   while (t != NULL) {
     printf("%d ", t->value);
     t = t->prev;
@@ -41,31 +41,30 @@ void printStack(stack *p) {
 
 stack *initStack() {
   stack *p = malloc(sizeof(stack));
-  p->en = NULL;
+  p->st = NULL;
   return p;
 }
 
 int isStackEmpty(stack *p) {
   int b = 1;
-  if (p->en != NULL)
+  if (p->st != NULL)
     b = 0;
   return b;
 }
 
 void push(stack *p, elem *e) {
-  e->prev = p->en;
-  p->en = e;
+  e->prev = p->st;
+  p->st = e;
 }
 
 elem *pop(stack *p) {
-  elem *t = initElem();
-  t = p->en;
-  p->en = t->prev;
+  elem *t;
+  t = p->st;
+  p->st = t->prev;
   return t;
-  free(t);
 }
 
-elem *top(stack *p) { return p->en; }
+elem *top(stack *p) { return p->st; }
 
 int main() {
   stack *p = initStack();

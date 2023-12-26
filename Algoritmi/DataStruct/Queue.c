@@ -19,8 +19,8 @@ elem *initElem() {
 void printElem(elem *nd) { printf("Data: %d\n", nd->value); }
 
 typedef struct queue {
-  elem *en;
   elem *st;
+  elem *en;
 } queue;
 
 void printQueue(queue *);
@@ -32,7 +32,7 @@ elem *first(queue *);
 
 void printQueue(queue *p) {
   elem *t = initElem();
-  t = p->en;
+  t = p->st;
   while (t != NULL) {
     printf("%d ", t->value);
     t = t->prev;
@@ -42,37 +42,36 @@ void printQueue(queue *p) {
 
 queue *initQueue() {
   queue *p = malloc(sizeof(queue));
-  p->en = NULL;
   p->st = NULL;
+  p->en = NULL;
   return p;
 }
 
 int isQueueEmpty(queue *p) {
   int b = 1;
-  if (p->st != NULL && p->en != NULL)
+  if (p->en != NULL && p->st != NULL)
     b = 0;
   return b;
 }
 
 void enqueue(queue *p, elem *e) {
   if (isQueueEmpty(p)) {
+    p->st = e;
     p->en = e;
-    p->st = e;
   } else {
-    p->st->prev = e;
-    p->st = e;
+    p->en->prev = e;
+    p->en = e;
   }
 }
 
 elem *dequeue(queue *p) {
-  elem *t = initElem();
-  t = p->en;
-  p->en = t->prev;
+  elem *t;
+  t = p->st;
+  p->st = t->prev;
   return t;
-  free(t);
 }
 
-elem *first(queue *p) { return p->en; }
+elem *first(queue *p) { return p->st; }
 
 int main() {
   queue *p = initQueue();
