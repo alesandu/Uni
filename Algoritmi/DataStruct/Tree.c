@@ -93,8 +93,8 @@ elem *top(stack *p) { return p->en; }
 
 // Queue
 typedef struct queue {
-  elem *en;
   elem *st;
+  elem *en;
 } queue;
 
 void printQueue(queue *);
@@ -106,7 +106,7 @@ elem *first(queue *);
 
 void printQueue(queue *p) {
   elem *t = initElem();
-  t = p->en;
+  t = p->st;
   while (t != NULL) {
     printElem(t);
     t = t->prev;
@@ -116,37 +116,37 @@ void printQueue(queue *p) {
 
 queue *initQueue() {
   queue *p = malloc(sizeof(queue));
-  p->en = NULL;
   p->st = NULL;
+  p->en = NULL;
   return p;
 }
 
 int isQueueEmpty(queue *p) {
   int b = 1;
-  if (p->st != NULL && p->en != NULL)
+  if (p->en != NULL && p->st != NULL)
     b = 0;
   return b;
 }
 
 void enqueue(queue *p, elem *e) {
   if (isQueueEmpty(p)) {
+    p->st = e;
     p->en = e;
-    p->st = e;
   } else {
-    p->st->prev = e;
-    p->st = e;
+    p->en->prev = e;
+    p->en = e;
   }
 }
 
 elem *dequeue(queue *p) {
   elem *t = initElem();
-  t = p->en;
-  p->en = t->prev;
+  t = p->st;
+  p->st = t->prev;
   return t;
   free(t);
 }
 
-elem *first(queue *p) { return p->en; }
+elem *first(queue *p) { return p->st; }
 
 // Tree
 typedef struct tree {
@@ -231,17 +231,27 @@ int main() {
   node *a = initNode();
   node *l = initNode();
   node *b = initNode();
+  node *e = initNode();
+  node *r = initNode();
+  node *o = initNode();
   a->value = 1;
   l->value = 2;
   b->value = 3;
-  t->r = a;
+  e->value=4;
+  r->value=5;
+  o->value=6;
   a->sin = l;
   a->des = b;
-
+  l->sin = e;
+  l->des = r;
+  b->sin = o;
+  t->r = a;
   visitaDFS(t->r);
   printf("\n");
+
   visitaBFS(t->r);
   printf("\n");
+  
   visitaDFSricorsiva(t->r);
 
   return 0;
