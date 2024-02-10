@@ -20,7 +20,6 @@ int main(int argc, char **argv) {
   }
 
   else if (pid > 0) {
-    lseek(fd, 128, SEEK_SET);
     char buffer[11];
     int a = getpid();
     lseek(fd, -11, SEEK_END);
