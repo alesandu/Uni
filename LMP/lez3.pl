@@ -70,5 +70,6 @@ appartiene(X, [_|T]):-
  * */
 
 concatenazione([], A, A).
+
 concatenazione([H|T], B, [H|L]):-
 	concatenazione(T, B, L).
