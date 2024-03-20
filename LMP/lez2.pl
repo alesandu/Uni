@@ -1,4 +1,13 @@
- /* unifico gli archi */
+/* Un programma prolog è fatto da un insieme di predicati composti da fatti e regole */
+/* Le variabili in prolog:
+ * (Variabile) bisogna sapere il valore
+ * (_variabile) non bisogna sapere il valore
+ * (_) possiamo modificare il valore
+ * (variabile) è una costante
+ * (4) è un numero
+ * ('X') diventa una costante*/
+
+/* unifico gli archi */
 edge(a,b).
 edge(b,c).
 edge(c,d).
