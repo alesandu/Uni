@@ -26,3 +26,6 @@ node(t(R,_),R).
 node(t(_,Child),L):- % ritorna ver se R sono uguali e se R ha _(qualsiasi cosa) figli  
     member(C,Child),
     node(C,L).
+
+/* una struttura dati in prolog è fatta da una lettera predicativa e degli argomenti 
+ * questa può essere utilizata come argomento e diventa cosi una funzione */
