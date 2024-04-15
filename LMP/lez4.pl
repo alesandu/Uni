@@ -33,7 +33,8 @@ substract(H, [A|R1], [A|R2]):-
 
 permutazione([], []).
 permutazione([H|T], B):-
+    length([H|T],L), % sia L la lunghezza della lista allora
+    length(B,L), % la lunghezza della lista B (lunghezza della permutazione) deve essere la stessa della lista messa in output altrimenti false.
     permutazione(T, PT1_2),
     appartiene(H, B),
     substract(H,B,PT1_2).
-    
