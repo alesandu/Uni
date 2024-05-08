@@ -36,13 +36,14 @@ int main(int argc, char *argv[]) {
         Nota mnemonica:
         inet_ sta per Internet
         p sta per presentation
-        to ... be' indica una conversione
+        to a, indica una conversione
         n sta per network
 
         La funzione inversa si chiamera'....
 
         inet_ntop
     */
+
     int rv = inet_pton(AF_INET, ip_address, &host_address.sin_addr); /* Il valore di ritorno permette permette di riconoscere possibili errori*/
     if (rv == 0) {
         fprintf(stderr, "Stringa non valida: %s", ip_address); /* Uso fprintf per passare stderr al fine di scrivere sullo standard error (invece che sullo standard output)*/
