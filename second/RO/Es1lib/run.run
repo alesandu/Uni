@@ -4,6 +4,7 @@ data dati.dat;
 option solver cplex;
 solve;
 display z,x,M.slack; #M.slack per vedere i slack di 04/30/2024
+
 # expand > file.txt ti mette il problema come visto (max ... caseificio) nel file .txt
 # in caso avessi un parametro alpha lo aggiungo ai termini noti al modello accanto ai termini noti
 # e inserisco:
