@@ -8,7 +8,6 @@ f(1,1).
 f(2,1).
 
 f(N,M):-
-    write('a'),nl,
     X is N-1,
     Y is N-2,
     f(X,A),!,
