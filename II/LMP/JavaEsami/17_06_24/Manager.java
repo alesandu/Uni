@@ -39,7 +39,13 @@ public class Manager {
 			Double guadagnoTempo = guadagno/prodotti.getTempoAssemblaggio();
 			rank.put(guadagnoTempo,prodotti);
 		}
-		return rank;
+		ArrayList<Double> chiavi = new ArrayList<>(rank.keySet());
+		chiavi.sort(Double::compareTo);
+		HashMap<Double, Prodotti> sorted = new HashMap<Double, Prodotti>();
+		for(Double chiave: chiavi){
+			sorted.put(chiave,rank.get(chiave));
+		}
+		return sorted;
 	}
 	
 	public void presentazione() {
