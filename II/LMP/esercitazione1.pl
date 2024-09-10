@@ -1,4 +1,4 @@
-/* esercizio 8 regine da rifare*/
+/* esercizio 8 regine */
 
 riga([A,_][A,_]).
 colonna([A,_],[_,A]).
