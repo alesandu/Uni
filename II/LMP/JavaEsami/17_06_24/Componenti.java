@@ -6,12 +6,23 @@ public class Componenti {
 	private String paeseProvenienza;
 	private int tempiOrdinazione;
 	private double costo;
-	
-    public Componenti(String nome, String paeseProvenienza, int tempiOrdinazione, double costo) {
+	private boolean hidden;
+
+	public Componenti(String nome, String paeseProvenienza, int tempiOrdinazione, double costo, boolean hidden) {
+		super();
 		this.nome = nome;
 		this.paeseProvenienza = paeseProvenienza;
 		this.tempiOrdinazione = tempiOrdinazione;
 		this.costo = costo;
+		this.hidden = hidden;
+	}
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 
 	public String getNome() {
@@ -44,6 +55,16 @@ public class Componenti {
 
 	public void setCosto(double costo) {
 		this.costo = costo;
+	}
+
+	@Override
+	public String toString() {
+		if(hidden == true) {
+		return "Componenti [nome=" + nome + ", paeseProvenienza=" + paeseProvenienza + "]";
+		}
+		else {
+			return "";
+		}
 	}
     
 }
