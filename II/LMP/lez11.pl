@@ -39,7 +39,7 @@ div(X/Y,R):-
   	R is X/Y.
 
 /* Dati alcuni fatti:
- * mario ha macchian di dario. gianni ha panino. elena ha panino di giovanni.
+ * mario ha macchina di dario. gianni ha panino. elena ha panino di giovanni.
  * bisogna rispondere alla domanda: Chi ha Cosa? 
  * definire l'operatore ha e di. */
 

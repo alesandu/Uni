@@ -10,11 +10,13 @@
 
 lung([], 0).
 lung([_|T], A):-
-    lung(T,B), % teoricamente ci andrebbe un cut sennò va all'infinito nel caso facciamo lung(X,3)
+    lung(T,B), %teoricamente ci andrebbe un cut sennò va all'infinito nel caso facciamo lung(X,3)*/
     A is B+1. 
 
 /* fare N = M-1 è sbagliato perché predica solamente se partiamo con N istanziato altrimenti errore,
- * errore di non istanziazione significa che non abbiamo gli abbiamo assegnato nessun valore prima */
+ * errore di non istanziazione significa che non abbiamo gli abbiamo assegnato nessun valore prima 
+ */
+
 /*
 numerodiEl([],_,0).
 numerodiEl([A|_],A,+1).

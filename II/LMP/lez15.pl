@@ -29,7 +29,7 @@ pf([[X|PX]|R],F):-
     pf(R,RF),
     append(RX,RF,F).
     
-apf(F,FR,Y):- %data una frontiera esiste unaì altra forntiera raggiungibile e in questa frontiera ci deve essere y
+apf(F,FR,Y):- %data una frontiera esiste una altra forntiera raggiungibile e in questa frontiera ci deve essere y
     pf(F,FR),
     member(Y,FR).
 
