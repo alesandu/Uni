@@ -15,8 +15,6 @@ public class Prodotti{
     private double costoGiornaliero;
     private double costoManodopera;
     
-    
-    
 	public Prodotti(String identificativo, String etichetta,
 			ArrayList<Componenti> subcomponenti, String paeseProvenienza, int tempoRealizzazione,
 			double fattoreGuadagno, double costoGiornaliero) {
@@ -150,10 +148,17 @@ public class Prodotti{
 	public void setFattoreGuadagno(double fattoreGuadagno) {
 		this.fattoreGuadagno = fattoreGuadagno;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Prodotti [etichetta=" + etichetta + ", prezzoA=" + prezzoA + ", subcomponenti=" + subcomponenti + ", paeseProvenienza="
-				+ paeseProvenienza + "]";
+		ArrayList<Componenti> componenti = new ArrayList<>(); 
+		for(Componenti x : subcomponenti) {
+			if(!x.isHidden()) {
+				componenti.add(x);
+			}
+		}
+		return "Prodotti [identificativo=" + identificativo + ", etichetta=" + etichetta + ", subcomponenti="
+				+ componenti + ", paeseProvenienza=" + paeseProvenienza + "]";
 	}
+	
 }

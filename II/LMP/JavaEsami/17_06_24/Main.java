@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) {
-        Componenti componente1 = new Componenti("Componente1", "Italia", 5, 100.0);
-        Componenti componente2 = new Componenti("Componente2", "Germania", 3, 150.0);
+        Componenti componente1 = new Componenti("Componente1", "Italia", 5, 100.0, false);
+        Componenti componente2 = new Componenti("Componente2", "Germania", 3, 150.0, true);
 
         ArrayList<Componenti> subcomponenti = new ArrayList<>();
         subcomponenti.add(componente1);
