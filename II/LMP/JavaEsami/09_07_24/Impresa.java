@@ -2,7 +2,9 @@ package ImpresaSportiva;
 
 import java.util.ArrayList;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Impresa {
 	private ArrayList<Sportivi> sportivi = new ArrayList<Sportivi>();
@@ -20,37 +22,41 @@ public class Impresa {
 		this.sportivi = sportivi;
 	}
 	
-	public ArrayList<Sportivi> topPlayer(ArrayList<Sportivi> sportivi, int N){
-		ArrayList<Sportivi> temp = null;
+	public HashMap<Sportivi,Integer> topPlayer(ArrayList<Sportivi> sportivi, int N){
+		HashMap<Sportivi,Integer> temp = null;
 		for(Sportivi x : sportivi) {
-			int contatore = 0;
-			for(int gol: x.getReti().values()) {
-				contatore += gol;
+			int contatoreReti = 0;
+			int contatoreMesi = 0;
+			for(int mese: x.getReti().keySet()) {
+				if(x.getReti().get(mese) > 0) {
+					contatoreReti += x.getReti().get(mese);
+					contatoreMesi++;
+				}
 			}
-			if((x.getLivelloStipendio() > 3) && contatore>=N){
-				temp.add(x);
+			if((x.getLivelloStipendio() >= 3) && contatoreReti>=N){
+				temp.put(x,contatoreMesi);
 			}
 		}
 		return temp;
 	}
 	
-	public HashMap<LocalDate,ArrayList<Sportivi>> doppio(ArrayList<Sportivi> sportivi) {
-		HashMap<LocalDate,ArrayList<Sportivi>> lista = null;
+	public HashMap<String,ArrayList<Sportivi>> doppio(ArrayList<Sportivi> sportivi) {
+		HashMap<String,ArrayList<Sportivi>> lista = null;
 		for(Sportivi x : sportivi) {
-			ArrayList<Sportivi> gemelli = null;
-			for(Sportivi y : sportivi) {
-				Tipologia tipoA = x.getTipo();
-				Tipologia tipoB = y.getTipo();
-				int meseA = x.getData().getMonthValue();
-				int meseB = y.getData().getMonthValue();
-				int annoA = x.getData().getYear();
-				int annoB = y.getData().getYear();
-				boolean check = ((tipoA == tipoB) && (meseA == meseB) && (annoA == annoB));
-				if(check) {
-					gemelli.add(x);
+			DateTimeFormatter y = DateTimeFormatter.ofPattern("mm-yy");
+			String meseAnno = x.getData().format(y);
+			if(lista.containsValue(meseAnno)) {
+				lista.get(meseAnno).add(x);
 				}
+			else {
+				lista.put(meseAnno, null);
+				lista.get(meseAnno).add(x);
+				}
+		}
+		for(String chiave: lista.keySet()) {
+			if(lista.get(chiave).size()==1) {
+				lista.remove(chiave);
 			}
-			lista.put(x.getData(), gemelli);
 		}
 		return lista;
 		

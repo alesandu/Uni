@@ -35,16 +35,15 @@ public class PortaleLeggi {
 		return " " + leggi;
 	}
 	
-	public ArrayList<Leggi> mostraLeggi(){
+	public String mostraLeggi(){
 		ArrayList<Leggi> ris = new ArrayList<>();
 		for(Leggi x : leggi) {
 			if(x.getArticolata().size() > 20) {
 				ris.add(x);
 			}
 		}
-		return ris;
+		return ris.toString();
 		
 	}
-	
 	
 }
