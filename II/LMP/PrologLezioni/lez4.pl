@@ -18,11 +18,16 @@ appartiene(X, [X|_]).
 appartiene(X, [_|T]):-
     appartiene(X,T).
 
+concatenazione([], A, A).
+concatenazione([H|T], B, [H|L]):-
+concatenazione(T, B, L).
+
+/*
 substract(_, [], []).
 substract(H, [H|R], R). 
 substract(H, [A|R1], [A|R2]):-
     substract(H, R1, R2).
-
+*/
 /* primo caso se sottraggo qualsiasi elemento dalla lista vuota ho una lista vuota,
  * se lo inseriamo H può non appartenere alla lista
  * altrimenti H deve appartenere alla lista */
@@ -38,3 +43,9 @@ permutazione([H|T], B):-
     permutazione(T, PT1_2),
     appartiene(H, B),
     substract(H,B,PT1_2).
+
+
+lung([], 0).
+lung([_|T], A):-
+    lung(T,B),
+    A is B+1. 
