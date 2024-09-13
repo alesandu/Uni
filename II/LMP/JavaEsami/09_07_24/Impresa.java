@@ -33,7 +33,7 @@ public class Impresa {
 					contatoreMesi++;
 				}
 			}
-			if((x.getLivelloStipendio() >= 3) && contatoreReti>=N){
+			if((x.getLivelloStipendio() >= 3) && (contatoreReti>=N) && (x.getTipo() == Tipologia.GIOCATORE)){
 				temp.put(x,contatoreMesi);
 			}
 		}
