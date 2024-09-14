@@ -18,7 +18,7 @@ void *pris() {
   printf("%d ", a);
   write(fd, &a, sizeof(a));
   close(fd);
-  mod = 1;
+  mod += 1;
   pthread_cond_signal(&cond);
   pthread_mutex_unlock(&mutex);
 }
@@ -31,14 +31,14 @@ void *secs() {
   lseek(fd, 0, SEEK_END);
   write(fd, &a, sizeof(a));
   close(fd);
-  mod = 1;
+  mod += 1;
   pthread_cond_signal(&cond);
   pthread_mutex_unlock(&mutex);
 }
 
 void *ches() {
   pthread_mutex_lock(&mutex);
-  while (!mod) {
+  while (mod < 2) {
     pthread_cond_wait(&cond, &mutex);
   }
   int fd = open("input.txt", O_RDONLY);
