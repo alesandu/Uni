@@ -36,7 +36,7 @@ haStessoCorpo(C1, C2) :-
     listifica(Args2,Arg2),
     lung(Arg1, L),
     lung(Arg2, L),
-    stessaStrutturaLista(Args1, Args2).
+    stessaStrutturaLista(Arg1, Arg2).
 
 %controlla accoppiamenti
 stessaStrutturaLista([], []). 
