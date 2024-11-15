@@ -40,7 +40,7 @@ Assumiamo che $G(x) \not\equiv H(x)$, e che la somma di tutti i gradi di $x$ in 
 
 # Alcune notazioni di probabilità
 
->[!example] Definizione
+>[!example] Definizione (spazio di probabilità)
 >Uno **spazio di probabilità** ha tre componenti:
 >1. Un **spazio di campionamento** $\Omega$, cioè l'insieme di tutti i possibili risultati di un esperimento casuale dallo spaizo di probabilità;
 >2. Una **famiglia** $F$ di insiemi, dove ciascun insieme è un sottoinsieme di $\Omega$. 
@@ -52,17 +52,17 @@ Assumiamo che $G(x) \not\equiv H(x)$, e che la somma di tutti i gradi di $x$ in 
 
 La probabilità di un evento è la somma delle probabilità degli eventi semplici.
 
->[!example] **Definizione**
+>[!example] Definizione (eventi indipendenti)
 >Due eventi $E$ e $F$ sono **indipendenti** sse $Pr(E \cap F) = Pr(E) * Pr(F)$ 
 >Generalmente, eventi $E_1,E_2,...,E_k$ sono mutualmente indipendete sse ogni sottinsieme $\forall I \subseteq [1,k]$
 >$Pr(\bigcap_{i \in I}E_i) = \prod_{i \in I}Pr(E_i)$
 
->[!example] Definizione
+>[!example] Definizione (probabilità condizionata)
 >La **probabilità condizionata** che l'evento $E$ accade sapendo che è avvenuto l'evento $F$ è:
 >$Pr(E|F) = \frac{Pr(E \cap F)}{Pr(F)}$ 
 >La probabilità condizionata vale se $Pr(F) > 0$
 
-Condizionando $F$ restringiamo lo spazio di campionamento all'insime F.
+Condizionando $F$ restringiamo lo spazio di campionamento all'insieme F.
 Due eventi A e B sono indipendenti se 
 $Pr(A \cap B) = Pr(A) * Pr(B)$
 o
@@ -95,7 +95,7 @@ Evento semplice = scelta di $r$
 Spazio di campionamento = tutti gli interi in $[1,...,100d]$.
 Assumiamo che tuti gli interi nel range sono equiprobabili, allora la probabilità dell'evento semplice $r$ è di $Pr(r) = 1/100d$.
 Ci sono non più di $d$ eventi "cattivi"
-$Pr(evento Cattivo) \leq d/100d$.
+$Pr(evento\ Cattivo) \leq d/100d$.
 Assumiamo di ripetere l'algoritmo $k$ volte:
 Se ogni iterazione ritorna "False" allora ritorna "Falso" altrimenti "Corretto".
 Un evento semplice = Tutte le sequenze di $r \in [1,...,100d]$  con probabilità = $(1/100d)^k$.
