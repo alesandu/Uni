@@ -4,17 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "7397fe18f705972a",
+        "id": "77248db6a78a0e2a",
         "type": "tabs",
         "children": [
           {
-            "id": "dcb744bd41b08c08",
+            "id": "c004d10b62939b79",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "Big Data/Lezione 5.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "Lezione 5"
             }
           }
         ]
@@ -48,7 +52,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "probabili",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -73,7 +77,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "9f2eb39b90a5a69c",
@@ -158,8 +163,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "a315dc5179a74343",
+  "active": "c004d10b62939b79",
   "lastOpenFiles": [
+    "probabilita.md",
+    "Big Data/Lezione 5.md",
+    "Big Data/Lezione 4.md",
+    "Untitled.md",
+    "Lezione 5",
+    "Big Data/Lezione 2.md",
+    "Big Data/Lezione 1.md",
+    "Big Data/Lezione 3.md",
     "Quiz Patente/11-11-24",
     "Quiz Patente/10-11-24",
     "Quiz Patente/9-11-24",
@@ -179,12 +192,8 @@
     "Quiz Patente/5*11*24/5-11-24.md",
     "Quiz Patente/04-11-24/04-11-24.md",
     "Quiz Patente/5*11*24",
-    "Big Data/Lezione 1.md",
-    "Big Data/Lezione 3.md",
-    "Big Data/Lezione 2.md",
     "Quiz Patente/04-11-24",
     "Quiz Patente",
-    "Big Data",
     "Chebycev Inequality.md",
     "Lezione 1 definitiva.md",
     "Welcome.md",
