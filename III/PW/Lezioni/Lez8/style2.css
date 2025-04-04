@@ -1,0 +1,50 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.container{
+    margin: 10px auto;
+    width: 900px;
+    font-size: 18px;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+}
+
+.container p img{
+    float: right;
+    margin: 0px;
+    height: 5em;  
+    block-size: border-box; 
+}
+
+.modal{
+    position: fixed;
+    width: 70%;
+    height: 12%;
+    background-color: orange;
+    display: visible;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 100;
+}
+
+.modal-close{
+    color: blue;
+    position: absolute;
+    font-size: 40px;
+    font-family: 'Courier New', Courier, monospace;
+    top: 0px;
+    right: 10px;
+}
+
+.overlay{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: grey;
+    opacity: 0.8;
+    z-index: 20;
+}
