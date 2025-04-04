@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=BhuTuka+Expanded+One&family=DM+Serif+Text:ital@0;1&family=Madimi+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Funnel+Display:wght@300..800&family=Madimi+One&display=swap");
+
+* {
+  border: 1px solid black;
+}
+
+body {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  color: darkgray;
+  font-size: 30px;
+  color: #660033;
+}
+
+p {
+  font-family: "DM Serif Text", serif;
+  font-size: 2vw;
+  color: #336600; /* #360 === #336600 */
+}
+
+p:first-of-type {
+  margin-top: 50px;
+  margin-right: 30px;
+  margin-bottom: 10px;
+  margin-left: 20px;
+
+  margin: 50px 120px 10px 20px;
+  border-width: 3px 8px 10px 20px;
+  border-color: red green;
+  padding: 40px 30px;
+
+  width: 300px;
+  height: 600px;
+
+  overflow: hidden;
+
+  background-color: burlywood;
+}
