@@ -1,0 +1,41 @@
+
+Configurare nome e mail di github
+
+git config --list
+git config --global user.name "YOUR_USERNAME"
+git config --global user.email "YOUR_EMAIL_ADDRESS@EXAMPLE.COM"
+
+
+clone del reporitory:
+git clone <https://name-of-the-repository-link>
+
+!!gestire il login tramite il browser
+
+mostrare lo stato de repo:
+git status
+(entrare nella cartella con cd )
+
+modificare il file hello.html
+e vedere che è cambiato il git status
+
+salvare il file nel repository
+git add <file>
+git commit -m "commit message"
+
+vedere la storia
+git log
+
+vedere che non è cambiato il server
+
+fare il push
+git push
+
+vedere che è cambiato il server
+
+aggiungere il file index.html
+modificare il file hello.html
+
+fare add e commit
+git add -A
+
+fare push
