@@ -1,3 +1,46 @@
+# Poseidon
+Poseidon è una funzione hash progettata specificamente per essere efficiente nei **sistemi a conoscenza zero** (ZKP), come zk-SNARKs e zk-STARKs. La sua struttura è ottimizzata per operazioni in campi finiti grandi (es. $\mathbb{F}_p$), il che la rende resistente agli attacchi classici ma suscettibile a nuove tecniche di analisi.
+
+### 1. Crittanalisi Lineare vs. Differenziale per Poseidon
+#### **Crittanalisi Differenziale**:
+  - **Più rilevante** per Poseidon perché:
+    - Poseidon usa trasformazioni non-lineari (come cubi $x^3$ o $x^5$) che resistono bene alle approssimazioni lineari.
+    - La struttura a "permutazione a sostituzione-permutazione (SPN)" è simile a quella di AES, che è più vulnerabile a differenze propagabili.
+  - **Possibili attacchi**:
+    - Studio di **tracce differenziali** nei round parziali.
+    - Analisi della propagazione delle differenze nel campo $\mathbb{F}_p$ (dove le operazioni sono mod $p$).
+  
+#### **Crittanalisi Lineare**:
+  - **Meno efficace** perché:
+    - Le non-linearità forti (es. $x^3$) rendono difficile trovare relazioni lineari significative.
+    - Le approssimazioni lineari in campi grandi sono statisticamente deboli.
+
+### 2. Risultati Esistenti e Attacchi Noti
+Alcuni studi recenti hanno analizzato la sicurezza di Poseidon:
+- **Differential Cryptanalysis**:
+  - Uno studio ([Grassi et al., 2021](https://eprint.iacr.org/2021/1163)) mostra che Poseidon ha una **resistenza differenziale molto alta** grazie al numero elevato di round e alla scelta delle costanti.
+  - Tuttavia, in configurazioni con **round ridotti**, sono stati trovati attacchi differenziali.
+- **Algebraic Attacks** (alternativi alla lineare/differenziale):
+  - Poiché Poseidon opera su $\mathbb{F}_p$, attacchi basati su **equazioni algebriche** (Gröbner bases, meet-in-the-middle) potrebbero essere più efficaci.
+
+#### **3. Implementazioni e Soluzioni Online**
+- **Implementazioni ufficiali**:
+  - Il team di Poseidon fornisce codice in [Rust](https://github.com/filecoin-project/neptune) e [C++](https://github.com/HorizenLabs/poseidon2).
+  - Alcune librerie ZKP (come [circom](https://github.com/iden3/circomlib) e [arkworks](https://github.com/arkworks-rs)) includono Poseidon.
+- **Tool di analisi**:
+  - Strumenti come [SageMath](https://www.sagemath.org/) o [GAP](https://www.gap-system.org/) possono essere usati per verificare tracce differenziali.
+  - Alcuni ricercatori hanno pubblicato script per testare la sicurezza (es. su [GitHub](https://github.com/) o [IACR ePrint](https://eprint.iacr.org/)).
+
+#### **4. Cosa Usare per Analizzare Poseidon?**
+Se vuoi provare un'attacco:
+1. **Inizia con la crittanalisi differenziale**:
+   - Cerca differenze con probabilità alta dopo pochi round.
+   - Usa SageMath per simulare la propagazione in $\mathbb{F}_p$.
+2. **Prova attacchi algebrici** se hai familiarità con Gröbner bases.
+
+### **Conclusione**
+Per Poseidon, la **crittanalisi differenziale** è più promettente, ma la sua forte progettazione la rende sicura nel caso generale. Se cerchi codici pronti, controlla le implementazioni ufficiali o i repository di ricerca legati a ZKP.  
+
 ### Introduzione alle Funzioni Hash Crittografiche  
 
 Le funzioni hash crittografiche sono algoritmi matematici fondamentali per la sicurezza informatica. La loro principale funzione è trasformare un input di lunghezza arbitraria in un output di dimensione fissa, chiamato digest o hash, in modo deterministico. Questo processo garantisce che ogni input abbia un hash unico, rendendo le funzioni hash strumenti essenziali per proteggere dati e comunicazioni.

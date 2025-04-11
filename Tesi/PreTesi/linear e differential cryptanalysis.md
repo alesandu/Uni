@@ -31,14 +31,17 @@ $$
 
 Dove $\oplus$ è l'operazione XOR (addizione modulo 2).
 
-  **Input:** $$(x_0, x_1, x_2) = (1, 0, 1)$$ 
+  **Input:** $(x_0, x_1, x_2) = (1, 0, 1)$
+  
   **Output:**  
-  $$\begin{align*}
+  $$
+  \begin{align*}
   y_0 &= 1 \oplus 0 = 1 \\
   y_1 &= 0 \oplus 1 = 1 \\
   y_2 &= 1 \oplus 1 = 0
   \end{align*}
-  Risultato: $(1, 1, 0)$$.
+  $$
+  Risultato: $(1, 1, 0)$.
 
 Questa è una mappatura lineare perché ogni bit di output è una combinazione lineare (XOR) dei bit di input.
 
@@ -113,7 +116,7 @@ Per decifrare, i dati vengono essenzialmente elaborati all'indietro attraverso i
 
 ### 3.1 Panoramica dell’Attacco
 
-La crittanalisi lineare cerca di sfruttare le occorrenze ad alta probabilità di espressioni lineari che coinvolgono bit del testo in chiaro, bit del "testo cifrato" (in realtà utilizzeremo bit provenienti dall’output del penultimo round) e bit delle sottochiavi. Si tratta di un attacco a testo in chiaro noto (*known plaintext attack*), ovvero si basa sull’ipotesi che l’attaccante disponga di un insieme di testi in chiaro e dei corrispondenti testi cifrati. Tuttavia, l’attaccante non può scegliere quali testi in chiaro (e relativi testi cifrati) siano disponibili. In molte applicazioni e scenari, è ragionevole assumere che l’attaccante abbia accesso a un insieme casuale di coppie (testo in chiaro, testo cifrato).  
+La crittanalisi lineare cerca di sfruttare le occorrenze ad alta probabilità di espressioni lineari che coinvolgono bit del plaintext, bit del "testo cifrato" (in realtà utilizzeremo bit provenienti dall’output del penultimo round) e bit delle sottochiavi. Si tratta di un attacco a plaintext noto (*known plaintext attack*), ovvero si basa sull’ipotesi che l’attaccante disponga di un insieme di testi in chiaro e dei corrispondenti testi cifrati. Tuttavia, l’attaccante non può scegliere quali testi in chiaro (e relativi testi cifrati) siano disponibili. In molte applicazioni e scenari, è ragionevole assumere che l’attaccante abbia accesso a un insieme casuale di coppie (plaintext, testo cifrato).  
 
 L’idea di base è approssimare il funzionamento di una parte del cifrario con un’espressione lineare, dove la linearità si riferisce a un’operazione bit-a-bit modulo 2 (ovvero lo XOR, indicato con "$\oplus$"). Tale espressione ha la forma:  
 
@@ -132,19 +135,19 @@ Pertanto, se l'espressione precedente è valida con probabilità $ p_L $ per cas
 Maggiore è l'entità del bias di probabilità, $ |p_L - \frac{1}{2}| $, migliore sarà l'applicabilità della crittanalisi lineare, con un minor numero di testi in chiaro noti richiesti per l'attacco.  
 
 Analizziamo la costruzione di un'approssimazione lineare che coinvolge:
-- i bit del testo in chiaro (rappresentati da X nell'equazione (1))
+- i bit del plaintext (rappresentati da X nell'equazione (1))
 - l'input all'ultimo round del cifrario (o equivalentemente l'output del penultimo round), rappresentato da Y nell'equazione (1). 
 
-I bit del testo in chiaro sono casuali e di conseguenza lo sono anche i bit di input dell'ultimo round.
+I bit del plaintext sono casuali e di conseguenza lo sono anche i bit di input dell'ultimo round.
 
 L'equazione (1) potrebbe essere riformulata equivalentemente per avere al secondo membro la somma di alcuni bit della sottochiave. Tuttavia, nella forma attuale con "0" a destra, l'equazione coinvolge implicitamente bit della sottochiave: questi bit sono fissi ma ignoti (essendo determinati dalla chiave sotto attacco) e sono implicitamente assorbiti nello "0" al secondo membro dell'equazione (1) e nella probabilità $p_L$ che l'espressione lineare sia valida.
 
 Se la somma dei bit di sottochiave coinvolti vale "0", il bias dell'equazione (1) avrà lo stesso segno (+ o -) del bias dell'espressione contenente la somma delle sottochiavi. Se invece la somma dei bit di sottochiave coinvolti vale "1", il bias dell'equazione (1) avrà segno opposto.
-L'equazione 1 in questo caso sta a indicare lo xor dei bit del testo in chiaro con lo xor dei bit del testo cifrato = 0.
+L'equazione 1 in questo caso sta a indicare lo xor dei bit del plaintext con lo xor dei bit del testo cifrato = 0.
 
 Si noti che $p_L = 1$ implica che l'espressione lineare (1) rappresenta perfettamente il comportamento del cifrario e che il cifrario presenta una vulnerabilità catastrofica. Se $p_L = 0$, allora (1) rappresenta una relazione affine nel cifrario, anch'essa indicativa di una vulnerabilità catastrofica. Per sistemi a somma mod-2, una funzione affine è semplicemente il complemento di una funzione lineare. Sia le approssimazioni lineari che quelle affini, indicate rispettivamente da $p_L > 1/2$ e $p_L < 1/2$, sono ugualmente suscettibili alla crittanalisi lineare, e useremo generalmente il termine "lineare" per riferirci sia a relazioni lineari che affini.
 
-Si costruiscono espressioni altamente lineari e quindi sfruttabili considerando le proprietà dell'unico componente non lineare del cifrario: la S-box. Quando si enumerano le proprietà di non linearità della S-box, è possibile sviluppare approssimazioni lineari tra insiemi di bit di input e output della S-box. Di conseguenza, è possibile concatenare le approssimazioni lineari delle S-box in modo che i bit intermedi (cioè i bit di dati interni al cifrario) possano essere cancellati, ottenendo un'espressione lineare con un bias elevato che coinvolge solo bit del testo in chiaro e bit di input dell'ultimo round.
+Si costruiscono espressioni altamente lineari e quindi sfruttabili considerando le proprietà dell'unico componente non lineare del cifrario: la S-box. Quando si enumerano le proprietà di non linearità della S-box, è possibile sviluppare approssimazioni lineari tra insiemi di bit di input e output della S-box. Di conseguenza, è possibile concatenare le approssimazioni lineari delle S-box in modo che i bit intermedi (cioè i bit di dati interni al cifrario) possano essere cancellati, ottenendo un'espressione lineare con un bias elevato che coinvolge solo bit del plaintext e bit di input dell'ultimo round.
 
 **Esempio teorico**
 In crittografia, un'approssimazione lineare è un'equazione del tipo:  
@@ -152,7 +155,7 @@ $$
 \bigoplus_{i \in A} P_i \oplus \bigoplus_{j \in B} C_j = \bigoplus_{k \in K} K_k \quad \text{(1)}
 $$  
 Dove:  
-- $ P_i $: bit del testo in chiaro (*plaintext*),  
+- $ P_i $: bit del plaintext (*plaintext*),  
 - $ C_j $: bit del testo cifrato (*ciphertext*),  
 - $ K_k $: bit della sottochiave (*key bits*),  
 
@@ -194,7 +197,7 @@ $$
 
 **Scenario semplificato**
 - **Cifrario**: Un mini-cifrario a blocchi con:  
-  - **Testo in chiaro (P)**: 2 bit ($ P_0, P_1 $).  
+  - **plaintext (P)**: 2 bit ($ P_0, P_1 $).  
   - **Testo cifrato (C)**: 2 bit ($ C_0, C_1 $).  
   - **Sottochiave (K)**: 2 bit ($ K_0, K_1 $) (ignoti all'attaccante).  
 
@@ -622,61 +625,285 @@ Poiché il bias è derivato usando il Piling-Up Lemma, dove ogni termine nel pro
 Bisogna tuttavia fare attenzione: il concetto di una "prova" di sicurezza alla crittoanalisi lineare si basa solitamente sulla non esistenza di approssimazioni lineari altamente probabili. Tuttavia, il calcolo della probabilità di tali approssimazioni lineari si fonda sull'assunzione che ogni approssimazione di S-box sia indipendente (in modo che si possa usare il Piling-Up Lemma) e sull'assunzione che uno scenario di approssimazione lineare (cioè, un particolare insieme di S-box attive) sia sufficiente a determinare la migliore espressione lineare tra i bit del plaintext e i bit di dati in input all'ultimo round. 
 
 La realtà è che le approssimazioni delle S-box non sono indipendenti e ciò può avere un impatto significativo sul calcolo della probabilità. Inoltre, scenari di approssimazione lineare che coinvolgono gli stessi bit del plaintext e dell'input dell'ultimo round ma diversi insiemi di S-box attive possono combinarsi per dare una probabilità lineare superiore a quella prevista da un singolo insieme di S-box attive. Questo concetto è indicato come "linear hull". 
-Un numero di scenari di approssimazione lineare possono avere bias molto piccoli e, presi singolarmente, sembrano implicare che una cifratura potrebbe essere immune a un attacco lineare. Tuttavia, quando questi scenari vengono combinati, l'espressione lineare risultante tra i bit del testo in chiaro e dell'ingresso dell'ultimo round potrebbe avere un bias molto elevato. Ciononostante, l'approccio usato in questo articolo tende a funzionare bene per molte cifrature perché l'assunzione di indipendenza è un'approssimazione ragionevole e quando uno scenario di approssimazione lineare di un particolare insieme di S-box attive ha un'alto bias, tende a dominare il "linear hull".
+Un numero di scenari di approssimazione lineare possono avere bias molto piccoli e, presi singolarmente, sembrano implicare che una cifratura potrebbe essere immune a un attacco lineare. Tuttavia, quando questi scenari vengono combinati, l'espressione lineare risultante tra i bit del plaintext e dell'ingresso dell'ultimo round potrebbe avere un bias molto elevato. Ciononostante, l'approccio usato in questo articolo tende a funzionare bene per molte cifrature perché l'assunzione di indipendenza è un'approssimazione ragionevole e quando uno scenario di approssimazione lineare di un particolare insieme di S-box attive ha un'alto bias, tende a dominare il "linear hull".
 
 ## 4. Crittoanalisi Differenziale
 ### 4.1 Panoramica dell'Attacco
-####
+La crittanalisi differenziale sfrutta l'alta probabilità di certe occorrenze di differenze di plaintext e differenze nell'ultimo round del cifrario. Ad esempio, consideriamo un sistema con input $X = [X_1 X_2 ... X_n]$ e output $Y = [Y_1 Y_2 ... Y_n]$. Siano due input del sistema $X'$ e $X''$ con i corrispondenti output $Y'$ e $Y''$, rispettivamente. La differenza di input è data da $\Delta X = X' \oplus X''$, quindi,
+
+$$ \Delta X = [\Delta X_1 \Delta X_2 ... \Delta X_n] $$
+
+dove $\Delta X_i = X_i' \oplus X_i''$ con $X_i'$ e $X_i''$ che rappresentano l'$i$-esimo bit di $X'$ e $X''$, rispettivamente. Analogamente, $\Delta Y = Y' \oplus Y''$ è la differenza di output e
+
+$$ \Delta Y = [\Delta Y_1 \Delta Y_2 ... \Delta Y_n] $$
+
+dove $\Delta Y_i = Y_i' \oplus Y_i''$.
+
+In un cifrario idealmente randomizzato, la probabilità che una particolare differenza di output $\Delta Y$ si verifichi data una particolare differenza di input $\Delta X$ è $1/2^n$, dove $n$ è il numero di bit di $X$. La crittanalisi differenziale cerca di sfruttare uno scenario in cui un particolare $\Delta Y$ si verifica data una particolare differenza di input $\Delta X$ con una probabilità molto alta $p_D$ (cioè molto maggiore di $1/2^n$). La coppia $(\Delta X, \Delta Y)$ è chiamata **differenziale**.
+
+La crittanalisi differenziale è un attacco con plaintext scelto, il che significa che l'attaccante è in grado di selezionare gli input ed esaminare gli output nel tentativo di derivare la chiave. Per la crittanalisi differenziale, l'attaccante selezionerà coppie di input, $X'$ e $X''$, per soddisfare un particolare $\Delta X$, sapendo che per quel valore di $\Delta X$, un particolare valore $\Delta Y$ si verifica con alta probabilità.
+
+La costruzione di un differenziale $(\Delta X, \Delta Y)$ che coinvolge i bit del plaintext rappresentati da $X$ e l'input dell'ultimo round del cifrario rappresentato da $Y$. Si esaminano le caratteristiche differenziali altamente probabili, dove una **caratteristica differenziale** è una sequenza di differenze di input e output dei round tale che la differenza di output di un round corrisponde alla differenza di input del round successivo. Utilizzando la caratteristica differenziale altamente probabile, abbiamo l'opportunità di sfruttare le informazioni che arrivano nell'ultimo round del cifrario per derivare bit dall'ultimo livello di subkey.
+
+Come per la crittanalisi lineare, per costruire caratteristiche differenziali altamente probabili, esaminiamo le proprietà dei singoli S-box e utilizziamo queste proprietà per determinare la caratteristica differenziale completa. Nello specifico, consideriamo le differenze di input e output degli S-box per determinare una coppia di differenze ad alta probabilità.  
+
+Combinando le coppie di differenze degli S-box da un round all'altro in modo che i bit di differenza di output non nulli di un round corrispondano ai bit di differenza di input non nulli del round successivo, possiamo trovare un differenziale ad alta probabilità costituito dalla differenza del plaintext e dalla differenza dell'input dell'ultimo round.  
+
+I bit delle subkey del cifrario finiscono per scomparire dall'espressione della differenza perché sono coinvolti in entrambi gli insiemi di dati e, quindi, considerando la loro influenza sulla differenza implica l'operazione di XOR tra bit di subkey con se stessi, il cui risultato è zero.  
+
 ### 4.2 Analizzarndo le Componenti del Cifrario
-####
+
+Esaminiamo ora le coppie di differenze di un S-box. Consideriamo la rappresentazione di un S-box 4×4, con input $X = [X_1 X_2 X_3 X_4]$ e output $Y = [Y_1 Y_2 Y_3 Y_4]$. Tutte le coppie di differenze di un S-box, $(\Delta X, \Delta Y)$, possono essere esaminate e la probabilità di $\Delta Y$ dato $\Delta X$ può essere derivata considerando coppie di input $(X', X'')$ tali che $X' \oplus X'' = \Delta X$. Poiché l'ordine della coppia non è rilevante, per un S-box 4×4 è sufficiente considerare tutti i 16 valori possibili per $X'$, dopodiché il valore di $\Delta X$ vincola il valore di $X''$ a essere $X'' = X' \oplus \Delta X$.
+
+Considerando l'S-box del nostro cifrario, possiamo derivare i valori risultanti di $\Delta Y$ per ogni coppia di input $(X', X'' = X' \oplus \Delta X)$. Ad esempio, i valori binari di $X$, $Y$ e i corrispondenti valori di $\Delta Y$ per le coppie di input $(X, X \oplus \Delta X)$ sono presentati nella Tabella per valori di $\Delta X$ pari a 1011 (esa B), 1000 (esa 8) e 0100 (esa 4). 
+
+![alt text](image-7.png)
+
+Le ultime tre colonne della tabella rappresentano i valori di $\Delta Y$ per il valore di $X$ (indicato nella riga) e il particolare valore di $\Delta X$ di ogni colonna. Dalla tabella, possiamo osservare che il numero di occorrenze di $\Delta Y = 0010$ per $\Delta X = 1011$ è 8 su 16 valori possibili (cioè una probabilità di $8/16$); il numero di occorrenze di $\Delta Y = 1011$ dato $\Delta X = 1000$ è 4 su 16; il numero di occorrenze di $\Delta Y = 1010$ dato $\Delta X = 0100$ è 0 su 16. Se l'S-box fosse "ideale", il numero di occorrenze dei valori delle coppie di differenze sarebbe sempre 1, dando una probabilità di $1/16$ che si verifichi un particolare valore di $\Delta Y$ dato $\Delta X$. (Una S-box "ideale" non è matematicamente possibile.)
+
+Possiamo tabulare i dati completi di un S-box in una **tabella di distribuzione delle differenze**, in cui le righe rappresentano i valori di $\Delta X$ e le colonne rappresentano i valori di $\Delta Y$ (in esadeciamel). La tabella di distribuzione delle differenze per l'S-box della usata nel capitolo 2 è fornita nella Tabella sottostante.
+
+![alt text](image-8.png)
+
+Ogni elemento della tabella rappresenta il numero di occorrenze del corrispondente valore di differenza di output $\Delta Y$ dato il valore di differenza di input $\Delta X$. Si noti che, a parte il caso speciale $(\Delta X = 0, \Delta Y = 0)$, il valore più grande nella tabella è 8, corrispondente a $\Delta X = \text{B}$ e $\Delta Y = 2$. Pertanto, la probabilità che $\Delta Y = 2$ dato una coppia arbitraria di valori di input che soddisfano $\Delta X = \text{B}$ è $8/16$. Il valore più piccolo nella tabella è 0 e si verifica per molte coppie di differenze. In questo caso, la probabilità che il valore $\Delta Y$ si verifichi dato il valore $\Delta X$ è 0.
+
+Esistono diverse proprietà generali della tabella di distribuzione delle differenze che è importante menzionare.  
+
+1. **Somma degli elementi**:  
+   La somma di tutti gli elementi in una riga è $2^n = 16$; allo stesso modo, la somma di qualsiasi colonna è $2^n = 16$.  
+
+2. **Elementi pari**:  
+   Tutti i valori nella tabella sono pari. Questo deriva dal fatto che una coppia di valori di input (o output) rappresentata come $(X', X'')$ ha lo stesso valore $\Delta X$ della coppia $(X'', X')$, poiché:  
+   $$ \Delta X = X' \oplus X'' = X'' \oplus X'. $$  
+
+3. **Caso speciale $\Delta X = 0$**:  
+   Una differenza di input $\Delta X = 0$ deve necessariamente portare a una differenza di output $\Delta Y = 0$ a causa della mappatura biunivoca dell'S-box. Di conseguenza:  
+   - L'angolo in alto a destra della tabella ha un valore di $2^n = 16$ (tutte le occorrenze).  
+   - Tutti gli altri valori nella prima riga e nella prima colonna sono $0$.  
+
+4. **S-box ideale**:  
+   Se fosse possibile costruire un S-box "ideale" che non fornisca alcuna informazione differenziale sull'output dato l'input, tutti gli elementi della tabella sarebbero uguali a $1$, e la probabilità che un particolare valore $\Delta Y$ si verifichi dato un valore $\Delta X$ sarebbe:  
+   $$ \frac{1}{2^n} = \frac{1}{16}. $$  
+   Tuttavia, a causa delle proprietà discusse sopra, ciò non è realizzabile.  
+
+#### Influenza della chiave sul differenziale dell'S-box  
+Prima di procedere a combinare le coppie di differenze degli S-box per derivare una caratteristica differenziale, dobbiamo considerare l'effetto della chiave sul comportamento differenziale dell'S-box.  
+
+- **Input "senza chiave" vs. "con chiave"**:  
+  Nell'S-box "senza chiave" (Figura sottostante), l'input è $X$ e l'output è $Y$. Tuttavia, nella struttura del cifrario, dobbiamo tenere conto delle sottochiavi applicate all'input di ogni S-box.
+
+  ![alt text](image-9.png) 
+
+- **Input con chiave**:  
+  Se indichiamo l'input all'S-box "con chiave" come $W = [W_1 W_2 W_3 W_4]$, la differenza di input per l'S-box con chiave sarà:  
+  $$ \Delta W = [\Delta W_1 \Delta W_2 ... \Delta W_n], $$  
+  dove:  
+  $$ \Delta W_i = W_i' \oplus W_i'', $$  
+  e:  
+  $$ W' = [W_1' W_2' ... W_n'], \quad W'' = [W_1'' W_2'' ... W_n''] $$  
+  rappresentano i due valori di input.
+
+  Poiché i bit della chiave rimangono gli stessi sia per $W'$ che per $W''$, abbiamo:
+
+$$
+\begin{aligned}
+\Delta W_i &= W_i' \oplus W_i'' \\
+&= (X_i' \oplus K_i) \oplus (X_i'' \oplus K_i) \\
+&= X_i' \oplus X_i'' \oplus K_i \oplus K_i \\
+&= X_i' \oplus X_i'' \quad \text{(poiché } K_i \oplus K_i = 0\text{)} \\
+&= \Delta X_i
+\end{aligned}
+$$
+
+Pertanto, i bit della chiave non influenzano il valore della differenza di input e possono essere ignorati. In altre parole, l'S-box con chiave ha la stessa tabella di distribuzione delle differenze dell'S-box senza chiave.
+
 ### 4.3 Costruire le Caratteristiche Differenziali
-####
+
+Una volta compilate le informazioni differenziali per gli S-box in una rete SPN, disponiamo dei dati necessari per determinare una caratteristica differenziale utile del cifrario nel suo complesso. Questo si ottiene concatenando opportune coppie di differenze degli S-box.
+
+#### Costruzione di una caratteristica differenziale
+Costruendo una caratteristica differenziale che coinvolga specifiche coppie di differenze degli S-box in ogni round - in modo che il differenziale includa bit del plaintext e bit in input agli S-box dell'ultimo round - è possibile attaccare il cifrario recuperando un sottoinsieme dei bit della sottochiave successiva all'ultimo round. Illustriamo questa costruzione con un esempio.
+
+Consideriamo una caratteristica differenziale che coinvolge gli S-box $S_{12}$, $S_{23}$, $S_{32}$ e $S_{33}$. Come nel caso della crittanalisi lineare, è utile visualizzare la caratteristica differenziale attraverso in diagramma, che mostra:
+- L'influenza delle differenze non nulle nei bit mentre attraversano la rete
+- Gli S-box "attivi" (cioè quelli con differenza non nulla)
+
+![alt text](image-10.png)
+
+Nota: questa caratteristica copre solo i primi 3 round del cifrario, non tutti i 4 round. Ciò sarà utile per derivare bit dell'ultima sottochiave.
+
+#### Coppie di differenze utilizzate
+Usiamo le seguenti coppie di differenze:
+- $S_{12}$: $\Delta X = \text{B} \rightarrow \Delta Y = 2$ con probabilità $8/16$  
+- $S_{23}$: $\Delta X = 4 \rightarrow \Delta Y = 6$ con probabilità $6/16$  
+- $S_{32}$: $\Delta X = 2 \rightarrow \Delta Y = 5$ con probabilità $6/16$  
+- $S_{33}$: $\Delta X = 2 \rightarrow \Delta Y = 5$ con probabilità $6/16$ 
+
+Tutti gli altri S-box avranno differenza di input zero e quindi differenza di output zero.
+
+#### Differenze attraverso i round
+La differenza di input al cifrario equivale alla differenza di input del primo round ed è data da:
+
+$$ \Delta P = \Delta U_1 = [0000\ 1011\ 0000\ 0000] $$
+
+dove:
+- $U_i$ per rappresentare l'input agli S-box dell'i-esimo round
+- $V_i$ per rappresentare l'output degli S-box dell'i-esimo round
+
+Pertanto, $\Delta U_i$ e $\Delta V_i$ rappresentano le corrispondenti differenze. Di conseguenza:
+
+$$ \Delta V_1 = [0000\ 0010\ 0000\ 0000] $$
+
+considerando la coppia di differenze per $S_{12}$ elencata sopra e applicando la permutazione del primo round:
+
+$$ [0000\ 0000\ 0100\ 0000] $$
+
+con una probabilità di $8/16 = 1/2$ data la differenza di plaintext $\Delta P$.
+
+Ora, il differenziale del secondo round utilizzando la coppia di differenze per $S_{23}$ produce:
+
+$$ \Delta V_2 = [0000\ 0000\ 0110\ 0000] $$
+
+e la permutazione del secondo round dà:
+
+$$ \Delta U_3 = [0000\ 0010\ 0010\ 0000] $$
+
+con probabilità $6/16$ dato $\Delta U_2$, e una probabilità complessiva di $8/16 \times 6/16 = 3/16$ dato $\Delta P$. Nel determinare questa probabilità, abbiamo assunto che:
+
+1. Il differenziale del primo round sia indipendente da quello del secondo round
+2. La probabilità combinata sia quindi il prodotto delle probabilità singole
+
+Proseguendo, possiamo usare le differenze per gli S-box del terzo round ($S_{32}$ e $S_{33}$) e la permutazione del terzo round per ottenere:
+
+$$ \Delta V_3 = [0000\ 0101\ 0101\ 0000] $$
+
+e infine:
+
+$$ \Delta U_4 = [0000\ 0110\ 0000\ 0110] \quad (6) $$
+
+con probabilità $(6/16)^2$ dato $\Delta U_3$, e quindi una probabilità complessiva di:
+$ \frac{8}{16} \times \frac{6}{16} \times \left(\frac{6}{16}\right)^2 = \frac{27}{1024} $.
+Data la differenza di plaintext $\Delta P$, dove abbiamo nuovamente assunto l'indipendenza tra le coppie di differenze degli S-box in tutti i round.
+
+#### Analisi crittografica
+Durante il processo di crittanalisi:
+- Verranno cifrate molte coppie di plaintext con $\Delta P = [0000\ 1011\ 0000\ 0000]$
+- Con alta probabilità ($27/1024$) si verificherà la caratteristica differenziale descritta
+
+Definiamo:
+- **Right pairs**: Coppie per cui la caratteristica differenziale si verifica
+- **Wrong pairs**: Coppie per cui la caratteristica non si verifica
+
 ### 4.4 Trovare i Bit della chiave
-####
+Quando si scopre una caratteristica differenziale di $R-1$ round per un cifrario a $R$ round con probabilità sufficientemente alta, diventa possibile attaccare il cifrario recuperando bit dalla sottochiave finale. Nel caso del nostro cifrario d'esempio, è possibile estrarre bit dalla sottochiave $K_5$.
+
+#### Processo di attacco
+Il metodo prevede:
+
+1. **Decrittazione parziale** dell'ultimo round
+2. **Analisi dell'input** all'ultimo round per identificare probabili _right pairs_
+
+Chiameremo **target partial subkey** (sottochiave parziale target) i bit della sottochiave che seguono l'ultimo round nell'output delle S-box dell'utlimo round e che sono influenzati da differenze non nulle nell'output differenziale.
+
+#### Implementazione pratica
+La decrittazione parziale dell'ultimo round richiede, per tutte le S-boxes nell'ultimo round influenzate da differenze non nulle:
+1. Operazioni di **XOR** tra il ciphertext e i bit della sottochiave target
+2. Esecuzione **all'indietro** attraverso gli S-box dove vengono testati **tutti i valori possibili** per la target subkey.
+
+Per ogni coppia di ciphertext corrispondente alle coppie di plaintext utilizzate per generare la differenza di input $\Delta P$, viene eseguita una decrittazione parziale per tutti i possibili valori della partial target subkey. Per ogni valore della partial target subkey viene mantenuto un contatore. Il contatore viene incrementato quando la differenza per l'input dell'ultimo round corrisponde al valore atteso dalla caratteristica differenziale. Si assume che il valore della sottochiave parziale con il conteggio più alto indichi i valori corretti dei bit della sottochiave. 
+
+Questo metodo funziona perché si assume che il valore corretto della sottochiave parziale porterà frequentemente alla differenza attesa nell'ultimo round (cioè al verificarsi di un _right pair_), dato che la caratteristica ha un'alta probabilità di occorrenza. (Quando si verifica un _wrong pair_, anche con la decrittazione parziale usando la sottochiave corretta, è probabile che il contatore per la sottochiave corretta non venga incrementato.) Si assume invece che una sottochiave incorretta produca un risultato casuale per i bit in input agli S-box dell'ultimo round, e di conseguenza la differenza corrisponderà a quella attesa dalla caratteristica con una probabilità molto bassa.
+
+Considerando l'attacco al nostro cifrario d'esempio, la caratteristica differenziale influenza gli input degli S-box $S_{42}$ e $S_{44}$ nell'ultimo round. Per ogni coppia di ciphertext, proveremo tutti i 256 valori per $[K_{5,5}...K_{5,8}, K_{5,13}...K_{5,16}]$. Per ogni valore della sottochiave parziale, incrementeremo il contatore ogni volta che la differenza di input al round finale determinata dalla decrittazione parziale è uguale a (6), dove determiniamo il valore di $[\Delta U_{4,5}... \Delta U_{4,8}, \Delta U_{4,13}... \Delta U_{4,16}]$ facendo elaborare i dati all'indietro attraverso la sottochiave parziale e gli S-box $S_{42}$ e $S_{44}$. Per ogni valore della sottochiave parziale, il contatore rappresenta il numero di occorrenze di differenze consistenti con _right pairs_ (assumendo che il valore della sottochiave parziale sia corretto). Il conteggio più alto viene considerato come valore corretto, poiché assumiamo di osservare l'occorrenza ad alta probabilità del _right pair_.
+
+Si noti che non è necessario eseguire la decrittazione parziale per ogni coppia di ciphertext. Poiché la differenza di input all'ultimo round influenza solo 2 S-box, quando la caratteristica si verifica (cioè per i _right pairs_), le differenze nei bit di ciphertext corrispondenti agli S-box $S_{41}$ e $S_{43}$ devono essere zero. Pertanto, possiamo filtrare molti _wrong pairs_ scartando le coppie di ciphertext per cui non compaiono zeri nei sotto-blocchi appropriati della differenza di ciphertext. In questi casi, poiché la coppia di ciphertext non può corrispondere a un _right pair_, non è necessario esaminare $[\Delta U_{4,5}... \Delta U_{4,8}, \Delta U_{4,13}... \Delta U_{4,16}]$.
+
+#### Simulazione dell'attacco
+Simulazione di attacco al nostro cifrario di base, cifrato usando sottochiavi generate casualmente, creando 5000 coppie plaintext/ciphertext scelte (cioè 10000 cifrature con coppie di plaintext che soddisfano $\Delta P = [0000\ 1011\ 0000\ 0000]$) e seguendo il processo descritto sopra. 
+
+Il valore corretto della sottochiave parziale target era:
+$$[K_{5,5}...K_{5,8}, K_{5,13}...K_{5,16}] = [0010,0100] = [2,4]_{hex}$$
+
+Come previsto, il conteggio più alto è stato osservato per il valore di sottochiave parziale $[2,4]_{hex}$, confermando che l'attacco ha derivato con successo i bit della sottochiave. 
+
+![alt text](image-11.png)
+La Tabella 8
+evidenzia un riepilogo parziale dei dati derivati ​​dai conteggi delle sottochiavi. (I dati completi
+contengono 256 voci di dati, una per ciascun valore parziale di sottochiave.)
+
+I valori nella tabella indicano la probabilità stimata di occorrenza di _right pairs_ per la sottochiave parziale candidata, calcolata come:
+$$ \text{prob} = \frac{\text{count}}{5000} $$
+dove "count" è il conteggio corrispondente al specifico valore di sottochiave parziale.
+
+Dai risultati campione mostrati in tabella, si osserva che:
+- La probabilità massima si verifica per $[K_{5,5}...K_{5,8}, K_{5,13}...K_{5,16}] = [2,4]_{hex}$
+- Questa osservazione è risultata vera per l'intero set di valori di sottochiave parziale
+
+Nel nostro esempio:
+- La probabilità teorica attesa di _right pairs_ era $p_D = \frac{27}{1024} = 0.0264$
+- Sperimentalmente abbiamo trovato $p_D = 0.0244$ per la sottochiave corretta $[2,4]$
+
+Si noti che:
+1. Occasionalmente si riscontrano conteggi elevati anche per partial target subkey errate
+2. Ciò indica che l'esame di partial target subkey non corrette non equivale esattamente al comparare differenze casuali con il valore differenziale atteso
+
+Vari fattori influenzano i conteggi rispetto alle aspettative teoriche:
+- Proprietà degli S-box che influenzano la decrittazione parziale
+- Imprecisione nell'assunzione di indipendenza necessaria per determinare la probabilità della caratteristica
+- Il concetto che i differenziali sono composti da multiple caratteristiche differenziali.
+
 ### 4.5 Complessità dell'attacco
-####
+Nella crittanalisi differenziale, gli S-box coinvolti in una caratteristica che presentano una differenza di input non nulla (e quindi una differenza di output non nulla) vengono definiti **S-box attivi**. In generale:
 
-# Poseidon
-Poseidon è una funzione hash progettata specificamente per essere efficiente nei **sistemi a conoscenza zero** (ZKP), come zk-SNARKs e zk-STARKs. La sua struttura è ottimizzata per operazioni in campi finiti grandi (es. $\mathbb{F}_p$), il che la rende resistente agli attacchi classici ma suscettibile a nuove tecniche di analisi.
+1. **Probabilità differenziali**:  
+   Maggiori sono le probabilità differenziali degli S-box attivi, maggiore sarà la probabilità caratteristica del cifrario completo.
 
-### 1. Crittanalisi Lineare vs. Differenziale per Poseidon
-#### **Crittanalisi Differenziale**:
-  - **Più rilevante** per Poseidon perché:
-    - Poseidon usa trasformazioni non-lineari (come cubi $x^3$ o $x^5$) che resistono bene alle approssimazioni lineari.
-    - La struttura a "permutazione a sostituzione-permutazione (SPN)" è simile a quella di AES, che è più vulnerabile a differenze propagabili.
-  - **Possibili attacchi**:
-    - Studio di **tracce differenziali** nei round parziali.
-    - Analisi della propagazione delle differenze nel campo $\mathbb{F}_p$ (dove le operazioni sono mod $p$).
-  
-#### **Crittanalisi Lineare**:
-  - **Meno efficace** perché:
-    - Le non-linearità forti (es. $x^3$) rendono difficile trovare relazioni lineari significative.
-    - Le approssimazioni lineari in campi grandi sono statisticamente deboli.
+2. **Numero di S-box attivi**:  
+   Minore è il numero di S-box attivi, maggiore sarà la probabilità della caratteristica.
 
-### 2. Risultati Esistenti e Attacchi Noti
-Alcuni studi recenti hanno analizzato la sicurezza di Poseidon:
-- **Differential Cryptanalysis**:
-  - Uno studio ([Grassi et al., 2021](https://eprint.iacr.org/2021/1163)) mostra che Poseidon ha una **resistenza differenziale molto alta** grazie al numero elevato di round e alla scelta delle costanti.
-  - Tuttavia, in configurazioni con **round ridotti**, sono stati trovati attacchi differenziali.
-- **Algebraic Attacks** (alternativi alla lineare/differenziale):
-  - Poiché Poseidon opera su $\mathbb{F}_p$, attacchi basati su **equazioni algebriche** (Gröbner bases, meet-in-the-middle) potrebbero essere più efficaci.
+#### Complessità della crittanalisi
+Analogamente alla crittanalisi lineare, quando consideriamo la complessità dell'attacco ci riferiamo ai dati necessari per condurlo. Assumiamo cioè che se siamo in grado di acquisire $N_D$ plaintext, siamo in grado di elaborarli.
 
-#### **3. Implementazioni e Soluzioni Online**
-- **Implementazioni ufficiali**:
-  - Il team di Poseidon fornisce codice in [Rust](https://github.com/filecoin-project/neptune) e [C++](https://github.com/HorizenLabs/poseidon2).
-  - Alcune librerie ZKP (come [circom](https://github.com/iden3/circomlib) e [arkworks](https://github.com/arkworks-rs)) includono Poseidon.
-- **Tool di analisi**:
-  - Strumenti come [SageMath](https://www.sagemath.org/) o [GAP](https://www.gap-system.org/) possono essere usati per verificare tracce differenziali.
-  - Alcuni ricercatori hanno pubblicato script per testare la sicurezza (es. su [GitHub](https://github.com/) o [IACR ePrint](https://eprint.iacr.org/)).
+#### Stima del numero di coppie di plaintext
+Determinare esattamente il numero di coppie di plaintext scelti necessarie per l'attacco è generalmente molto complesso. Tuttavia, si può dimostrare che una buona approssimazione per il numero di coppie richieste $N_D$ è:
 
-#### **4. Cosa Usare per Analizzare Poseidon?**
-Se vuoi provare un'attacco:
-1. **Inizia con la crittanalisi differenziale**:
-   - Cerca differenze con probabilità alta dopo pochi round.
-   - Usa SageMath per simulare la propagazione in $\mathbb{F}_p$.
-2. **Prova attacchi algebrici** se hai familiarità con Gröbner bases.
+$$ N_D \approx \frac{c}{p_D} \quad (7) $$
 
-### **Conclusione**
-Per Poseidon, la **crittanalisi differenziale** è più promettente, ma la sua forte progettazione la rende sicura nel caso generale. Se cerchi codici pronti, controlla le implementazioni ufficiali o i repository di ricerca legati a ZKP.  
+dove:
+- $p_D$ è la probabilità della caratteristica differenziale per $R-1$ round di un cifrario a $R$ round
+- $c$ è una costante piccola
 
-Vuoi approfondire un particolare approccio o un tool specifico?
+#### Calcolo della probabilità della caratteristica
+Assumendo che le occorrenze delle coppie di differenze in ogni S-box attivo siano indipendenti, la probabilità della caratteristica differenziale è data da:
+
+$$ p_D = \prod_{i=1}^\gamma \beta_i \quad (8) $$
+
+dove:
+- $\gamma$ rappresenta il numero di S-box attivi
+- $\beta_i$ rappresenta la probabilità della specifica coppia di differenze nell'$i$-esimo S-box attivo della caratteristica.
+
+Non è difficile comprendere perché l'equazione (7) sia valida. Essa indica semplicemente che sono sufficienti poche occorrenze di _right pair_ per ottenere un conteggio significativamente più alto per il valore corretto della partial target subkey rispetto ai conteggi per valori errati. Poiché ci si aspetta che un _right pair_ si verifichi circa ogni $1/p_D$ coppie esaminate, in pratica è generalmente ragionevole utilizzare un piccolo multiplo di $1/p_D$ coppie di plaintext scelti per condurre con successo l'attacco.
+
+#### Strategie di resistenza alla crittanalisi differenziale
+Gli approcci per garantire resistenza alla crittanalisi differenziale si sono concentrati su:
+1. **Proprietà degli S-box**:
+   - Minimizzare la probabilità delle coppie di differenze negli S-box
+2. **Strutture del cifrario**:
+   - Massimizzare il numero di S-box attivi
+
+Un esempio eccellente è Rijndael (AES), progettato specificamente per offrire alta resistenza alla crittanalisi differenziale.
+
+#### Avvertenze nell'analisi di sicurezza
+Come per la crittanalisi lineare, è necessario esercitare cautela nel "dimostrare" l'immunità alla crittanalisi differenziale:
+
+Il calcolo di $p_D$ si basa sull'**assunzione di indipendenza** tra gli S-box coinvolti ma nei cifrari reali esiste una **dipendenza** tra i dati in input a diversi S-box, di conseguenza, $p_D$ rappresenta solo una **stima**.
+Tuttavia, nella pratica si è osservato che per molti cifrari questa stima risulta ragionevolmente accurata.
+
+#### Importanza dei differenziali multipli
+Fattore cruciale: diversi **differential characteristics** con la stessa differenza di input e output (cioè lo stesso differenziale) possono combinarsi, producendo una probabilità complessiva maggiore di quella del singolo differential characteristic. (Questo concetto è analogo agli _linear hulls_).
+
+Per garantire sicurezza contro la crittanalisi differenziale è necessario:
+- Dimostrare che la probabilità di **tutti i differenziali** sia al di sotto di una soglia accettabile
+- Non basta che le probabilità delle singole caratteristiche differenziali siano sotto soglia.
+
+Tuttavia, in generale, quando una caratteristica differenziale ha alta probabilità, domina l'occorrenza del differenziale complessivo e la sua probabilità fornisce una buona approssimazione della probabilità del differenziale.
