@@ -1,0 +1,12 @@
+{
+    "nome": "Luca",
+    "cognome": "Rossi",
+    "materie": ["PW", "PJDM", "SD"],
+    "media": 27.4, 
+    "età": 99,
+    "data":{
+        "dd": 22,
+        "mm": 5,
+        "yyyy": 2025
+    }
+}
