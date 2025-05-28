@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test POST JSON</title>
+</head>
+<body>
+    <h1>Test Post</h1>
+    <form action="" method="post" id="myForm">
+        <label for="inpName">Name:</label>
+        <input type="text" id="inpName" name="nome" required>
+        <br><br>
+        <label for="inpEmail">Email:</label>
+        <input type="text" id="inpEmail" name="email" required>
+        <br><br>
+        <input type="submit" value="Invia">
+    </form>
+    <div id="message"></div>
+</body>
+<script>
+    const myForm = document.querySelector('#myForm');
+    const inpName = document.querySelector('#inpName');
+    const inpEmail = document.querySelector('#inpEmail');
+    
+    const messageDiv = document.querySelector('#message');
+
+    myForm.addEventListener('submit', async (e) =>{
+        e.preventDefault()
+        const data = {
+            nome: inpName.value,
+            email: inpEmail.value
+        };
+        try{
+            const resp = await fetch("http://127.0.0.1:3000/data",{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            const respJson = await resp.json();
+            if(respJson.status == "success"){
+                messageDiv.innerHTML = `<p style="color: green;">${respJson.message}</p>`;
+            } else {
+                messageDiv.innerHTML = `<p style="color: red;">${respJson.status}</p>`;
+            }
+            console.log(respJson);
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+</script>
+</html>
