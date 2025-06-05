@@ -85,6 +85,16 @@ Tutte le operazioni sono tracciate e accessibili in un unico portale centralizza
 | Portale                     | Interfaccia web o app tramite cui gli utenti interagiscono con il sistema.                    |
 
 
+associazioni come attributi quindi scegliere se non metterli, importante mettere unicità però (si possono fare entrambi i modi, metterli e non metterli)
+errori tipici: design pattern che non si capiscono la sostanza del pattern, observer ad esempio bisogna ricordarsi tutto il workflow
+inxlude extend
+diagramma dei casi d uso non si capisce quale attore attiva cosa
+verificabilità dei reqiusiti utenti (l interfaccia utente sia facile da usare NON METTERE QUESTO TIPO DI REQUISITI)
+tutti i requisiti devono essere verificabili e consistente (non mettere opzionali)
+conoscere l intero progetto
+
+per dubbi contattarlo o chiedere ricevimento su teams
+
 # **Caso d'Uso: Utente non Registrato**
 
 ### **Use Case 1.1 – Visualizzazione Offerte e Camere Disponibili**
