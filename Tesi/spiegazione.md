@@ -748,3 +748,216 @@ Dato il **numero minimo di round** necessario a garantire la sicurezza contro **
 
 * si aggiungono **+2 round full** $R_F$,
 * si aumenta di **+7.5%** il numero di round partial $R_P$.
+
+Ecco la **traduzione in italiano** della sezione **5.5.1 Attacchi Statistici**, parte del capitolo 5.5 "Dettagli degli Attacchi":
+
+---
+
+### 5.5 Dettagli degli Attacchi
+
+Tutti gli attacchi elencati qui di seguito si applicano alla **permutazione interna POSEIDONπ**.
+Il modello sponge impone che **tutti gli attacchi alla funzione di hash con complessità inferiore a $2^{c/2}$** debbano **derivare da attacchi alla permutazione**.
+Pertanto, mostriamo che **nessun attacco di questo tipo** dovrebbe esistere sulla permutazione.
+
+---
+
+### 5.5.1 Attacchi Statistici
+
+**Distinguishers Differenziali/Lineari**
+Come mostrato nell’appendice, **almeno 6 round** con **layer completi di S-box** (**RF ≥ 6**) sono necessari per garantire la sicurezza contro gli attacchi statistici considerati.
+
+Più nel dettaglio:
+
+Se
+
+$$
+RF < 
+\begin{cases}
+6, & \text{se } M \leq (\lfloor \log_2 p \rfloor - C) \cdot (t + 1) \\
+10, & \text{altrimenti}
+\end{cases}
+$$
+
+allora possono essere possibili attacchi **lineari** (\[Mat93]) e **differenziali** (\[BS91], \[BS93]).
+
+Qui:
+
+* $M$ è il livello di sicurezza desiderato (in bit),
+* $p$ è la dimensione del campo (espressa in bit),
+* $C = \log_2(\alpha - 1)$, dove $\alpha$ è l'esponente usato nell'S-box (che ha la forma $S(x) = x^\alpha$).
+
+Ad esempio:
+
+* Se $\alpha = 3$ allora $C = 1$,
+* Se $\alpha = 5$ allora $C = 2$.
+
+---
+
+Prima di proseguire, sottolineiamo che **consideriamo solo i round con layer completi di S-box** per prevenire gli attacchi statistici.
+
+Tuttavia, **sotto certe assunzioni sul layer lineare**, è possibile considerare **sia i round con S-box parziali che quelli completi** per garantire la sicurezza contro attacchi statistici (come quelli lineari e differenziali).
+
+Nonostante ciò, **la nostra scelta è di basarci solo sui round con S-box completi**, poiché:
+
+* una condizione simile su $RF \geq 6$ è **necessaria anche per la sicurezza contro alcuni attacchi algebrici**,
+* e ci permette di fornire **argomentazioni semplici e conservative** per garantire la sicurezza anche contro **altri attacchi statistici**.
+
+---
+
+Ecco la **traduzione in italiano** della sezione iniziale di **Appendice C – Analisi di sicurezza: POSEIDONπ con S-box $x \mapsto x^\alpha$**:
+
+---
+
+### **C Analisi di Sicurezza: POSEIDONπ con $x^\alpha$**
+
+Nel seguito, **assumiamo che la funzione $x \mapsto x^\alpha$** sia **invertibile** nel campo finito considerato.
+Questo equivale a richiedere che:
+
+$$
+\gcd(\alpha, p - 1) = 1
+$$
+
+dove:
+
+* $\alpha$ è l'esponente usato nell’S-box (ad esempio, $\alpha = 5$),
+* $p$ è il modulo primo che definisce il campo finito $\mathbb{F}_p$,
+* $p - 1$ è l’ordine moltiplicativo del gruppo moltiplicativo di $\mathbb{F}_p^*$,
+* $\gcd$ indica il massimo comune divisore.
+
+---
+
+### Spiegazione aggiuntiva (se vuoi capire a fondo):
+
+Il motivo per cui questa condizione è importante è che:
+
+* **Se $\gcd(\alpha, p - 1) = 1$**, allora $x^\alpha$ è una **permutazione invertibile** del campo finito (escludendo lo zero).
+* Questo garantisce che la **S-box usata nella permutazione POSEIDONπ** non introduca **collassi o ambiguità**, e sia quindi **sicura dal punto di vista crittografico**.
+
+---
+
+### **C.1.1 Crittanalisi Differenziale**
+
+In questa sezione, ci focalizziamo solo sulle S-box utilizzate nel paper, ovvero:
+
+* $S(x) = x^3$
+* $S(x) = x^5$
+
+---
+
+
+#### **S(x) = x³**
+
+La **crittanalisi differenziale** e le sue varianti sono tra le tecniche più diffuse per analizzare primitive a chiave simmetrica.
+La probabilità differenziale di una funzione $f$ su un campo finito $\mathbb{F}_p$ è definita come:
+
+$$
+\text{Prob}[\alpha \rightarrow \beta] := \frac{|\{x : f(x + \alpha) - f(x) = \beta\}|}{p}
+$$
+
+Poiché la funzione cubica $f(x) = x^3$ è una permutazione **quasi perfettamente non lineare (APN)**, la sua **massima probabilità differenziale** su un campo primo è limitata da:
+
+$$
+\text{DP}_{\text{max}} \leq \frac{2}{p}
+$$
+
+Come stabilito nella letteratura, **POSEIDONπ è considerato sicuro contro la crittanalisi differenziale** se ogni differenziale ha probabilità **al più $p^{-t}$**.
+
+Tuttavia, poiché è difficile calcolare con precisione questa probabilità, si assume che sia sufficiente che **ogni caratteristica differenziale** abbia probabilità **al più $p^{-2t}$**.
+
+---
+
+#### **Permutazione "semplificata" per l’analisi**
+
+Per rendere l’analisi trattabile, considerano una permutazione **semplificata**:
+
+$$
+R_f \circ L \circ R_f(·)
+\tag{6}
+$$
+
+dove:
+
+* $L$ è uno strato lineare invertibile (ipotesi più debole possibile),
+* $R(·) = M \circ \text{S-box} \circ \text{ARK}(·)$, con **S-box piena**, e $M$ è una **matrice MDS**.
+
+L’analisi mostra che questa permutazione è **sicura contro la crittanalisi differenziale** se si impostano:
+
+$$
+R_F = 2 \cdot R_f = 10
+$$
+
+Il ragionamento è che se la versione "semplificata" è sicura con 10 round a S-box piena, anche POSEIDONπ (che ne ha di più e include anche S-box parziali) **è almeno altrettanto sicuro**, poiché lo strato lineare $L$ viene rimpiazzato con più round completi della versione reale.
+
+---
+
+#### **Numero minimo di S-box attive**
+
+Il numero minimo di S-box attive nella permutazione:
+
+$$
+R_s \circ L \circ R_r(·)
+$$
+
+è stimato da:
+
+$$
+\left\lfloor \frac{s}{2} \right\rfloor + \left\lfloor \frac{r}{2} \right\rfloor \cdot (t + 1) + (s \bmod 2) + (r \bmod 2)
+$$
+
+Dove $t$ è il numero di elementi nello stato (la dimensione del vettore di stato).
+
+Usando questi risultati, viene dimostrato che con 4 round "centrali", ci sono **almeno $2 \cdot (t + 1)$** S-box attive, e quindi la probabilità di ogni caratteristica differenziale è:
+
+$$
+\left(\frac{2}{p}\right)^{2 \cdot (t + 1)} \leq p^{-2t}
+$$
+
+Quindi, con almeno **10 round con S-box piena**, si ottiene sicurezza **fino a 2^M ≤ p^t**.
+
+---
+
+#### **Riassunto del numero minimo di round**
+
+$$
+R_F = \begin{cases}
+6 & \text{se } M \leq (t + 1) \cdot (\log_2 p - 1) \\
+10 & \text{altrimenti}
+\end{cases}
+$$
+
+---
+
+#### **S(x) = x⁵**
+
+Nel caso della S-box $x^5$, si ha:
+
+$$
+\text{DP}_{\text{max}} = \frac{4}{p}
+$$
+
+quindi la soglia di sicurezza aumenta:
+
+$$
+R_F = \begin{cases}
+6 & \text{se } 2t + 2 < N + \lceil \log_2 p \rceil - M \\
+10 & \text{altrimenti}
+\end{cases}
+$$
+
+---
+
+### **C.1.2 Crittanalisi Lineare**
+
+Anche la **crittanalisi lineare** \[Mat93] **non rappresenta una minaccia** per POSEIDONπ se si utilizzano lo stesso numero di round definiti per la crittanalisi differenziale.
+
+Infatti, la **massima correlazione quadratica** della funzione cubica è anch’essa limitata da:
+
+$$
+\text{LC}_{\text{max}} = \frac{2}{p}
+$$
+
+e questo offre la **migliore resistenza possibile** contro crittanalisi lineari, in modo analogo a quanto accade per la resistenza differenziale delle APN.
+
+---
+
+### Vuoi che continui con la traduzione e spiegazione delle sezioni successive (C.2 Algebraic Attacks), oppure vuoi un riassunto più compatto per inserirlo nella tesi?
