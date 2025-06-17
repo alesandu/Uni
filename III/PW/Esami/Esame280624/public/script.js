@@ -32,7 +32,11 @@ const updateColors = document.getElementById("bottone")
 updateColors.addEventListener("click", () => {
 
     const body = document.querySelector("body")
-    body.style.backgroundColor = "#313131"
+    const links = document.querySelectorAll("a")
+    body.style.backgroundColor = "#00796b"
+    links.forEach(element => {
+        element.style.color = "black"
+    });
 
 })
 
