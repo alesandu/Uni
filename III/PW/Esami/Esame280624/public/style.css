@@ -38,19 +38,21 @@ header {
     border-bottom: 2px solid #00796b;
 }
 main{
-    padding: 10px;
+    padding: 10px 0 10px 0;
     display: flex;
     flex-wrap: wrap;
     margin: auto;
 }
 .prima{
+    display: flex;
+    align-items: center;
     border: 1px solid #00796b;
-    flex: 1 1 30%;
+    width: 30%;
 }
 .seconda{
     padding: 10px;
     border: 1px solid #00796b;
-    flex: 1 1 70%; 
+    width: 70%; 
 }
 footer{
     border-top: 2px solid #00796b;
