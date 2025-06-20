@@ -36,7 +36,7 @@ def pow_alpha(x: int) -> int:
 
 def poseidon_permutation(state: List[int]) -> List[int]:
     """Permutazione Poseidon con round completi e parziali."""
-    # Round completi iniziali
+    # Round completi inizialic
     for r in range(ROUNDS_F // 2):
         state = [add(state[i], ROUND_CONSTANTS[r * T + i]) for i in range(T)]
         state = [pow_alpha(x) for x in state]
@@ -90,6 +90,7 @@ def hash_poseidon(msg: bytes) -> bytes:
 # ------------------------------
 # Generazione input condivisi 
 # ------------------------------
+
 random.seed(RANDOM_SEED)
 shared_inputs = [os.urandom(INPUT_SIZE) for _ in range(NUM_SAMPLES)]
 
@@ -157,43 +158,70 @@ bits_sha = bit_uniformity(hash_sha256)
 bits_pos = bit_uniformity(hash_poseidon)
 
 # ------------------------------
+# 5. Autocorrelazione
+# ------------------------------
+def autocorrelation_test(hash_func, samples=1000, input_length=64):
+    all_bits = []
+    for _ in tqdm(range(samples), desc=f"Autocorrelazione {hash_func.__name__}"):
+        msg = os.urandom(random.randint(1, input_length))
+        h = hash_func(msg)
+        bits = []
+        for byte in h:
+            bits.extend([int(b) for b in format(byte, '08b')])
+        all_bits.append(bits)
+    
+    bit_matrix = np.array(all_bits, dtype=int)
+    autocorr = np.mean([np.correlate(row, row, mode='full') for row in bit_matrix], axis=0)
+    autocorr = autocorr / len(bits)
+    return autocorr
+
+autocorr_md5 = autocorrelation_test(hash_md5)
+autocorr_sha = autocorrelation_test(hash_sha256)
+autocorr_pos = autocorrelation_test(hash_poseidon)
+
+# ------------------------------
 # Visualizzazione Risultati
 # ------------------------------
-# Grafico Prestazioni
 plt.figure(figsize=(12, 6))
-plt.subplot(2, 2, 1)
-plt.bar(['MD5', 'SHA-256', 'Poseidon'], [time_md5, time_sha, time_pos], color=['red', 'green', 'blue'])
-plt.title('Tempo medio per hash (ms)')
-plt.ylabel('Millisecondi')
 
-# Grafico Avalanche Effect
-plt.subplot(2, 2, 2)
+# Avalanche
+plt.subplot(2, 2, 1)
 plt.bar(['MD5', 'SHA-256', 'Poseidon'], [avalanche_md5, avalanche_sha, avalanche_pos], color=['red', 'green', 'blue'])
 plt.title('Avalanche Effect (% bit cambiati)')
 plt.ylabel('%')
 
-# Grafico Collisioni
-plt.subplot(2, 2, 3)
+# Collisioni
+plt.subplot(2, 2, 2)
 plt.bar(['MD5', 'SHA-256', 'Poseidon'], [coll_md5, coll_sha, coll_pos], color=['red', 'green', 'blue'])
 plt.title(f'Collisioni su {NUM_SAMPLES} input')
 plt.ylabel('N. collisioni')
 
-# Grafico Uniformità Bit
-plt.subplot(2, 2, 4)
-plt.bar(['MD5-0', 'MD5-1', 'SHA-0', 'SHA-1', 'POS-0', 'POS-1'], 
+# Uniformità
+plt.subplot(2, 2, 3)
+plt.bar(['MD5-0', 'MD5-1', 'SHA-0', 'SHA-1', 'POS-0', 'POS-1'],
         [bits_md5[0], bits_md5[1], bits_sha[0], bits_sha[1], bits_pos[0], bits_pos[1]],
         color=['red', 'red', 'green', 'green', 'blue', 'blue'])
 plt.title('Distribuzione bit 0/1')
 plt.ylabel('Conteggio')
 
+# Autocorrelazione
+plt.subplot(2, 2, 4)
+plt.plot(autocorr_md5, label="MD5", color='red')
+plt.plot(autocorr_sha, label="SHA-256", color='green')
+plt.plot(autocorr_pos, label="Poseidon", color='blue')
+plt.title("Autocorrelazione degli hash")
+plt.legend()
+
 plt.tight_layout()
 plt.show()
 
 # ------------------------------
-# Dati Numerici
+# Stampa risultati finali
 # ------------------------------
 print("\nRISULTATI RIEPILOGO:")
-print(f"1. Prestazioni (ms/hash): MD5={time_md5:.4f}, SHA-256={time_sha:.4f}, Poseidon={time_pos:.4f}")
-print(f"2. Avalanche Effect (%): MD5={avalanche_md5:.2f}%, SHA-256={avalanche_sha:.2f}%, Poseidon={avalanche_pos:.2f}%")
-print(f"3. Collisioni: MD5={coll_md5}, SHA-256={coll_sha}, Poseidon={coll_pos}")
-print(f"4. Uniformità bit 0/1: MD5={bits_md5[0]}/{bits_md5[1]}, SHA-256={bits_sha[0]}/{bits_sha[1]}, Poseidon={bits_pos[0]}/{bits_pos[1]}")
+print(f"1. Avalanche Effect (%): MD5={avalanche_md5:.2f}%, SHA-256={avalanche_sha:.2f}%, Poseidon={avalanche_pos:.2f}%")
+print(f"2. Collisioni: MD5={coll_md5}, SHA-256={coll_sha}, Poseidon={coll_pos}")
+print(f"3. Uniformità bit 0/1:")
+print(f"   MD5       -> 0: {bits_md5[0]}, 1: {bits_md5[1]}")
+print(f"   SHA-256   -> 0: {bits_sha[0]}, 1: {bits_sha[1]}")
+print(f"   Poseidon  -> 0: {bits_pos[0]}, 1: {bits_pos[1]}")
