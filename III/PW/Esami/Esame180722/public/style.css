@@ -1,0 +1,45 @@
+body{
+    display: flex; /*centrare orizzontalmente pagina*/
+    justify-content: center;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+header, main, footer{
+    border: 1px solid blue;
+}
+
+header, footer{
+    text-align: center;
+    padding: 10px 0;
+    background-color: #f1f1f1;
+}
+
+main{
+    position: relative;
+    height: 80vh;
+}
+
+.container{
+    min-width: 400px;
+    margin: 20px 0;
+}
+
+.quadrato{
+    position: absolute;
+    height: 10vh;
+    width: 10vh;
+}
+
+@media (min-width: 600px) {
+    .container{
+        width: 500px;
+    }
+}
+
+@media (min-width: 1000px) {
+    .container{
+        width: 1000px;
+    }
+}

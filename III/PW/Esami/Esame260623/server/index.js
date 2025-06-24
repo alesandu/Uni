@@ -15,11 +15,10 @@ data.forEach(element => {
     listaid.push(element.id)
 });
 
-app.get("", (req, res) => {
-    res.status(404).json({
-        status: "fail",
-        message: "sbagliato url"
-    })
+app.use((req, res) => {
+	res.status(404).json({ 
+        status: "error", 
+        msg: "API not implemented" });
 });
 
 app.get("/list", (req, res) => {

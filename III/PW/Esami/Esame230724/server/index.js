@@ -11,33 +11,25 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 const data = JSON.parse(fs.readFileSync("dati.json", "utf-8"))
 
-app.get("/prod", (req, res) => {
+
+app.get("/articoli", (req, res) => {
     res.status(200).json(data)
 });
 
-
-app.get("/prod/:colore", (req, res) => {
-    const id = req.params.colore
-    prodotti = []
+app.get("/autori", (req, res) => {
+    const array = []
     data.forEach(element => {
-        if(element.colore == id){
-            prodotti.push(element)
-        }
-        
+        array.push(element.autore)
     });
-    if (prodotti) {
-        res.status(200).json(prodotti)
-    }
-    else {
-        res.status(404).json({ message: "colore not found" })
-    }
+    res.status(200).json(array)
 });
+
 
 app.listen(3000, (err) => {
     if(err){
         console.error(err)
     }
     else{
-        console.log("Server started on port 3000")
+        console.log("Server partito al 3000")
     }
 });

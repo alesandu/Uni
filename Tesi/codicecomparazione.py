@@ -225,3 +225,12 @@ print(f"3. Uniformità bit 0/1:")
 print(f"   MD5       -> 0: {bits_md5[0]}, 1: {bits_md5[1]}")
 print(f"   SHA-256   -> 0: {bits_sha[0]}, 1: {bits_sha[1]}")
 print(f"   Poseidon  -> 0: {bits_pos[0]}, 1: {bits_pos[1]}")
+
+def export_poseidon_bitstream(filename="poseidon_bitstream_10000.bin"):
+    with open(filename, "wb") as f:
+        for msg in tqdm(shared_inputs, desc="Esportazione bitstream Poseidon"):
+            digest = hash_poseidon(msg)
+            f.write(digest)  # 32 byte = 256 bit
+    print(f"\n✓ Bitstream Poseidon salvato in '{filename}' ({NUM_SAMPLES * 32} byte)")
+
+export_poseidon_bitstream()
