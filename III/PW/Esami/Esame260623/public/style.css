@@ -36,11 +36,8 @@ li{
 
 .banner{
     position: fixed;
-    width: 500px;
-    height: 100px;
     margin: 10px 0 0 0;
     color: white;
-    font-size: 30px;
     text-align: center;
     background-color: grey;
     opacity: 0.9;
