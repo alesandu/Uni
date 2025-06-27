@@ -10,21 +10,14 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "../public")));
 
 const data = JSON.parse(fs.readFileSync("data.json", "utf-8"))
-listaid = []
-data.forEach(element => {
-    listaid.push(element.id)
-});
-
-app.use((req, res) => {
-	res.status(404).json({ 
-        status: "error", 
-        msg: "API not implemented" });
-});
 
 app.get("/list", (req, res) => {
-    res.status(200).json(listaid)
+    lista =  []
+    data.forEach(el => {
+        lista.push(el.id)
+    });
+    res.status(200).json(lista)
 });
-
 
 app.get("/pics/:id", (req, res) => {
     const id = parseInt(req.params.id)
@@ -35,9 +28,11 @@ app.get("/pics/:id", (req, res) => {
     else {
         res.status(404).json({ 
             status: "fail",
-            message: "Persona not found" })
+            message: "Persona not found",
+            data: data })
     }
 });
+
 
 app.listen(3000, (err) => {
     if(err){

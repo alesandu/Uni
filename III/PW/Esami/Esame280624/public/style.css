@@ -1,10 +1,68 @@
-*{
-    box-sizing: border-box;
-}
 body{
+    display: flex;
+    justify-content: center;
     background-color: #e0f7fa;
     font-family: Arial, sans-serif;
-    border-color: #00796b;
+}
+
+a{
+    text-decoration: none;
+    color: #004d40
+}
+
+.container{
+    padding: 10px;
+    width: 960px;
+    background-color: #ffffff;
+    border: 1px solid #00796b;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #00796b;
+}
+
+main{
+    padding: 10px 0;
+    display: flex;
+}
+
+.prima{
+    padding: 10px;
+    border: 1px solid #00796b;
+    width: 30%;
+}
+.seconda{
+    padding: 10px;
+    border: 1px solid #00796b;
+    width: 70%;
+}
+
+footer{
+    border-top: 2px solid #00796b;
+    height: 80px;
+    
+}
+
+button{
+    border: #00796b;
+    background-color: #00796b;
+    color: white;
+    padding: 10px;
+}
+
+#hambu {	
+    display: none;
+    cursor: pointer;
+}
+
+#hambu div {
+	width: 35px;
+	height: 5px;
+	background-color: black;
+    margin: 6px 0
 }
 
 #navbar{
@@ -22,59 +80,7 @@ body{
 
 a{
     text-decoration: none;
-    color: #004d40;
-}
-.container{
-    padding: 10px;
-    margin: auto;
-    width: 960px;
-    background-color: #ffffff;
-    border: 2px solid #00796b;
-}
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #00796b;
-}
-main{
-    padding: 10px 0 10px 0;
-    display: flex;
-    flex-wrap: wrap;
-    margin: auto;
-}
-.prima{
-    display: flex;
-    align-items: center;
-    border: 1px solid #00796b;
-    width: 30%;
-}
-.seconda{
-    padding: 10px;
-    border: 1px solid #00796b;
-    width: 70%; 
-}
-footer{
-    border-top: 2px solid #00796b;
-    height: 80px;
-}
-button{
-    padding: 10px;
-    background-color: #004d40;
-    color: #ffffff;
-    cursor: pointer;
-}
-
-#hambu {	
-    display: none;
-    cursor: pointer;
-}
-
-#hambu div {
-	width: 35px;
-	height: 5px;
-	background-color: black;
-    margin: 6px 0
+    color: black;
 }
 
 @media (max-width: 1000px) {
