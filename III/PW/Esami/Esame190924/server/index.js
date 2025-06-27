@@ -9,16 +9,21 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../public")));
 
-const data = JSON.parse(fs.readFileSync("lista.json", "utf-8"))
+const data = JSON.parse(fs.readFileSync("dati.json", "utf-8"))
 
-app.get("/dati", (req, res) => {
+app.get("/task", (req, res) => {
     res.status(200).json(data)
 });
 
-app.use((req, res) => {
-	res.status(404).json({ status: "error", msg: "API not implemented" });
-});
-
+app.post("/task/complete/:id", (req, res) => {
+    const id = parseInt(req.params.id)
+    data.forEach(el => {
+        if(el.id === id){
+            el.completed = true
+        }
+    });
+    res.status(200).json(data)
+    });
 
 app.listen(3000, (err) => {
     if(err){
