@@ -1,50 +1,68 @@
 body{
-    display: flex; /*centrare orizzontalmente pagina*/
+    display: flex;
     justify-content: center;
-    padding: 0%;
-    margin: 0%;
 }
 
 .container{
+    border: 3px solid green;
     width: 880px;
-    border: 3px solid #00796b;   
-    padding: 20px;
 }
+
+header, footer {
+    text-align: center;
+}
+
 footer{
     color: darkgreen;
-    padding: 10px;
 }
+
 ul{
-    padding: 0%;
-    list-style: none;
+    width: 880px;
+    padding: 0;
     display: flex;
-    justify-content: center; /*centralizzare orizzontalmente*/
+    justify-content: center;
     flex-wrap: wrap;
 }
 
 li{
-    margin: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
     width: 200px;
     height: 200px;
     background-color: lightcoral;
+    margin: 5px;
+}
+
+li a{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: white;
     font-size: 28px;
-    display: flex;
-    justify-content: center; /*centralizzare verticalmente  */
-    align-items: center; /*centrare verticalmente*/
+    text-decoration: none;
+
 }
 
-.banner{
+button{
+    margin: 10px;
+}
+
+.overlay{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 500px;
+    height: 100px;
     position: fixed;
-    margin: 10px 0 0 0;
+    background-color: rgba(128,128,128,0.9);
     color: white;
-    text-align: center;
-    background-color: grey;
-    opacity: 0.9;
+    margin: 10px 0 0 0;
+    font-size: 30px;
 }
 
-@media (max-width: 500px) {
-    .container {
+@media (max-width: 800px) {
+    .container, ul{
 		width: 480px;
 	}
 }

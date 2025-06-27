@@ -11,7 +11,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 const data = JSON.parse(fs.readFileSync("lista.json", "utf-8"))
 
-app.get("/data", (req, res) => {
+app.get("/dati", (req, res) => {
     res.status(200).json(data)
 });
 
