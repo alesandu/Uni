@@ -1,0 +1,193 @@
+%---------------------------------------------------------
+\documentclass[a4paper,12pt]{article}
+
+% Impostazioni lingua e codifica
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+
+% Matematica
+\usepackage{amsmath, amsfonts, amssymb, mathtools, mathrsfs}
+\usepackage[arrowdel]{physics}
+
+% Grafica e figure
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{rotating}
+\usepackage{dblfloatfix} % Per gestire figure doppie in fondo alla pagina
+\usepackage{subcaption}
+\usepackage[labelfont=bf]{caption}
+\usepackage{tikz}
+\usepackage{forest}
+\usepackage{array}
+
+% Tabelle
+\usepackage{array, tabularx, multirow, longtable}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\renewcommand{\listtablename}{Tables}
+
+% Algoritmi
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+
+% Hyperlink
+\usepackage{xcolor} % Colori
+\usepackage{hyperref}
+
+% Geometria della pagina
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm]{geometry}
+%\usepackage{geometry}
+
+% Altri pacchetti utili
+\usepackage{xcolor}
+\usepackage{csquotes}
+\usepackage{lipsum} % Per generare testo fittizio
+\usepackage[square]{natbib} % Per la bibliografia
+\usepackage{adjustbox}
+\usepackage{textcomp, gensymb} % Simboli speciali come il grado
+\usepackage[official]{eurosym} % Simbolo dell'euro
+
+
+% Fancy Header (opzionale, se necessario)
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+
+
+\newcommand\Set[2]{\{\,#1\mid#2\,\}}
+\newcommand\SET[2]{\Set{#1}{\text{#2}}}
+
+\graphicspath{ {/imgs/} }
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+
+\hypersetup{
+    colorlinks,
+    linkcolor={black!50!black},
+    citecolor={black!50!black},
+    urlcolor={blue!80!black}
+}
+%\usepackage[style=windycity, ,autocite=inline]{biblatex}
+%\addbibresource{references.bib}
+\DeclareMathSizes{12}{12}{12}{12}
+\usepackage{environ}
+\usepackage[position=top]{subcaption}
+
+\newcommand{\upperRomannumeral}[1]{\uppercase\expandafter{\romannumeral#1}}
+\newcommand{\lowerromannumeral}[1]{\romannumeral#1\relax}
+
+%--CODICI
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\author{Franco Salvucci}
+
+%-----------------------------
+% CONFIGURAZIONE DELLA PAGINA
+%-----------------------------
+
+\hfuzz2pt % Don't bother to report over-full boxes if over-edge is < 2pt
+
+\fancypagestyle{plain}{
+\fancyhead{}\renewcommand{\headrulewidth}{0pt} } \pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markright{\small  \thesection \textit{ #1}} {} }
+\voffset=-5pt    % distanza tra il limite superiore del foglio e l'intestazione
+\headsep=40pt     % distanza  l'intestazione ed il testo del corpo
+\hoffset=0 pt     % misura equivalente al margine sinistro
+\textheight=620pt % altezza del corpo del testo
+\textwidth=435pt  % larghezza del corpo del testo
+\footskip=52pt    % distanza tra il testo del corpo ed il pie' di pagina
+\fancyhead{}      % cancella qualsiasi impostazione per l'intestazione
+\fancyfoot{}      % cancella qualsiasi impostazione per il pie' di pagina
+\headwidth=435pt  % larghezza del'intestazione e del pie' di pagina
+\fancyhead[R]{\rightmark} \fancyfoot[L]{\leftmark}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}   % spessore della linea dell'intestazione
+\renewcommand{\footrulewidth}{0.4pt}   % spessore della linea del pi�di pagina
+
+\pagenumbering{arabic}
+
+% Nuova definizione per il teorema
+\newtheorem{theorem}{Teorema}[section]
+
+% Ambiente personalizzato per il teorema
+\NewDocumentEnvironment{teorema}{} % "+b" permette di passare un blocco come argomento
+    {\begin{theorem}\par}
+    {\end{theorem}}
+
+% Alias per richiamare il teorema con un comando rapido
+\newcommand{\Teorema}[1]{\begin{teorema}#1\end{teorema}}
+% PER DEFINIZIONI 
+%\newtheorem{defn}{Definizione}[section]
+%\newenvironment{de}
+%    {\begin{defn}\begin{normalfont}}
+%    {\hfill \end{normalfont}\end{defn}}
+
+\newtheorem{defn}{Definizione}[subsection]
+\renewcommand{\thedefn}{\thesubsection.\arabic{defn}}
+\newenvironment{de}
+  {\begin{defn}\begin{normalfont}}
+  {\hfill \end{normalfont}\end{defn}}
+
+
+\include{intestazione.tex}
+% Metadati personalizzabili
+\newcommand{\mytitle}{UNIVERSITÀ DEGLI STUDI DI ROMA TOR VERGATA\\\vspace{1cm}MACROAREA DI SCIENZE MATEMATICHE, FISICHE E NATURALI}
+\newcommand{\mycourse}{INFORMATICA}
+\newcommand{\mytesi}{MATERIA TESI}
+\newcommand{\mytesititolo}{TITOLO TESI}
+\newcommand{\myrelatore}{\textit{RELATORE}}
+\newcommand{\mycandidato}{\textit{CANDIDATO}}
+\newcommand{\mymatricola}{\textit{MATRICOLA}}
+\title{Template Tesi}
+\author{Franco Salvucci }
+\date{April 2025}
+
+\begin{document}
+\intestazione
+
+\tableofcontents
+\pagebreak
+\section{Introduzione} 
+Citazione bibliografia \cite{Template-Tesi}
+\pagebreak
+\section{Sezione 2}
+\subsection{Sottosezione 2.1}
+\subsection{Sottosezione 2.2}
+\subsubsection{Sotto-sottosezione 2.2.1}
+\section{Sezione 3}
+
+\bibliographystyle{ieeetr}
+\bibliography{refs}
+\addcontentsline{toc}{section}{Bibliografia}
+\end{document}
