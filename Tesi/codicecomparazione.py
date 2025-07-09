@@ -19,22 +19,47 @@ ROUNDS_F = 8  # Round completi
 ROUNDS_P = 56  # Round parziali
 ALPHA = 5  # Esponente S-box
 
-# Costanti precalcolate (esempio semplificato)
-ROUND_CONSTANTS = [mpz((i * 0xdeadbeef) % PRIME) for i in range(1, (ROUNDS_F + ROUNDS_P) * T + 1)]
-MDS_MATRIX = [
-    [mpz(0x123456789), mpz(0x987654321), mpz(0xabcdef12)],
-    [mpz(0x456789abc), mpz(0x321fedcba), mpz(0x789abcdef)],
-    [mpz(0x987654321), mpz(0xabcdef123), mpz(0x654321fed)]
-]
+def generate_round_constants(prime: mpz, total_constants: int) -> List[mpz]:
+    constants = []
+    for i in range(total_constants):
+        # Seed deterministico: "PoseidonRoundConstant" + indice
+        data = f"PoseidonRoundConstant{i}".encode()
+        digest = hashlib.sha256(data).digest()
+        value = int.from_bytes(digest, byteorder='big') % prime
+        constants.append(mpz(value))
+    return constants
+
+def generate_mds_matrix(prime: mpz, t: int) -> List[List[mpz]]:
+    x = [mpz(i + 1) for i in range(t)]  # valori distinti arbitrari
+    mds = []
+    for i in range(t):
+        row = []
+        for j in range(t):
+            if i == j:
+                # Diagonale: somma dei x_i / (x_i - x_k) per k ≠ i
+                s = mpz(0)
+                for k in range(t):
+                    if k != i:
+                        denom = (x[i] - x[k]) % prime
+                        inv_denom = gmpy2.invert(denom, prime)
+                        s = (s + x[i] * inv_denom) % prime
+                row.append(s)
+            else:
+                denom = (x[i] - x[j]) % prime
+                inv_denom = gmpy2.invert(denom, prime)
+                row.append(inv_denom)
+        mds.append(row)
+    return mds
+
+# Costanti precalcolate
+ROUND_CONSTANTS = generate_round_constants(PRIME, (ROUNDS_F + ROUNDS_P) * T)
+MDS_MATRIX = generate_mds_matrix(PRIME, T)
 
 def add(a: int, b: int) -> int:
     return (a + b) % PRIME
 
 def mul(a: int, b: int) -> int:
     return (a * b) % PRIME
-
-def pow_alpha(x: int) -> int:
-    return pow(x, ALPHA, PRIME)
 
 def poseidon_permutation(state: List[int]) -> List[int]:
     """
@@ -127,7 +152,7 @@ def poseidon256(msg: bytes) -> bytes:
 # ------------------------------
 # Configurazione
 # ------------------------------
-NUM_SAMPLES = 100000  # sample
+NUM_SAMPLES = 1000000  # sample
 INPUT_SIZE = 1024     # 1 KB per input
 RANDOM_SEED = 42      # Per riproducibilità
 
@@ -183,17 +208,6 @@ for hash_func in [hash_md5, hash_sha256, hash_poseidon]:
     hashes = parallel_hash(hash_func, shared_inputs, n_cores=16)
     precomputed_hashes[hash_func.__name__] = hashes
     
-
-# # ------------------------------
-# # 1. Benchmark Prestazioni (Tempo medio di hashing, inutile poseidon impiega troppo)
-# # ------------------------------
-
-# def benchmark(hash_func):
-#     start = time.time()
-#     for msg in tqdm(shared_inputs, desc=f"Benchmark {hash_func.__name__}"):
-#         hash_func(msg)
-#     return (time.time() - start) * 1000 / NUM_SAMPLES  # ms per hash
-
 # ------------------------------
 # 2. Avalanche Effect (su primo input)
 # ------------------------------
@@ -234,7 +248,6 @@ def parallel_avalanche_precomputed(hash_func, shared_inputs, precomputed_hashes,
     std_diff = np.std(results)
     return mean_diff, std_diff
 
-# Esempio d’uso:
 avalanche_md5 = parallel_avalanche_precomputed(hash_md5, shared_inputs, precomputed_hashes['hash_md5'])
 avalanche_sha = parallel_avalanche_precomputed(hash_sha256, shared_inputs, precomputed_hashes['hash_sha256'])
 avalanche_pos = parallel_avalanche_precomputed(hash_poseidon, shared_inputs, precomputed_hashes['hash_poseidon'])
@@ -345,10 +358,10 @@ chi_sq_pos, p_pos = chi_square_test_precomputed(precomputed_hashes['hash_poseido
 
 
 # ------------------------------
-# 8. Birthday Paradox Test
+# 8. Intra-Hash Test
 # ------------------------------
 
-def birthday_paradox_intra_hash_precomputed(precomputed, hash_func_name, window_sizes=[32, 24, 16]):
+def intra_hash_precomputed(precomputed, hash_func_name, window_sizes=[32, 24, 16]):
     results = {}
     
     for window_size in window_sizes:
@@ -376,15 +389,15 @@ def birthday_paradox_intra_hash_precomputed(precomputed, hash_func_name, window_
     
     return results
 
-intra_md5 = birthday_paradox_intra_hash_precomputed(precomputed_hashes['hash_md5'], 'MD5')
-intra_sha = birthday_paradox_intra_hash_precomputed(precomputed_hashes['hash_sha256'], 'SHA-256')
-intra_pos = birthday_paradox_intra_hash_precomputed(precomputed_hashes['hash_poseidon'], 'Poseidon')
+intra_md5 = intra_hash_precomputed(precomputed_hashes['hash_md5'], 'MD5')
+intra_sha = intra_hash_precomputed(precomputed_hashes['hash_sha256'], 'SHA-256')
+intra_pos = intra_hash_precomputed(precomputed_hashes['hash_poseidon'], 'Poseidon')
 
 # ------------------------------
 # 9. Bit Psition Analysis
 # ------------------------------
 
-def bit_position_analysis_precomputed(precomputed, hash_func_name, threshold=2):
+def bit_position_analysis_precomputed(precomputed, hash_func_name, threshold=0.5):
     bit_positions = 8 * len(precomputed[0])
     bit_counts = np.zeros((bit_positions, 2), dtype=np.int32)
     
@@ -410,45 +423,6 @@ def bit_position_analysis_precomputed(precomputed, hash_func_name, threshold=2):
 bit_md5 = bit_position_analysis_precomputed(precomputed_hashes['hash_md5'], 'MD5')
 bit_sha = bit_position_analysis_precomputed(precomputed_hashes['hash_sha256'], 'SHA-256')
 bit_pos = bit_position_analysis_precomputed(precomputed_hashes['hash_poseidon'], 'Poseidon')
-
-# # ------------------------------
-# # Visualizzazione Risultati
-# # ------------------------------
-
-# plt.figure(figsize=(12, 6))
-
-# # Avalanche
-# plt.subplot(2, 2, 1)
-# means = [avalanche_md5[0], avalanche_sha[0], avalanche_pos[0]]
-# stds = [avalanche_md5[1], avalanche_sha[1], avalanche_pos[1]]
-# plt.bar(['MD5', 'SHA-256', 'Poseidon'], means, yerr=stds, color=['red', 'green', 'blue'], capsize=5)
-# plt.title('Avalanche Effect (% bit cambiati)')
-# plt.ylabel('%')
-
-# # Collisioni
-# plt.subplot(2, 2, 2)
-# plt.bar(['MD5', 'SHA-256', 'Poseidon'], [coll_md5, coll_sha, coll_pos], color=['red', 'green', 'blue'])
-# plt.title(f'Collisioni su {NUM_SAMPLES} input')
-# plt.ylabel('N. collisioni')
-
-# # Uniformità
-# plt.subplot(2, 2, 3)
-# plt.bar(['MD5-0', 'MD5-1', 'SHA-0', 'SHA-1', 'POS-0', 'POS-1'],
-#         [bits_md5[0], bits_md5[1], bits_sha[0], bits_sha[1], bits_pos[0], bits_pos[1]],
-#         color=['red', 'red', 'green', 'green', 'blue', 'blue'])
-# plt.title('Distribuzione bit 0/1')
-# plt.ylabel('Conteggio')
-
-# # Autocorrelazione
-# plt.subplot(2, 2, 4)
-# plt.plot(autocorr_md5, label="MD5", color='red')
-# plt.plot(autocorr_sha, label="SHA-256", color='green')
-# plt.plot(autocorr_pos, label="Poseidon", color='blue')
-# plt.title("Autocorrelazione degli hash")
-# plt.legend()
-
-# plt.tight_layout()
-# plt.show()
 
 # ------------------------------
 # Stampa risultati finali
@@ -488,7 +462,7 @@ print_intra_results("Poseidon", intra_pos)
 
 
 print("\n9. Bit Position Analysis:")
-def print_bit_stats(name, bit_data, threshold=5.0, num_bits=None):
+def print_bit_stats(name, bit_data, threshold=2, num_bits=None):
     print(f"{name} - Bit con deviazione > {threshold}%:")
     filtered_bits = {
         pos: vals for pos, vals in bit_data.items() 
@@ -509,89 +483,235 @@ print_bit_stats("MD5", bit_md5)
 print_bit_stats("SHA-256", bit_sha)
 print_bit_stats("Poseidon", bit_pos)
 
+def print_autocorrelation_results(autocorr_data, algo_name):
+    """Stampa statistiche riassuntive per l'autocorrelazione."""
+    mean_val = np.mean(autocorr_data)
+    max_val = np.max(autocorr_data)
+    min_val = np.min(autocorr_data)
+    argmax = np.argmax(autocorr_data)  # Posizione del massimo
+    
+    print(f"\n🔍 {algo_name} Autocorrelazione:")
+    print("-" * 50)
+    print(f"• Media: {mean_val:.4f}")
+    print(f"• Massimo: {max_val:.4f} (alla posizione {argmax})")
+    print(f"• Minimo: {min_val:.4f}")
+    print(f"\nPrimi 10 valori:")
+    print(np.array2string(autocorr_data[:10], precision=4, separator=', ', suppress_small=True))
+    print("-" * 50)
+
+# Stampa risultati per tutti gli algoritmi
+print("\n")
+print("=" * 70)
+print("📊 RISULTATI AUTOCORRELAZIONE".center(70))
+print("=" * 70)
+
+print_autocorrelation_results(autocorr_md5, "MD5")
+print_autocorrelation_results(autocorr_sha, "SHA-256")
+print_autocorrelation_results(autocorr_pos, "Poseidon")
+
+# Dati per i grafici (già calcolati)
+data = {
+    'Avalanche': {
+        'MD5': {'mean': avalanche_md5[0], 'std': avalanche_md5[1]},
+        'SHA-256': {'mean': avalanche_sha[0], 'std': avalanche_sha[1]},
+        'Poseidon': {'mean': avalanche_pos[0], 'std': avalanche_pos[1]},
+        'ylabel': '% bit cambiati',
+        'title': 'Avalanche Effect'
+    },
+    'Collisioni': {
+        'MD5': coll_md5,
+        'SHA-256': coll_sha,
+        'Poseidon': coll_pos,
+        'ylabel': 'N. collisioni',
+        'title': f'Collisioni (su {NUM_SAMPLES} input)'
+    },
+    'Uniformità': {
+        'MD5': {'0': bits_md5[0], '1': bits_md5[1]},
+        'SHA-256': {'0': bits_sha[0], '1': bits_sha[1]},
+        'Poseidon': {'0': bits_pos[0], '1': bits_pos[1]},
+        'ylabel': 'Conteggio bit',
+        'title': 'Distribuzione bit 0/1'
+    },
+    'Entropia': {
+        'MD5': entropy_md5,
+        'SHA-256': entropy_sha,
+        'Poseidon': entropy_pos,
+        'ylabel': 'Entropia (bit/byte)',
+        'title': 'Shannon Entropy'
+    },
+    'Chi-Square': {
+        'MD5': {'chi_sq': chi_sq_md5, 'p': p_md5},
+        'SHA-256': {'chi_sq': chi_sq_sha, 'p': p_sha},
+        'Poseidon': {'chi_sq': chi_sq_pos, 'p': p_pos},
+        'ylabel': 'Valore Chi-Square',
+        'title': 'Test Chi-Square (Uniformità)'
+    },
+    'Autocorrelazione': {
+        'MD5': autocorr_md5,
+        'SHA-256': autocorr_sha,
+        'Poseidon': autocorr_pos,
+        'ylabel': 'Correlazione',
+        'title': 'Autocorrelazione'
+    },
+    'Birthday Paradox': {
+        'MD5': intra_md5,
+        'SHA-256': intra_sha,
+        'Poseidon': intra_pos,
+        'ylabel': 'Tasso di collisioni',
+        'title': 'Birthday Paradox (Intra-Hash)'
+    },
+    'Bit Position': {
+        'MD5': bit_md5,
+        'SHA-256': bit_sha,
+        'Poseidon': bit_pos,
+        'ylabel': 'Deviazione da 50% (%)',
+        'title': 'Analisi Posizione Bit'
+    }
+}
+
+from matplotlib.gridspec import GridSpec
 # ------------------------------
-# Preparazione dati
+# Creazione della figura con griglia personalizzata
+# ------------------------------
+plt.figure(figsize=(20, 20))
+gs = GridSpec(4, 2, width_ratios=[1, 1], height_ratios=[1, 1, 1, 1])
+colors = {'MD5': 'red', 'SHA-256': 'lightgreen', 'Poseidon': 'lightblue'}
+
+# ------------------------------
+# 1. Avalanche Effect (Barre con errori)
+# ------------------------------
+ax1 = plt.subplot(gs[0, 0])
+x = np.arange(3)
+means = [data['Avalanche'][h]['mean'] for h in ['MD5', 'SHA-256', 'Poseidon']]
+stds = [data['Avalanche'][h]['std'] for h in ['MD5', 'SHA-256', 'Poseidon']]
+ax1.bar(x, means, yerr=stds, capsize=10, color=[colors[h] for h in ['MD5', 'SHA-256', 'Poseidon']])
+ax1.set_xticks(x)
+ax1.set_xticklabels(['MD5', 'SHA-256', 'Poseidon'])
+ax1.set_ylabel(data['Avalanche']['ylabel'])
+ax1.set_title(data['Avalanche']['title'])
+ax1.grid(axis='y', linestyle='--', alpha=0.7)
+for i, (m, s) in enumerate(zip(means, stds)):
+    ax1.text(i, m + 0.5, f'{m:.2f}% ± {s:.2f}', ha='center', va='bottom')
+
+# ------------------------------
+# 2. Collisioni (Barre)
+# ------------------------------
+ax2 = plt.subplot(gs[0, 1])
+x = np.arange(3)
+collisions = [data['Collisioni'][h] for h in ['MD5', 'SHA-256', 'Poseidon']]
+ax2.bar(x, collisions, color=[colors[h] for h in ['MD5', 'SHA-256', 'Poseidon']])
+ax2.set_xticks(x)
+ax2.set_xticklabels(['MD5', 'SHA-256', 'Poseidon'])
+ax2.set_ylabel(data['Collisioni']['ylabel'])
+ax2.set_title(data['Collisioni']['title'])
+ax2.grid(axis='y', linestyle='--', alpha=0.7)
+for i, c in enumerate(collisions):
+    ax2.text(i, c + 0.1, str(c), ha='center', va='bottom')
+
+# ------------------------------
+# 3. Uniformità dei Bit (Barre sovrapposte)
+# ------------------------------
+ax3 = plt.subplot(gs[1, 0])
+x = np.arange(3)
+width = 0.35
+bit0 = [data['Uniformità'][h]['0'] for h in ['MD5', 'SHA-256', 'Poseidon']]
+bit1 = [data['Uniformità'][h]['1'] for h in ['MD5', 'SHA-256', 'Poseidon']]
+ax3.bar(x - width/2, bit0, width, label='Bit 0', color='blue')
+ax3.bar(x + width/2, bit1, width, label='Bit 1', color='red')
+ax3.set_xticks(x)
+ax3.set_xticklabels(['MD5', 'SHA-256', 'Poseidon'])
+ax3.set_ylabel(data['Uniformità']['ylabel'])
+ax3.set_title(data['Uniformità']['title'])
+ax3.legend()
+ax3.grid(axis='y', linestyle='--', alpha=0.7)
+
+# ------------------------------
+# 4. Shannon Entropy (Barre)
+# ------------------------------
+ax4 = plt.subplot(gs[1, 1])
+x = np.arange(3)
+entropies = [data['Entropia'][h] for h in ['MD5', 'SHA-256', 'Poseidon']]
+ax4.bar(x, entropies, color=[colors[h] for h in ['MD5', 'SHA-256', 'Poseidon']])
+ax4.set_xticks(x)
+ax4.set_xticklabels(['MD5', 'SHA-256', 'Poseidon'])
+ax4.set_ylabel(data['Entropia']['ylabel'])
+ax4.set_title(data['Entropia']['title'])
+ax4.grid(axis='y', linestyle='--', alpha=0.7)
+for i, e in enumerate(entropies):
+    ax4.text(i, e + 0.01, f'{e:.4f}', ha='center', va='bottom')
+
+# ------------------------------
+# 5. Chi-Square (Barre con annotazione p-value)
+# ------------------------------
+ax5 = plt.subplot(gs[2, 0])
+x = np.arange(3)
+chi_sq = [data['Chi-Square'][h]['chi_sq'] for h in ['MD5', 'SHA-256', 'Poseidon']]
+p_values = [data['Chi-Square'][h]['p'] for h in ['MD5', 'SHA-256', 'Poseidon']]
+bars = ax5.bar(x, chi_sq, color=[colors[h] for h in ['MD5', 'SHA-256', 'Poseidon']])
+ax5.set_xticks(x)
+ax5.set_xticklabels(['MD5', 'SHA-256', 'Poseidon'])
+ax5.set_ylabel(data['Chi-Square']['ylabel'])
+ax5.set_title(data['Chi-Square']['title'])
+ax5.grid(axis='y', linestyle='--', alpha=0.7)
+for i, (chi, p) in enumerate(zip(chi_sq, p_values)):
+    ax5.text(i, chi + 5, f'p={p:.1e}', ha='center', va='bottom', fontsize=9)
+    color = 'black'
+    ax5.text(i, chi/2, 'NON uniforme' if p < 0.05 else 'Uniforme', ha='center', va='center', color=color, weight='bold')
+
+# ------------------------------
+# 6. Autocorrelazione (Linee)
 # ------------------------------
 
-# Avalanche (media, std)
-avalanche_means = [avalanche_md5[0], avalanche_sha[0], avalanche_pos[0]]
-avalanche_stds = [avalanche_md5[1], avalanche_sha[1], avalanche_pos[1]]
-
-# Collisioni
-collisions = [coll_md5, coll_sha, coll_pos]
-
-# Uniformità dei bit (numero di 1)
-bits_ones = [bits_md5[1], bits_sha[1], bits_pos[1]]
-
-# Shannon Entropy
-entropies = [entropy_md5, entropy_sha, entropy_pos]
-
-# Chi-Square
-chi_squares = [chi_sq_md5, chi_sq_sha, chi_sq_pos]
-p_values = [p_md5, p_sha, p_pos]
-
-# Funzioni di hash
-labels = ['MD5', 'SHA-256', 'Poseidon']
+ax6 = plt.subplot(gs[2, 1])
+for algo in ['MD5', 'SHA-256', 'Poseidon']:
+    ax6.plot(data['Autocorrelazione'][algo], label=algo, color=colors[algo])
+ax6.set_xlabel('Lag')
+ax6.set_ylabel(data['Autocorrelazione']['ylabel'])
+ax6.set_title(data['Autocorrelazione']['title'])
+ax6.legend()
+ax6.grid(linestyle='--', alpha=0.7)
 
 # ------------------------------
-# Creazione figure
+# 7. Birthday Paradox (Barre raggruppate)
 # ------------------------------
-
-fig, axs = plt.subplots(2, 3, figsize=(18, 10))
-fig.suptitle("Confronto Hash Functions: MD5 vs SHA-256 vs Poseidon", fontsize=16)
-
-# ------------------------------
-# Plot 1 - Avalanche Effect
-# ------------------------------
-axs[0, 0].bar(labels, avalanche_means, yerr=avalanche_stds, capsize=5, color=['skyblue', 'lightgreen', 'salmon'])
-axs[0, 0].set_ylabel('Percentuale di bit cambiati')
-axs[0, 0].set_title('Avalanche Effect')
-
-# ------------------------------
-# Plot 2 - Collisioni
-# ------------------------------
-axs[0, 1].bar(labels, collisions, color=['skyblue', 'lightgreen', 'salmon'])
-axs[0, 1].set_ylabel('Numero collisioni')
-axs[0, 1].set_title('Collisioni (su input condivisi)')
-
-# ------------------------------
-# Plot 3 - Uniformità dei Bit
-# ------------------------------
-axs[0, 2].bar(labels, bits_ones, color=['skyblue', 'lightgreen', 'salmon'])
-axs[0, 2].set_ylabel('Numero totale di bit = 1')
-axs[0, 2].set_title('Uniformità dei Bit (conteggio di 1)')
+ax7 = plt.subplot(gs[3, 0])
+x = np.arange(3)  # MD5, SHA-256, Poseidon
+width = 0.25
+window_sizes = list(data['Birthday Paradox']['MD5'].keys())
+for i, size in enumerate(window_sizes):
+    rates = [
+        data['Birthday Paradox']['MD5'][size]['collision_rate'],
+        data['Birthday Paradox']['SHA-256'][size]['collision_rate'],
+        data['Birthday Paradox']['Poseidon'][size]['collision_rate']
+    ]
+    ax7.bar(x + i*width - width, rates, width, label=f'{size} bit', color=plt.cm.viridis(i/len(window_sizes)))
+ax7.set_xticks(x)
+ax7.set_xticklabels(['MD5', 'SHA-256', 'Poseidon'])
+ax7.set_ylabel(data['Birthday Paradox']['ylabel'])
+ax7.set_title(data['Birthday Paradox']['title'])
+ax7.legend()
+ax7.grid(axis='y', linestyle='--', alpha=0.7)
 
 # ------------------------------
-# Plot 4 - Shannon Entropy
+# 8. Bit Position Analysis (Scatter)
 # ------------------------------
-axs[1, 0].bar(labels, entropies, color=['skyblue', 'lightgreen', 'salmon'])
-axs[1, 0].set_ylabel('Entropia')
-axs[1, 0].set_title('Shannon Entropy')
+ax8 = plt.subplot(gs[3, 1])
+for algo in ['MD5', 'SHA-256', 'Poseidon']:
+    bit_data = data['Bit Position'][algo]
+    if bit_data:
+        positions = list(bit_data.keys())
+        deviations = [abs(50 - bit_data[pos]['0']) for pos in positions]
+        ax8.scatter(positions, deviations, label=algo, color=colors[algo], alpha=0.6)
+ax8.set_xlabel('Posizione del bit')
+ax8.set_ylabel(data['Bit Position']['ylabel'])
+ax8.set_title(data['Bit Position']['title'])
+ax8.legend()
+ax8.grid(linestyle='--', alpha=0.7)
 
 # ------------------------------
-# Plot 5 - Chi-Square
+# Titolo generale e layout
 # ------------------------------
-axs[1, 1].bar(labels, chi_squares, color=['skyblue', 'lightgreen', 'salmon'])
-axs[1, 1].set_ylabel('Chi-Square')
-axs[1, 1].set_title('Chi-Square Test (Uniformità dei byte)')
-
-# Annotazione p-value sopra ogni barra
-for i, p in enumerate(p_values):
-    axs[1, 1].text(i, chi_squares[i], f"p={p:.2e}", ha='center', va='bottom', fontsize=9)
-
-# ------------------------------
-# Plot 6 - Placeholder / Autocorrelazione
-# ------------------------------
-# Ad esempio visualizza la media dell’autocorrelazione per un confronto compatto
-auto_means = [np.mean(autocorr_md5), np.mean(autocorr_sha), np.mean(autocorr_pos)]
-axs[1, 2].bar(labels, auto_means, color=['skyblue', 'lightgreen', 'salmon'])
-axs[1, 2].set_ylabel('Media autocorrelazione')
-axs[1, 2].set_title('Autocorrelazione media')
-
-# ------------------------------
-# Layout finale
-# ------------------------------
-plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+plt.suptitle('Analisi Statistiche delle Funzioni Hash: MD5 vs SHA-256 vs Poseidon\n', fontsize=16, fontweight='bold')
+plt.tight_layout()
+plt.subplots_adjust(top=0.92)
 plt.show()
-
-
