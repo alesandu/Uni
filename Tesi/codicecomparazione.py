@@ -9,6 +9,8 @@ import gmpy2
 from gmpy2 import mpz,powmod
 import multiprocessing
 from multiprocessing import Pool 
+import os
+import csv
 
 # ------------------------------
 # Implementazione Poseidon256 (basata sul paper)
@@ -152,8 +154,8 @@ def poseidon256(msg: bytes) -> bytes:
 # ------------------------------
 # Configurazione
 # ------------------------------
-NUM_SAMPLES = 1000000  # sample
-INPUT_SIZE = 1024     # 1 KB per input
+NUM_SAMPLES = 10000  # sample
+INPUT_SIZE = 1024    # 1KB per input
 RANDOM_SEED = 42      # Per riproducibilità
 
 # ------------------------------
@@ -207,6 +209,39 @@ for hash_func in [hash_md5, hash_sha256, hash_poseidon]:
     print(f"Precalcolo {hash_func.__name__} (parallelizzato)...")
     hashes = parallel_hash(hash_func, shared_inputs, n_cores=16)
     precomputed_hashes[hash_func.__name__] = hashes
+    
+    
+# def load_precomputed_hashes(output_dir):
+#     precomputed_hashes = {}
+    
+#     # Carica gli hash completi dai CSV
+#     for hash_name in ["hash_md5", "hash_sha256", "hash_poseidon"]:
+#         csv_filename = os.path.join(output_dir, f"{hash_name}_hashes.csv")
+        
+#         if not os.path.exists(csv_filename):
+#             raise FileNotFoundError(f"File {csv_filename} non trovato.")
+        
+#         print(f"Caricamento {hash_name} da file CSV...")
+#         hashes = []
+        
+#         with open(csv_filename, 'r', newline='') as csvfile:
+#             reader = csv.reader(csvfile)
+#             next(reader)  # Salta intestazione
+            
+#             for row in reader:
+#                 hash_hex = row[1]
+#                 hash_bytes = bytes.fromhex(hash_hex)
+#                 hashes.append(hash_bytes)
+        
+#         precomputed_hashes[hash_name] = hashes
+    
+#     return precomputed_hashes
+
+# # Utilizzo:
+# output_dir = "hash_outputs/"  # Sostituisci con il percorso corretto
+# precomputed_hashes = load_precomputed_hashes(output_dir)
+
+print("="*100)
     
 # ------------------------------
 # 2. Avalanche Effect (su primo input)
@@ -291,17 +326,24 @@ bits_pos = bit_uniformity_precomputed(precomputed_hashes['hash_poseidon'])
 # ------------------------------
 
 def autocorrelation_test_precomputed(precomputed, hash_func_name):
-    all_bits = []
-    for h in tqdm(precomputed, desc=f"Autocorrelazione {hash_func_name}"):
-        bits = []
-        for byte in h:
-            bits.extend([int(b) for b in format(byte, '08b')])
-        all_bits.append(bits)
+    autocorrs = []
     
-    bit_matrix = np.array(all_bits, dtype=int)
-    autocorr = np.mean([np.correlate(row, row, mode='full') for row in bit_matrix], axis=0)
-    autocorr = autocorr / len(bits)
-    return autocorr
+    for h in tqdm(precomputed, desc=f"Autocorrelazione {hash_func_name}"):
+        bits = np.array([int(b) for byte in h for b in format(byte, '08b')], dtype=int)
+        n = len(bits)
+        autocorr = []
+        
+        for k in range(n):
+            if n - k == 0:
+                autocorr.append(0)
+            else:
+                r_k = np.sum(bits[:n-k] * bits[k:]) / (n - k)
+                autocorr.append(r_k)
+        
+        autocorrs.append(autocorr)
+    
+    # Media tra tutti gli hash analizzati
+    return np.mean(autocorrs, axis=0)
 
 autocorr_md5 = autocorrelation_test_precomputed(precomputed_hashes['hash_md5'], 'MD5')
 autocorr_sha = autocorrelation_test_precomputed(precomputed_hashes['hash_sha256'], 'SHA-256')
@@ -367,6 +409,7 @@ def intra_hash_precomputed(precomputed, hash_func_name, window_sizes=[32, 24, 16
     for window_size in window_sizes:
         collisions_total = 0
         total_windows = 0
+        per_hash_rates = []  # per salvare i rate dei singoli hash
         
         for h in tqdm(precomputed, desc=f"Intra-Hash {hash_func_name} {window_size}bit"):
             bits = ''.join(format(byte, '08b') for byte in h)
@@ -379,14 +422,23 @@ def intra_hash_precomputed(precomputed, hash_func_name, window_sizes=[32, 24, 16
                 if w in seen:
                     collisions += 1
                 seen.add(w)
+            
+            # Calcola rate per il singolo hash
+            rate = collisions / len(windows) if len(windows) > 0 else 0
+            per_hash_rates.append(rate)
+            
             collisions_total += collisions
+        
+        # Calcola media dei tassi di collisione per singolo hash
+        mean_collision_rate_per_hash = np.mean(per_hash_rates)
         
         results[window_size] = {
             'collisions': collisions_total,
             'windows_analyzed': total_windows,
-            'collision_rate': collisions_total / total_windows if total_windows > 0 else 0
+            'collision_rate': collisions_total / total_windows if total_windows > 0 else 0,
+            'mean_collision_rate_per_hash': mean_collision_rate_per_hash
         }
-    
+        
     return results
 
 intra_md5 = intra_hash_precomputed(precomputed_hashes['hash_md5'], 'MD5')
@@ -454,7 +506,7 @@ print("\n8. Birthday Paradox:")
 def print_intra_results(name, results):
     print(f"{name} Intra-Hash Collisions:")
     for size, data in results.items():
-        print(f"  Window {size} bits: Total collisions: {data['collisions']} Windows analyzed: {data['windows_analyzed']} Collision rate: {data['collision_rate']:.6f}")
+        print(f"  Window {size} bits: Total collisions: {data['collisions']} Windows analyzed: {data['windows_analyzed']} Collision rate: {data['collision_rate']:.6f} Intra-rate: {data['mean_collision_rate_per_hash']:.6f}")
 
 print_intra_results("MD5", intra_md5)
 print_intra_results("SHA-256", intra_sha)
@@ -501,9 +553,9 @@ def print_autocorrelation_results(autocorr_data, algo_name):
 
 # Stampa risultati per tutti gli algoritmi
 print("\n")
-print("=" * 70)
-print("📊 RISULTATI AUTOCORRELAZIONE".center(70))
-print("=" * 70)
+print("=" * 50)
+print("📊 RISULTATI AUTOCORRELAZIONE".center(50))
+print("=" * 50)
 
 print_autocorrelation_results(autocorr_md5, "MD5")
 print_autocorrelation_results(autocorr_sha, "SHA-256")
