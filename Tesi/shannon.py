@@ -244,32 +244,32 @@ precomputed_hashes = load_precomputed_hashes(output_dir)
 print("="*100)
 
 
-# ------------------------------
-# 6. Shannon Entropy
-# ------------------------------
+# # ------------------------------
+# # 6. Shannon Entropy
+# # ------------------------------
 
-def shannon_entropy_precomputed(precomputed, hash_func_name):
-    byte_counts = np.zeros(256, dtype=np.float64)
-    total_bytes = 0
+# def shannon_entropy_precomputed(precomputed, hash_func_name):
+#     byte_counts = np.zeros(256, dtype=np.float64)
+#     total_bytes = 0
 
-    for h in tqdm(precomputed, desc=f"Shannon Entropy {hash_func_name}"):
-        for byte in h:
-            byte_counts[byte] += 1
-        total_bytes += len(h)
+#     for h in tqdm(precomputed, desc=f"Shannon Entropy {hash_func_name}"):
+#         for byte in h:
+#             byte_counts[byte] += 1
+#         total_bytes += len(h)
     
-    probabilities = byte_counts / total_bytes
-    entropy = -np.sum(probabilities * np.log2(probabilities + 1e-12))
-    return entropy
+#     probabilities = byte_counts / total_bytes
+#     entropy = -np.sum(probabilities * np.log2(probabilities + 1e-12))
+#     return entropy
 
-entropy_md5 = shannon_entropy_precomputed(precomputed_hashes['hash_md5'], 'MD5')
-entropy_sha = shannon_entropy_precomputed(precomputed_hashes['hash_sha256'], 'SHA-256')
-entropy_pos = shannon_entropy_precomputed(precomputed_hashes['hash_poseidon'], 'Poseidon')
+# entropy_md5 = shannon_entropy_precomputed(precomputed_hashes['hash_md5'], 'MD5')
+# entropy_sha = shannon_entropy_precomputed(precomputed_hashes['hash_sha256'], 'SHA-256')
+# entropy_pos = shannon_entropy_precomputed(precomputed_hashes['hash_poseidon'], 'Poseidon')
 
 # ------------------------------
 # 9. Bit Psition Analysis
 # ------------------------------
 
-def bit_position_analysis_precomputed(precomputed, hash_func_name, threshold=0.5):
+def bit_position_analysis_precomputed(precomputed, hash_func_name, threshold=0.10):
     bit_positions = 8 * len(precomputed[0])
     bit_counts = np.zeros((bit_positions, 2), dtype=np.int32)
     
@@ -304,30 +304,30 @@ bit_pos = bit_position_analysis_precomputed(precomputed_hashes['hash_poseidon'],
 
 
 
-# Shannon Entropy Results
-print("Shannon Entropy Results:")
-print(f"MD5: {entropy_md5}")
-print(f"SHA-256: {entropy_sha}")
-print(f"Poseidon: {entropy_pos}")
+# # Shannon Entropy Results
+# print("Shannon Entropy Results:")
+# print(f"MD5: {entropy_md5}")
+# print(f"SHA-256: {entropy_sha}")
+# print(f"Poseidon: {entropy_pos}")
 
 # Bit Position Analysis Results (showing only positions with significant bias)
 print("\nBit Position Analysis Results (positions with >0.5% bias):")
 print(f"MD5 - Biased positions: {len(bit_md5)}")
 if bit_md5:
     print("First 5 biased positions:")
-    for pos in list(bit_md5.keys())[:5]:
+    for pos in list(bit_md5.keys()):
         print(f"  Bit {pos}: 0={bit_md5[pos]['0']:.2f}%, 1={bit_md5[pos]['1']:.2f}%")
 
 print(f"\nSHA-256 - Biased positions: {len(bit_sha)}")
 if bit_sha:
     print("First 5 biased positions:")
-    for pos in list(bit_sha.keys())[:5]:
+    for pos in list(bit_sha.keys()):
         print(f"  Bit {pos}: 0={bit_sha[pos]['0']:.2f}%, 1={bit_sha[pos]['1']:.2f}%")
 
 print(f"\nPoseidon - Biased positions: {len(bit_pos)}")
 if bit_pos:
     print("First 5 biased positions:")
-    for pos in list(bit_pos.keys())[:5]:
+    for pos in list(bit_pos.keys()):
         print(f"  Bit {pos}: 0={bit_pos[pos]['0']:.2f}%, 1={bit_pos[pos]['1']:.2f}%")
 
 
@@ -335,6 +335,84 @@ if bit_pos:
 
 
 
+# import matplotlib.pyplot as plt
+
+# # Shannon Entropy data
+# hash_algorithms = ['MD5', 'SHA-256', 'Poseidon']
+# entropy_values = [entropy_md5, entropy_sha, entropy_pos]
+# max_entropy = 8.0  # Maximum possible entropy for 256-bit hash (8 bits per byte)
+
+# # Colors for each algorithm
+# colors = ['#4e79a7', '#f28e2b', '#e15759']
+
+# plt.figure(figsize=(10, 6))
+
+# # Impostiamo limiti Y per evidenziare le differenze (modifica questi valori se necessario)
+# y_min = 7.99990
+# y_max = 8.00005
+# plt.ylim(y_min, y_max)
+
+# # Linea orizzontale per l'entropia massima teorica
+# plt.axhline(y=8.0, color='#2ca02c', linestyle=':', linewidth=1.5, alpha=0.7, 
+#             label='Entropia massima teorica (8.00000)')
+
+# # Barre personalizzate
+# bar_width = 0.6
+# for algo, val, color in zip(hash_algorithms, entropy_values, colors):
+#     plt.bar(algo, val, width=bar_width, color=color, alpha=0.8, edgecolor='black', linewidth=0.7)
+    
+#     # Etichetta con valore a 5 decimali
+#     plt.text(algo, val, f'{val:.6f}', 
+#              ha='center', va='bottom', fontsize=10)
+
+# # Griglia e assi
+# plt.grid(axis='y', linestyle='--', alpha=0.4, which='both')
+# plt.yticks(np.arange(y_min, y_max+0.00001, 0.00005), fontsize=9)
+
+# # Titoli e legenda
+# plt.title('Confronto Entropia di Shannon (precisione a 5 decimali)', pad=20, fontsize=14)
+# plt.xlabel('Algoritmo di Hash', labelpad=10, fontsize=12)
+# plt.ylabel('Entropia (bit/byte)', labelpad=10, fontsize=12)
+
+# plt.tight_layout()
+# plt.savefig('entropy_comparison_5decimal.png', dpi=300, bbox_inches='tight')
+# plt.show()
 
 
+# # Bit Position Analysis data
+# biased_counts = [len(bit_md5), len(bit_sha), len(bit_pos)]
+# total_bits = 256  # For MD5 (128 bits would be more accurate, but keeping consistent)
+
+# # Create figure
+# plt.figure(figsize=(10, 6))
+
+# # Bar plot
+# bars = plt.bar(hash_algorithms, biased_counts, color=colors, alpha=0.8, width=0.6)
+
+# # Add value labels on top of bars
+# for bar, count in zip(bars, biased_counts):
+#     height = bar.get_height()
+#     plt.text(bar.get_x() + bar.get_width()/2., height + 1,
+#              f'{count} bits',
+#              ha='center', va='bottom', fontsize=10)
+    
+#     # Add percentage label inside bar
+#     percentage = (count / total_bits) * 100
+#     plt.text(bar.get_x() + bar.get_width()/2., height/2,
+#              f'{percentage:.1f}% of bits',
+#              ha='center', va='center', color='white', fontsize=10)
+
+# # Customize plot
+# plt.title('Bit Position Bias Comparison (>0.5% deviation from 50/50)', fontsize=14, pad=20)
+# plt.ylabel('Number of Biased Bit Positions', fontsize=12)
+# plt.xlabel('Hash Algorithm', fontsize=12)
+# plt.ylim(0, max(biased_counts) * 1.2)
+# plt.grid(axis='y', alpha=0.3)
+
+# plt.tight_layout()
+
+# # Save as high-quality PNG and PDF for thesis
+# plt.savefig('bit_bias_comparison.png', dpi=300, bbox_inches='tight')
+
+# plt.show()
 

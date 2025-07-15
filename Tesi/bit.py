@@ -303,22 +303,6 @@ chi_sq_sha, p_sha = chi_square_test_precomputed(precomputed_hashes['hash_sha256'
 chi_sq_pos, p_pos = chi_square_test_precomputed(precomputed_hashes['hash_poseidon'], 'Poseidon')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Bit Uniformity Results
 print("Bit Uniformity Results:")
 print(f"MD5 - 0s: {bits_md5[0]}, 1s: {bits_md5[1]}, Ratio: {bits_md5[0]/bits_md5[1] if bits_md5[1] != 0 else 0}")
@@ -342,3 +326,42 @@ print("\nChi-Square Test Results:")
 print(f"MD5 - Chi-Square: {chi_sq_md5}, p-value: {p_md5}")
 print(f"SHA256 - Chi-Square: {chi_sq_sha}, p-value: {p_sha}")
 print(f"Poseidon - Chi-Square: {chi_sq_pos}, p-value: {p_pos}")
+
+hash_algorithms = ['MD5', 'SHA-256', 'Poseidon']
+chi_square_values = [chi_sq_md5, chi_sq_sha, chi_sq_pos]
+p_values = [p_md5, p_sha, p_pos]
+
+# Colori coerenti con il plot precedente
+colors = ['#4e79a7', '#f28e2b', '#e15759']
+
+# Figure
+plt.figure(figsize=(10,6))
+
+# Bar plot Chi-Square statistic
+bars = plt.bar(hash_algorithms, chi_square_values, color=colors, alpha=0.8, width=0.6)
+
+# Aggiungi linea ideale: expected chi-square value
+# Per una distribuzione uniforme su 256 valori, con df=255, il valore atteso è df
+plt.axhline(y=255, color='gray', linestyle='--', alpha=0.7)
+plt.text(2.7, 255+5, 'Expected Value (df=255)', va='center', ha='right', color='gray')
+
+# Valori sopra le barre
+for bar, p in zip(bars, p_values):
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height + (0.01 * height),
+             f'{height:.1f}\np={p:.3e}',
+             ha='center', va='bottom', fontsize=10)
+
+# Personalizzazioni
+plt.title('Chi-Square Test on Byte Distribution', fontsize=14, pad=20)
+plt.ylabel('Chi-Square Statistic', fontsize=12)
+plt.xlabel('Hash Algorithm', fontsize=12)
+plt.ylim(0, max(chi_square_values)*1.2)
+plt.grid(axis='y', alpha=0.3)
+
+plt.tight_layout()
+
+# Salvataggio figure per tesi
+plt.savefig('chi_square_test_comparison.png', dpi=300, bbox_inches='tight')
+
+plt.show()

@@ -185,7 +185,7 @@ def worker(msg_chunk_hash_func):
     return [hash_func(msg) for msg in msg_chunk]
 
 
-def parallel_hash(hash_func, inputs, n_cores=16, chunks=160):
+def parallel_hash(hash_func, inputs, n_cores=15, chunks=160):
     chunk_size = (len(inputs) + chunks - 1) // chunks
     chunks_list = [inputs[i*chunk_size:(i+1)*chunk_size] for i in range(chunks)]
 
@@ -264,7 +264,7 @@ def avalanche_worker(args):
 
     return diffs
 
-def parallel_avalanche_precomputed(hash_func, shared_inputs, precomputed_hashes, n_cores=16, chunks=160):
+def parallel_avalanche_precomputed(hash_func, shared_inputs, precomputed_hashes, n_cores=15, chunks=160):
     chunk_size = (len(shared_inputs) + chunks - 1) // chunks
 
     chunks_inputs = [shared_inputs[i*chunk_size:(i+1)*chunk_size] for i in range(chunks)]
@@ -292,3 +292,43 @@ print("Avalanche Effect Results (1-bit flip in first byte):")
 print(f"MD5 - Mean bit difference: {avalanche_md5[0]:.2f}%, Std Dev: {avalanche_md5[1]:.2f}%")
 print(f"SHA-256 - Mean bit difference: {avalanche_sha[0]:.2f}%, Std Dev: {avalanche_sha[1]:.2f}%")
 print(f"Poseidon - Mean bit difference: {avalanche_pos[0]:.2f}%, Std Dev: {avalanche_pos[1]:.2f}%")
+
+hash_algorithms = ['MD5', 'SHA-256', 'Poseidon']
+mean_diff = [avalanche_md5[0], avalanche_sha[0], avalanche_pos[0]]
+std_dev = [avalanche_md5[1], avalanche_sha[1], avalanche_pos[1]]
+
+# Colors for each algorithm
+colors = ['#4e79a7', '#f28e2b', '#e15759']
+
+# Create figure
+plt.figure(figsize=(10, 6))
+
+# Bar plot with error bars
+bars = plt.bar(hash_algorithms, mean_diff, color=colors, 
+               yerr=std_dev, capsize=10, alpha=0.8, width=0.6)
+
+# Add horizontal line at 50% (ideal avalanche effect)
+plt.axhline(y=50, color='gray', linestyle='--', alpha=0.7)
+plt.text(2.7, 51, 'Ideal Avalanche (50%)', va='center', ha='right', color='gray')
+
+# Add value labels on top of bars
+for bar, std in zip(bars, std_dev):
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height + 1,
+             f'{height:.1f}% ± {std:.1f}%',
+             ha='center', va='bottom', fontsize=10)
+
+# Customize plot
+plt.title('Avalanche Effect Comparison (1-bit flip test)', fontsize=14, pad=20)
+plt.ylabel('Percentage of Flipped Bits in Hash Output', fontsize=12)
+plt.xlabel('Hash Algorithm', fontsize=12)
+plt.ylim(0, 70)
+plt.grid(axis='y', alpha=0.3)
+
+plt.tight_layout()
+
+# Save as high-quality PNG and PDF for thesis
+plt.savefig('avalanche_effect_comparison.png', dpi=300, bbox_inches='tight')
+plt.savefig('avalanche_effect_comparison.pdf', bbox_inches='tight')
+
+plt.show()

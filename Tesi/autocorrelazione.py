@@ -244,7 +244,8 @@ precomputed_hashes = load_precomputed_hashes(output_dir)
 print("="*100)
 
 def autocorrelation_test_precomputed(precomputed, hash_func_name):
-    autocorrs = []
+    sum_autocorrs = None
+    count = 0
     
     for h in tqdm(precomputed, desc=f"Autocorrelazione {hash_func_name}"):
         bits = np.array([int(b) for byte in h for b in format(byte, '08b')], dtype=int)
@@ -258,56 +259,62 @@ def autocorrelation_test_precomputed(precomputed, hash_func_name):
                 r_k = np.sum(bits[:n-k] * bits[k:]) / (n - k)
                 autocorr.append(r_k)
         
-        autocorrs.append(autocorr)
+        # Accumula la somma invece di memorizzare tutti i risultati
+        if sum_autocorrs is None:
+            sum_autocorrs = np.array(autocorr)
+        else:
+            sum_autocorrs += np.array(autocorr)
+        count += 1
     
-    # Media tra tutti gli hash analizzati
-    return np.mean(autocorrs, axis=0)
+    # Calcola la media finale
+    return sum_autocorrs / count
 
 autocorr_md5 = autocorrelation_test_precomputed(precomputed_hashes['hash_md5'], 'MD5')
 autocorr_sha = autocorrelation_test_precomputed(precomputed_hashes['hash_sha256'], 'SHA-256')
 autocorr_pos = autocorrelation_test_precomputed(precomputed_hashes['hash_poseidon'], 'Poseidon')
 
-def intra_hash_precomputed(precomputed, hash_func_name, window_sizes=[32, 24, 16]):
-    results = {}
-    
-    for window_size in window_sizes:
-        collisions_total = 0
-        total_windows = 0
-        per_hash_rates = []  # per salvare i rate dei singoli hash
-        
-        for h in tqdm(precomputed, desc=f"Intra-Hash {hash_func_name} {window_size}bit"):
-            bits = ''.join(format(byte, '08b') for byte in h)
-            windows = [bits[i:i+window_size] for i in range(len(bits) - window_size + 1)]
-            total_windows += len(windows)
-            
-            seen = set()
-            collisions = 0
-            for w in windows:
-                if w in seen:
-                    collisions += 1
-                seen.add(w)
-            
-            # Calcola rate per il singolo hash
-            rate = collisions / len(windows) if len(windows) > 0 else 0
-            per_hash_rates.append(rate)
-            
-            collisions_total += collisions
-        
-        # Calcola media dei tassi di collisione per singolo hash
-        mean_collision_rate_per_hash = np.mean(per_hash_rates)
-        
-        results[window_size] = {
-            'collisions': collisions_total,
-            'windows_analyzed': total_windows,
-            'collision_rate': collisions_total / total_windows if total_windows > 0 else 0,
-            'mean_collision_rate_per_hash': mean_collision_rate_per_hash
-        }
-        
-    return results
 
-intra_md5 = intra_hash_precomputed(precomputed_hashes['hash_md5'], 'MD5')
-intra_sha = intra_hash_precomputed(precomputed_hashes['hash_sha256'], 'SHA-256')
-intra_pos = intra_hash_precomputed(precomputed_hashes['hash_poseidon'], 'Poseidon')
+# def intra_hash_precomputed(precomputed, hash_func_name, window_sizes=[32, 24, 16]):
+#     results = {}
+    
+#     for window_size in window_sizes:
+#         collisions_total = 0
+#         total_windows = 0
+#         per_hash_rates = []  # per salvare i rate dei singoli hash
+        
+#         for h in tqdm(precomputed, desc=f"Intra-Hash {hash_func_name} {window_size}bit"):
+#             bits = ''.join(format(byte, '08b') for byte in h)
+#             windows = [bits[i:i+window_size] for i in range(len(bits) - window_size + 1)]
+#             total_windows += len(windows)
+            
+#             seen = set()
+#             collisions = 0
+#             for w in windows:
+#                 if w in seen:
+#                     collisions += 1
+#                 seen.add(w)
+            
+#             # Calcola rate per il singolo hash
+#             rate = collisions / len(windows) if len(windows) > 0 else 0
+#             per_hash_rates.append(rate)
+            
+#             collisions_total += collisions
+        
+#         # Calcola media dei tassi di collisione per singolo hash
+#         mean_collision_rate_per_hash = np.mean(per_hash_rates)
+        
+#         results[window_size] = {
+#             'collisions': collisions_total,
+#             'windows_analyzed': total_windows,
+#             'collision_rate': collisions_total / total_windows if total_windows > 0 else 0,
+#             'mean_collision_rate_per_hash': mean_collision_rate_per_hash
+#         }
+        
+#     return results
+
+# intra_md5 = intra_hash_precomputed(precomputed_hashes['hash_md5'], 'MD5')
+# intra_sha = intra_hash_precomputed(precomputed_hashes['hash_sha256'], 'SHA-256')
+# intra_pos = intra_hash_precomputed(precomputed_hashes['hash_poseidon'], 'Poseidon')
 
 # Autocorrelation Test Results (showing first 10 lags)
 print("Autocorrelation Test Results (first 10 lags):")
@@ -318,37 +325,59 @@ print(autocorr_sha[:10])
 print("\nPoseidon - Autocorrelation values:")
 print(autocorr_pos[:10])
 
-# Intra-Hash Collision Results
-print("\nIntra-Hash Collision Results:")
-for hash_name, results in [('MD5', intra_md5), ('SHA-256', intra_sha), ('Poseidon', intra_pos)]:
-    print(f"\n{hash_name}:")
-    for window_size in results:
-        print(f"  Window {window_size} bits:")
-        print(f"    Total collisions: {results[window_size]['collisions']}")
-        print(f"    Windows analyzed: {results[window_size]['windows_analyzed']}")
-        print(f"    Global collision rate: {results[window_size]['collision_rate']:.6f}")
-        print(f"    Mean collision rate per hash: {results[window_size]['mean_collision_rate_per_hash']:.6f}")
+# # Intra-Hash Collision Results
+# print("\nIntra-Hash Collision Results:")
+# for hash_name, results in [('MD5', intra_md5), ('SHA-256', intra_sha), ('Poseidon', intra_pos)]:
+#     print(f"\n{hash_name}:")
+#     for window_size in results:
+#         print(f"  Window {window_size} bits:")
+#         print(f"    Total collisions: {results[window_size]['collisions']}")
+#         print(f"    Windows analyzed: {results[window_size]['windows_analyzed']}")
+#         print(f"    Global collision rate: {results[window_size]['collision_rate']:.6f}")
+#         print(f"    Mean collision rate per hash: {results[window_size]['mean_collision_rate_per_hash']:.6f}")
         
-        plt.figure(figsize=(12, 6))
-lags = np.arange(len(autocorr_md5[:100]))  # Mostriamo solo i primi 100 lag per chiarezza
+        
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Plot delle autocorrelazioni
-plt.plot(lags, autocorr_md5[:100], label='MD5', alpha=0.7, linewidth=2)
-plt.plot(lags, autocorr_sha[:100], label='SHA-256', alpha=0.7, linewidth=2)
-plt.plot(lags, autocorr_pos[:100], label='Poseidon', alpha=0.7, linewidth=2)
 
-# Linea teorica per autocorrelazione ideale (delta di Kronecker)
-plt.axhline(y=0.5, color='red', linestyle='--', linewidth=1, label='Valore ideale (lag 0)')
-plt.axhline(y=0.0, color='green', linestyle=':', linewidth=1, label='Valore ideale (lag > 0)')
+# Set up the plot
+plt.figure(figsize=(12, 6))
 
-# Configurazioni aggiuntive
-plt.title('Autocorrelazione dei Bit negli Hash (Primi 100 Lag)')
-plt.xlabel('Lag')
-plt.ylabel('Coefficiente di Autocorrelazione')
-plt.yscale('log')  # Scala logaritmica per evidenziare i valori bassi
-plt.grid(True, which="both", ls="--", alpha=0.3)
-plt.legend()
+# Plot autocorrelation curves
+plt.plot(autocorr_md5[:256], label='MD5', color='#4e79a7', linewidth=2)
+plt.plot(autocorr_sha[:256], label='SHA-256', color='#f28e2b', linewidth=2)
+plt.plot(autocorr_pos[:256], label='Poseidon', color='#e15759', linewidth=2)
+
+# Add ideal reference line at 0.5
+plt.axhline(y=0.5, color='gray', linestyle='--', alpha=0.7)
+plt.text(260, 0.51, 'Ideal (0.5)', va='center', ha='right', color='gray')
+
+# Customize the plot
+plt.title('Autocorrelation Test Results (First 256 Lags)', fontsize=14, pad=20)
+plt.xlabel('Lag (k)', fontsize=12)
+plt.ylabel('Autocorrelation Coefficient (r_k)', fontsize=12)
+plt.legend(fontsize=12)
+plt.grid(alpha=0.3)
+
+# Set appropriate limits
+plt.xlim(0, 256)
+plt.ylim(0.45, 0.55)
+
+# Add inset for close-up view of first 32 lags
+ax_inset = plt.axes([0.5, 0.2, 0.4, 0.4])
+ax_inset.plot(autocorr_md5[:32], color='#4e79a7', linewidth=1.5)
+ax_inset.plot(autocorr_sha[:32], color='#f28e2b', linewidth=1.5)
+ax_inset.plot(autocorr_pos[:32], color='#e15759', linewidth=1.5)
+ax_inset.axhline(y=0.5, color='gray', linestyle='--', alpha=0.5)
+ax_inset.set_title('First 32 Lags (Zoom)', fontsize=10)
+ax_inset.grid(alpha=0.2)
+ax_inset.set_ylim(0.48, 0.52)
+
 plt.tight_layout()
 
-# Mostra il plot
+# Save as high-quality PNG and PDF
+plt.savefig('autocorrelation_comparison.png', dpi=300, bbox_inches='tight')
+plt.savefig('autocorrelation_comparison.pdf', bbox_inches='tight')
+
 plt.show()
