@@ -394,12 +394,6 @@ print(f"SHA-256: {coll_sha}")
 print(f"Poseidon: {coll_pos}")
 
 
-
-
-
-
-
-
 # Dati di esempio (sostituisci con i tuoi dati reali)
 bits = np.arange(1, 50)
 poseidon_collisions = np.array([poseidon_collisions[b] for b in bits])  # Sostituisci con i tuoi dati
