@@ -417,7 +417,7 @@ plt.show()
 
 # Grafico per SHA-256
 plt.figure(figsize=(12, 6))
-plt.plot(bits, sha256_collisions, color='orange', linewidth=2)
+plt.plot(bits, sha256_collisions, color='#f28e2b', linewidth=2)
 plt.xlabel('Lunghezza dell\'hash (bit)', fontsize=12)
 plt.ylabel('Numero di collisioni', fontsize=12)
 plt.title('Collisioni di SHA-256 al variare della lunghezza dell\'hash', fontsize=14)
