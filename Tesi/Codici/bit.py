@@ -238,7 +238,7 @@ def load_precomputed_hashes(output_dir):
     return precomputed_hashes
 
 # Utilizzo:
-output_dir = "hash_outputs/"  # Sostituisci con il percorso corretto
+output_dir = "../hash_outputs/"  # Sostituisci con il percorso corretto
 precomputed_hashes = load_precomputed_hashes(output_dir)
 
 print("="*100)
@@ -271,7 +271,7 @@ def bit_uniformity_precomputed(hashes):
     
     return bits, byte_counts, byte_probabilities
 
-bits_md5, byte_counts_md5, byte_probs_md5 = bit_uniformity_precomputed(precomputed_hashes['hash_md5'])
+#bits_md5, byte_counts_md5, byte_probs_md5 = bit_uniformity_precomputed(precomputed_hashes['hash_md5'])
 bits_sha, byte_counts_sha, byte_probs_sha = bit_uniformity_precomputed(precomputed_hashes['hash_sha256'])
 bits_pos, byte_counts_pos, byte_probs_pos = bit_uniformity_precomputed(precomputed_hashes['hash_poseidon'])
 
@@ -305,19 +305,19 @@ chi_sq_pos, p_pos = chi_square_test_precomputed(precomputed_hashes['hash_poseido
 
 # Bit Uniformity Results
 print("Bit Uniformity Results:")
-print(f"MD5 - 0s: {bits_md5[0]}, 1s: {bits_md5[1]}, Ratio: {bits_md5[0]/bits_md5[1] if bits_md5[1] != 0 else 0}")
+#print(f"MD5 - 0s: {bits_md5[0]}, 1s: {bits_md5[1]}, Ratio: {bits_md5[0]/bits_md5[1] if bits_md5[1] != 0 else 0}")
 print(f"SHA256 - 0s: {bits_sha[0]}, 1s: {bits_sha[1]}, Ratio: {bits_sha[0]/bits_sha[1] if bits_sha[1] != 0 else 0}")
 print(f"Poseidon - 0s: {bits_pos[0]}, 1s: {bits_pos[1]}, Ratio: {bits_pos[0]/bits_pos[1] if bits_pos[1] != 0 else 0}")
 
 # Byte Counts (first 10 for brevity)
 print("\nByte Counts (first 10):")
-print(f"MD5: {byte_counts_md5[:10]}")
+#print(f"MD5: {byte_counts_md5[:10]}")
 print(f"SHA256: {byte_counts_sha[:10]}")
 print(f"Poseidon: {byte_counts_pos[:10]}")
 
 # Byte Probabilities (first 10 for brevity)
 print("\nByte Probabilities (first 10):")
-print(f"MD5: {byte_probs_md5[:10]}")
+#print(f"MD5: {byte_probs_md5[:10]}")
 print(f"SHA256: {byte_probs_sha[:10]}")
 print(f"Poseidon: {byte_probs_pos[:10]}")
 
@@ -327,41 +327,78 @@ print(f"MD5 - Chi-Square: {chi_sq_md5}, p-value: {p_md5}")
 print(f"SHA256 - Chi-Square: {chi_sq_sha}, p-value: {p_sha}")
 print(f"Poseidon - Chi-Square: {chi_sq_pos}, p-value: {p_pos}")
 
-hash_algorithms = ['MD5', 'SHA-256', 'Poseidon']
-chi_square_values = [chi_sq_md5, chi_sq_sha, chi_sq_pos]
-p_values = [p_md5, p_sha, p_pos]
+hash_algorithms = ['Poseidon', 'SHA-256']
+chi_square_values = [chi_sq_pos, chi_sq_sha]
+p_values = [p_pos, p_sha]
 
 # Colori coerenti con il plot precedente
-colors = ['#4e79a7', '#f28e2b', '#e15759']
+colors = ['#4e79a7', '#e15759']
 
 # Figure
-plt.figure(figsize=(10,6))
+# Impostazioni del plot
+plt.figure(figsize=(8, 8))
 
 # Bar plot Chi-Square statistic
-bars = plt.bar(hash_algorithms, chi_square_values, color=colors, alpha=0.8, width=0.6)
+bars = plt.bar(hash_algorithms, 
+               chi_square_values, 
+               color=colors, 
+               alpha=0.8, 
+               width=0.6,
+               edgecolor='black',
+               linewidth=0.5)
 
-# Aggiungi linea ideale: expected chi-square value
-# Per una distribuzione uniforme su 256 valori, con df=255, il valore atteso è df
-plt.axhline(y=255, color='gray', linestyle='--', alpha=0.7)
-plt.text(2.7, 255+5, 'Expected Value (df=255)', va='center', ha='right', color='gray')
+# Linea del valore atteso
+expected_value = 255
+plt.axhline(y=expected_value, 
+            color='gray', 
+            linestyle='--', 
+            alpha=0.7,
+            linewidth=1.5)
+plt.text(len(hash_algorithms)-0.3, 
+         expected_value + 5, 
+         'Expected Value (df=255)', 
+         va='center', 
+         ha='right', 
+         color='gray',
+         fontsize=10)
 
-# Valori sopra le barre
-for bar, p in zip(bars, p_values):
+# Aggiunta valori e p-value sopra le barre
+for bar, p_val in zip(bars, p_values):
     height = bar.get_height()
-    plt.text(bar.get_x() + bar.get_width()/2., height + (0.01 * height),
-             f'{height:.1f}\np={p:.3e}',
-             ha='center', va='bottom', fontsize=10)
+    plt.text(bar.get_x() + bar.get_width()/2., 
+             height + (0.05 * max(chi_square_values)),
+             f'χ² = {height:.1f}\n(p = {p_val:.2e})',
+             ha='center', 
+             va='bottom', 
+             fontsize=10,
+             bbox=dict(facecolor='white', alpha=0.8, edgecolor='none', pad=2))
 
-# Personalizzazioni
-plt.title('Chi-Square Test on Byte Distribution', fontsize=14, pad=20)
+# Personalizzazioni avanzate
+plt.title('Chi-Square Test on Byte Distribution\nComparison of Hash Algorithms', 
+          fontsize=14, pad=20)
 plt.ylabel('Chi-Square Statistic', fontsize=12)
 plt.xlabel('Hash Algorithm', fontsize=12)
-plt.ylim(0, max(chi_square_values)*1.2)
-plt.grid(axis='y', alpha=0.3)
+plt.ylim(0, max(chi_square_values)*1.25)
+
+# Miglioramento della griglia
+plt.grid(axis='y', 
+         alpha=0.2, 
+         linestyle='--')
+
+# Rimuovere bordi superiore e destro
+for spine in ['top', 'right']:
+    plt.gca().spines[spine].set_visible(False)
+
+# Aggiunta di una leggera ombreggiatura
+for bar in bars:
+    bar.set_alpha(0.9)
 
 plt.tight_layout()
 
-# Salvataggio figure per tesi
-plt.savefig('chi_square_test_comparison.png', dpi=300, bbox_inches='tight')
+# Salvataggio ad alta qualità
+plt.savefig('chi_square_test_comparison.png', 
+            dpi=350, 
+            bbox_inches='tight',
+            transparent=False)
 
 plt.show()
