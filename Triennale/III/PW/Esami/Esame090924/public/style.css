@@ -1,0 +1,134 @@
+html, body{
+    height: 100%;
+}
+body{
+    display: flex; /*centrare orizzontalmente pagina*/
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container{
+    height: 100%;
+    background-color: #f0f0f0;
+    color: #333;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+header, footer{
+    display: flex; /*centrare orizzontalmente pagina*/
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    color: #ffffff;
+    background-color: #333;
+    padding: 10px;
+
+}
+header h1{
+    width: 100%;
+}
+h1{
+    display: flex;
+    justify-content: center;
+}
+footer{
+    height: 80px;
+}
+
+main{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.bottoni{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.numero{
+    text-align: center;
+    font-size: 100px;
+    padding: 20px 0 20px 0;
+}
+p{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.contatori, .colori{
+    width: 100%;
+}
+
+.contatori{
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 10px 0;
+}
+.contatori button{
+    width: 50%;
+}
+.colori button{
+    width: 100%;
+}
+button{
+    padding: 15px;
+    color: #007bff
+}
+
+#navbar{
+    display: flex;
+    list-style: none;
+}
+
+#navbar li{
+    margin: 10px;
+}
+
+#navbar.active {
+    display: flex;
+}
+a{
+    text-decoration: none;
+    color: #ffffff
+}
+
+#hambu {	
+    display: none;
+    cursor: pointer;
+}
+
+#hambu div {
+	width: 35px;
+	height: 5px;
+	background-color: black;
+    margin: 6px 0;
+}
+
+@media (max-width: 600px) {
+    #hambu{
+        display: block;
+    }
+
+    #navbar{
+        display: none;
+    }
+
+    header{
+        flex-wrap: wrap;
+    }
+    .contatori{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .contatori button{
+        width: 100%;
+    }
+}
+

@@ -1,0 +1,7 @@
+
+GET http://127.0.0.1:9090/secure
+
+###
+
+GET http://127.0.0.1:9090/secure
+authorization:Bearer 123456

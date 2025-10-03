@@ -1,0 +1,21 @@
+set VAR = x1,x2,x3;
+set VIN = r1,r2,r3;
+
+param c:= #se ha un indice solo si mette := altrimenti
+  x1 2   
+  x2 1
+  x3 1;
+
+param a: 
+    x1 x2 x3:=
+  r1 1 3 1 
+  r2 2 -1 1
+  r3 1 1 4;
+
+param b:=
+    r1 6 
+    r2 5
+    r3 10;
+
+# in caso di VINSL/VINSP bisognerà
+# definirli anche nel modello dat cosi come abbiamo fatto per VIN
