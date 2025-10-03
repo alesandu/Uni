@@ -1,0 +1,71 @@
+html, body{
+    height: 100%;
+}
+
+body{
+    display: flex; /*centrare orizzontalmente pagina*/
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.container{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+header,footer{
+    text-align: center;
+    background-color: #333;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    background-color: #f0f0f0;
+}
+
+.sezione{
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.attivita{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+button{
+    background-color: blue;
+    color: #fff;
+    padding: 10px;
+}
+.completa{
+    background-color: grey;
+    color: whitesmoke;
+    text-decoration: line-through;
+    
+}
+
+@media (min-width: 600px) {
+    .attivita{
+        width: 40%;
+    }
+}

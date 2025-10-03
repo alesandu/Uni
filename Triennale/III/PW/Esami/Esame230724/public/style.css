@@ -1,0 +1,129 @@
+body{
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container{
+    background-color: white;
+    padding: 20px;
+    margin: auto;
+    width: 960px;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #333;
+}
+
+.articolo{
+    border: 1px solid black;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+footer{
+    border-top: 2px solid #333;
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    height: 10px;
+}
+
+.overlay{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: none;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.4)
+}
+
+.modale{
+    padding: 10px;
+    width: 50%;
+    position: fixed;
+    display: flex;
+    justify-content:space-between;
+    border: 1px solid #888;
+    background-color: white;
+    top: 10vh; 
+}
+#x{
+    margin-top: 15px;
+    height: 22px;
+    width: 22px;   
+}
+
+#mostra{
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#hambu {	
+    display: none;
+    cursor: pointer;
+}
+
+#hambu div {
+	width: 35px;
+	height: 5px;
+	background-color: black;
+    margin: 6px 0
+}
+
+#navbar{
+    display: flex;
+    list-style: none;
+}
+
+#navbar li{
+    margin: 10px;
+}
+
+#navbar.active {
+    display: flex;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+@media (max-width: 1000px) {
+    .container {
+		width: 700px;
+	}
+
+    #hambu{
+        display: block;
+    }
+
+    #navbar{
+        display: none;
+    }
+
+    header{
+        flex-wrap: wrap;
+    }
+}
