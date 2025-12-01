@@ -1,0 +1,686 @@
+
+> frontend@0.1.0 build
+> next build
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/luca/Desktop/Hackaton-Avalanche/Hackaton-Avalanche-/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /Users/luca/Desktop/Hackaton-Avalanche/Hackaton-Avalanche-/frontend/package-lock.json
+
+   ▲ Next.js 16.0.5 (Turbopack)
+
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+
+> Build error occurred
+Error: Turbopack build failed with 30 errors:
+./frontend/node_modules/thread-stream/test/ts.test.ts
+Missing module type
+The module type effect must be applied before adding Ecmascript transforms
+
+
+./frontend/node_modules/thread-stream/test/ts/to-file.ts
+Missing module type
+The module type effect must be applied before adding Ecmascript transforms
+
+
+./frontend/node_modules/thread-stream/README.md
+Unknown module type
+This module doesn't have an associated type. Use a known file extension, or register a loader for it.
+
+Read more: https://nextjs.org/docs/app/api-reference/next-config-js/turbo#webpack-loaders
+
+
+./frontend/node_modules/thread-stream/test/dir with spaces/test-package.zip
+Unknown module type
+This module doesn't have an associated type. Use a known file extension, or register a loader for it.
+
+Read more: https://nextjs.org/docs/app/api-reference/next-config-js/turbo#webpack-loaders
+
+
+./frontend/node_modules/thread-stream/test/ts.test.ts
+Unknown module type
+This module doesn't have an associated type. Use a known file extension, or register a loader for it.
+
+Read more: https://nextjs.org/docs/app/api-reference/next-config-js/turbo#webpack-loaders
+
+
+./frontend/node_modules/thread-stream/test/ts/to-file.ts
+Unknown module type
+This module doesn't have an associated type. Use a known file extension, or register a loader for it.
+
+Read more: https://nextjs.org/docs/app/api-reference/next-config-js/turbo#webpack-loaders
+
+
+./frontend/node_modules/thread-stream/test/ts/transpile.sh
+Unknown module type
+This module doesn't have an associated type. Use a known file extension, or register a loader for it.
+
+Read more: https://nextjs.org/docs/app/api-reference/next-config-js/turbo#webpack-loaders
+
+
+./frontend/node_modules/thread-stream/LICENSE:1:5
+Parsing ecmascript source code failed
+[0m[31m[1m>[22m[39m[90m 1 |[39m [33mMIT[39m [33mLicense[39m
+ [90m   |[39m     [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 2 |[39m
+ [90m 3 |[39m [33mCopyright[39m (c) [35m2021[39m [33mMatteo[39m [33mCollina[39m
+ [90m 4 |[39m[0m
+
+Expected ';', '}' or <eof>
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/LICENSE [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+
+./frontend/node_modules/thread-stream/test
+Module not found: Can't resolve './ROOT/frontend/node_modules/thread-stream/test/close-on-gc.js'
+server relative imports are not implemented yet. Please try an import relative to the file you are importing from.
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test
+Module not found: Can't resolve './ROOT/frontend/node_modules/thread-stream/test/create-and-exit.js'
+server relative imports are not implemented yet. Please try an import relative to the file you are importing from.
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/thread-management.test.js:164:17
+Module not found: Can't resolve '/ROOT/frontend/node_modules/thread-stream/test/close-on-gc.js'
+[0m [90m 162 |[39m test([32m'close the work if out of scope on gc'[39m[33m,[39m { skip[33m:[39m [33m![39mglobal[33m.[39m[33mWeakRef[39m }[33m,[39m [36masync[39m [36mfunction[39m (t) {
+ [90m 163 |[39m   [36mconst[39m dest [33m=[39m file()
+[31m[1m>[22m[39m[90m 164 |[39m   [36mconst[39m child [33m=[39m fork(join(__dirname[33m,[39m [32m'close-on-gc.js'[39m)[33m,[39m [dest][33m,[39m {
+ [90m     |[39m                 [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m 165 |[39m     execArgv[33m:[39m [[32m'--expose-gc'[39m]
+ [90m     |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m 166 |[39m   })
+ [90m     |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 167 |[39m
+ [90m 168 |[39m   [36mconst[39m [code] [33m=[39m [36mawait[39m once(child[33m,[39m [32m'exit'[39m)
+ [90m 169 |[39m   t[33m.[39mequal(code[33m,[39m [35m0[39m)[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/thread-management.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/thread-management.test.js:13:17
+Module not found: Can't resolve '/ROOT/frontend/node_modules/thread-stream/test/create-and-exit.js'
+[0m [90m 11 |[39m test([32m'exits with 0'[39m[33m,[39m [36masync[39m [36mfunction[39m (t) {
+ [90m 12 |[39m   [36mconst[39m dest [33m=[39m file()
+[31m[1m>[22m[39m[90m 13 |[39m   [36mconst[39m child [33m=[39m fork(join(__dirname[33m,[39m [32m'create-and-exit.js'[39m)[33m,[39m [dest])
+ [90m    |[39m                 [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m
+ [90m 15 |[39m   [36mconst[39m [code] [33m=[39m [36mawait[39m once(child[33m,[39m [32m'exit'[39m)
+ [90m 16 |[39m   t[33m.[39mequal(code[33m,[39m [35m0[39m)[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/thread-management.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/esm.test.mjs:4:1
+Module not found: Can't resolve 'desm'
+[0m [90m 2 |[39m [36mimport[39m { readFile } [36mfrom[39m [32m'fs'[39m
+ [90m 3 |[39m [36mimport[39m [33mThreadStream[39m [36mfrom[39m [32m'../index.js'[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { join } [36mfrom[39m [32m'desm'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [36mimport[39m { pathToFileURL } [36mfrom[39m [32m'url'[39m
+ [90m 6 |[39m [36mimport[39m { file } [36mfrom[39m [32m'./helper.js'[39m
+ [90m 7 |[39m[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/esm.test.mjs [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/multibyte-chars.test.mjs:4:1
+Module not found: Can't resolve 'desm'
+[0m [90m 2 |[39m [36mimport[39m { readFile } [36mfrom[39m [32m'fs'[39m
+ [90m 3 |[39m [36mimport[39m [33mThreadStream[39m [36mfrom[39m [32m'../index.js'[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { join } [36mfrom[39m [32m'desm'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [36mimport[39m { file } [36mfrom[39m [32m'./helper.js'[39m
+ [90m 6 |[39m
+ [90m 7 |[39m test([32m'break up utf8 multibyte (sync)'[39m[33m,[39m (t) [33m=>[39m {[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/multibyte-chars.test.mjs [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/bench.js:3:15
+Module not found: Can't resolve 'fastbench'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m bench [33m=[39m require([32m'fastbench'[39m)
+ [90m   |[39m               [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m [33mSonicBoom[39m [33m=[39m require([32m'sonic-boom'[39m)
+ [90m 5 |[39m [36mconst[39m [33mThreadStream[39m [33m=[39m require([32m'.'[39m)
+ [90m 6 |[39m [36mconst[39m [33mConsole[39m [33m=[39m require([32m'console'[39m)[33m.[39m[33mConsole[39m[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/bench.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/commonjs-fallback.test.js:14:22
+Module not found: Can't resolve 'pino-elasticsearch'
+[0m [90m 12 |[39m   t[33m.[39mplan([35m6[39m)
+ [90m 13 |[39m
+[31m[1m>[22m[39m[90m 14 |[39m   [36mconst[39m modulePath [33m=[39m require[33m.[39mresolve([32m'pino-elasticsearch'[39m)
+ [90m    |[39m                      [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 15 |[39m   t[33m.[39mmatch(modulePath[33m,[39m [35m/.*\.zip.*/[39m)
+ [90m 16 |[39m
+ [90m 17 |[39m   [36mconst[39m stream [33m=[39m [36mnew[39m [33mThreadStream[39m({[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/commonjs-fallback.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/base.test.js:3:18
+Module not found: Can't resolve 'tap'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m { test } [33m=[39m require([32m'tap'[39m)
+ [90m   |[39m                  [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m { join } [33m=[39m require([32m'path'[39m)
+ [90m 5 |[39m [36mconst[39m { readFile } [33m=[39m require([32m'fs'[39m)
+ [90m 6 |[39m [36mconst[39m { file } [33m=[39m require([32m'./helper'[39m)[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/base.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/bench.test.js:3:18
+Module not found: Can't resolve 'tap'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m { test } [33m=[39m require([32m'tap'[39m)
+ [90m   |[39m                  [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m { join } [33m=[39m require([32m'path'[39m)
+ [90m 5 |[39m [36mconst[39m [33mThreadStream[39m [33m=[39m require([32m'..'[39m)
+ [90m 6 |[39m [36mconst[39m { file } [33m=[39m require([32m'./helper'[39m)[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/bench.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/bundlers.test.js:3:18
+Module not found: Can't resolve 'tap'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m { test } [33m=[39m require([32m'tap'[39m)
+ [90m   |[39m                  [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m { join } [33m=[39m require([32m'path'[39m)
+ [90m 5 |[39m [36mconst[39m { file } [33m=[39m require([32m'./helper'[39m)
+ [90m 6 |[39m [36mconst[39m [33mThreadStream[39m [33m=[39m require([32m'..'[39m)[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/bundlers.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/commonjs-fallback.test.js:3:18
+Module not found: Can't resolve 'tap'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m { test } [33m=[39m require([32m'tap'[39m)
+ [90m   |[39m                  [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m { join } [33m=[39m require([32m'path'[39m)
+ [90m 5 |[39m [36mconst[39m { [33mMessageChannel[39m } [33m=[39m require([32m'worker_threads'[39m)
+ [90m 6 |[39m [36mconst[39m { once } [33m=[39m require([32m'events'[39m)[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/commonjs-fallback.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/end.test.js:3:18
+Module not found: Can't resolve 'tap'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m { test } [33m=[39m require([32m'tap'[39m)
+ [90m   |[39m                  [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m { join } [33m=[39m require([32m'path'[39m)
+ [90m 5 |[39m [36mconst[39m { readFile } [33m=[39m require([32m'fs'[39m)
+ [90m 6 |[39m [36mconst[39m { file } [33m=[39m require([32m'./helper'[39m)[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/end.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/esm.test.mjs:1:1
+Module not found: Can't resolve 'tap'
+[0m[31m[1m>[22m[39m[90m 1 |[39m [36mimport[39m { test } [36mfrom[39m [32m'tap'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 2 |[39m [36mimport[39m { readFile } [36mfrom[39m [32m'fs'[39m
+ [90m 3 |[39m [36mimport[39m [33mThreadStream[39m [36mfrom[39m [32m'../index.js'[39m
+ [90m 4 |[39m [36mimport[39m { join } [36mfrom[39m [32m'desm'[39m[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/esm.test.mjs [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/helper.js:7:11
+Module not found: Can't resolve 'tap'
+[0m [90m  5 |[39m [36mconst[39m { unlinkSync } [33m=[39m require([32m'fs'[39m)
+ [90m  6 |[39m [36mconst[39m why [33m=[39m require([32m'why-is-node-running'[39m)
+[31m[1m>[22m[39m[90m  7 |[39m [36mconst[39m t [33m=[39m require([32m'tap'[39m)
+ [90m    |[39m           [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  8 |[39m
+ [90m  9 |[39m [36mconst[39m files [33m=[39m []
+ [90m 10 |[39m [36mlet[39m count [33m=[39m [35m0[39m[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/helper.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/multibyte-chars.test.mjs:1:1
+Module not found: Can't resolve 'tap'
+[0m[31m[1m>[22m[39m[90m 1 |[39m [36mimport[39m { test } [36mfrom[39m [32m'tap'[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 2 |[39m [36mimport[39m { readFile } [36mfrom[39m [32m'fs'[39m
+ [90m 3 |[39m [36mimport[39m [33mThreadStream[39m [36mfrom[39m [32m'../index.js'[39m
+ [90m 4 |[39m [36mimport[39m { join } [36mfrom[39m [32m'desm'[39m[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/multibyte-chars.test.mjs [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/string-limit-2.test.js:3:11
+Module not found: Can't resolve 'tap'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m t [33m=[39m require([32m'tap'[39m)
+ [90m   |[39m           [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m { join } [33m=[39m require([32m'path'[39m)
+ [90m 5 |[39m [36mconst[39m { file } [33m=[39m require([32m'./helper'[39m)
+ [90m 6 |[39m [36mconst[39m { createReadStream } [33m=[39m require([32m'fs'[39m)[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/string-limit-2.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/string-limit.test.js:3:11
+Module not found: Can't resolve 'tap'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m t [33m=[39m require([32m'tap'[39m)
+ [90m   |[39m           [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m { join } [33m=[39m require([32m'path'[39m)
+ [90m 5 |[39m [36mconst[39m { file } [33m=[39m require([32m'./helper'[39m)
+ [90m 6 |[39m [36mconst[39m { stat } [33m=[39m require([32m'fs'[39m)[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/string-limit.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/thread-management.test.js:3:18
+Module not found: Can't resolve 'tap'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m { test } [33m=[39m require([32m'tap'[39m)
+ [90m   |[39m                  [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m { fork } [33m=[39m require([32m'child_process'[39m)
+ [90m 5 |[39m [36mconst[39m { join } [33m=[39m require([32m'path'[39m)
+ [90m 6 |[39m [36mconst[39m { readFile } [33m=[39m require([32m'fs'[39m)[33m.[39mpromises[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/thread-management.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/transpiled.test.js:3:18
+Module not found: Can't resolve 'tap'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m { test } [33m=[39m require([32m'tap'[39m)
+ [90m   |[39m                  [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m { join } [33m=[39m require([32m'path'[39m)
+ [90m 5 |[39m [36mconst[39m { file } [33m=[39m require([32m'./helper'[39m)
+ [90m 6 |[39m [36mconst[39m [33mThreadStream[39m [33m=[39m require([32m'..'[39m)[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/transpiled.test.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/indexes.js:3:14
+Module not found: Can't resolve 'tape'
+[0m [90m 1 |[39m [32m'use strict'[39m
+ [90m 2 |[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mconst[39m test [33m=[39m require([32m'tape'[39m)
+ [90m   |[39m              [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m [36mconst[39m indexes [33m=[39m require([32m'../lib/indexes'[39m)
+ [90m 5 |[39m
+ [90m 6 |[39m [36mfor[39m ([36mconst[39m index [36mof[39m [33mObject[39m[33m.[39mkeys(indexes)) {[0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/indexes.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./frontend/node_modules/thread-stream/test/helper.js:6:13
+Module not found: Can't resolve 'why-is-node-running'
+[0m [90m 4 |[39m [36mconst[39m { tmpdir } [33m=[39m require([32m'os'[39m)
+ [90m 5 |[39m [36mconst[39m { unlinkSync } [33m=[39m require([32m'fs'[39m)
+[31m[1m>[22m[39m[90m 6 |[39m [36mconst[39m why [33m=[39m require([32m'why-is-node-running'[39m)
+ [90m   |[39m             [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mconst[39m t [33m=[39m require([32m'tap'[39m)
+ [90m 8 |[39m
+ [90m 9 |[39m [36mconst[39m files [33m=[39m [][0m
+
+
+
+Import trace:
+  Client Component SSR:
+    ./frontend/node_modules/thread-stream/test/helper.js [Client Component SSR]
+    ./frontend/node_modules/thread-stream/index.js [Client Component SSR]
+    ./frontend/node_modules/pino/lib/transport.js [Client Component SSR]
+    ./frontend/node_modules/pino/pino.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/universal-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@walletconnect/ethereum-provider/dist/index.es.js [Client Component SSR]
+    ./frontend/node_modules/@wagmi/connectors/dist/esm/walletConnect.js [Client Component SSR]
+    ./frontend/node_modules/@rainbow-me/rainbowkit/dist/index.js [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Client Component SSR]
+    ./frontend/src/app/jury/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)

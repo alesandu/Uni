@@ -1,0 +1,19 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+test = "test"
+script = "script"
+solc_version = "0.8.20"
+optimizer = true
+optimizer_runs = 200
+via_ir = true
+
+[rpc_endpoints]
+fuji = "https://api.avax-test.network/ext/bc/C/rpc"
+mainnet = "https://api.avax.network/ext/bc/C/rpc"
+local = "http://127.0.0.1:8545"
+
+[etherscan]
+fuji = { key = "${SNOWTRACE_API_KEY}", url = "https://api.routescan.io/v2/network/testnet/evm/43113/etherscan" }
+mainnet = { key = "${SNOWTRACE_API_KEY}", url = "https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan" }
