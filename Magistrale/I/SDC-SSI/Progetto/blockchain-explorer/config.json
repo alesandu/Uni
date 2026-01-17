@@ -1,0 +1,10 @@
+
+{
+	"network-configs": {
+		"test-network": {
+			"name": "kvdevel",
+			"profile": "./connection-profile/test-network.json"
+		}
+	},
+	"license": "Apache-2.0"
+}

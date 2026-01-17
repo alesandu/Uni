@@ -1,0 +1,502 @@
+(add-to-load-path "./")
+;;
+;;(set! %load-compiled-path (cons "./" %load-compiled-path))
+;;
+
+(use-modules
+ (mtfa error-handler)
+ (mtfa utils)
+ (mtfa serializer)
+ (mtfa unordered-set) ;;unordered set con chiavi (stringhe, numeri o sumimboli: tutto convertito in stringa). Persistente
+ (mtfa unordered-map) ;;unordered map con chiavi (stringhe) e valori (qualsiasi cosa). persistente
+ (mtfa star-map) ;;Inserisce stringhe con o senza jolly, la stringa che definisce il jolly e il valore. Cerca le stringhe che matchano!
+ (mtfa simple_db)
+ (mtfa eis)
+ (mtfa va)
+ (mtfa extset)
+ (mtfa umset)
+ (mtfa web)
+ (mtfa brg)
+ (mtfa nn)
+ (mtfa avl)
+ (mtfa eqt)
+ ;;(mtfa opencv)
+ ;;
+ (pfds sets)
+ (gnutls)
+ ;;
+ ;;La libreria guile lib
+ (scheme kwargs)
+ (search basic)
+ (math primes)
+ (match-bind)
+ (graph topological-sort)
+ ;;
+ ;;i moduli di guile
+ ;;((rnrs records syntactic) #:prefix rnrs::)
+ (rnrs bytevectors)
+ (rnrs arithmetic bitwise)
+ (rnrs enums)
+ ((rnrs io ports)
+  #:prefix ioports::)
+ ;;((rnrs) :version (6))
+ ;;
+ (srfi srfi-1)
+ (srfi srfi-9)
+ (srfi srfi-11)
+ ((srfi srfi-18)
+  #:prefix srfi-18::) ;;thread e mutex
+ ;; date & time rinomina per avere un current time che non si sovrappone
+ (srfi srfi-19)
+ (srfi srfi-26)
+ ;;(srfi srfi-28)
+ (srfi srfi-41) ;;streams
+ (srfi srfi-42) ;;Eager Comprehensions
+ (srfi srfi-43)
+ (srfi srfi-45)
+ (srfi srfi-60)
+ (srfi srfi-111) ;;Boxes
+ (srfi srfi-171)
+ ;;
+ (web uri)
+ ;;
+ (ice-9 format)
+ (ice-9 ftw)
+ (ice-9 rdelim)
+ (ice-9 pretty-print)
+ (ice-9 regex)
+ (ice-9 iconv)
+ (ice-9 string-fun)
+ (ice-9 peg)
+ (ice-9 peg string-peg)
+ (ice-9 vlist)
+ (ice-9 q)
+ (ice-9 binary-ports)
+ (ice-9 textual-ports)
+ (ice-9 threads)
+ (ice-9 hash-table)
+ (ice-9 control)
+ (ice-9 match)
+ (ice-9 receive)
+ (ice-9 eval-string)
+ (ice-9 textual-ports)
+ (ice-9 arrays)
+ (ice-9 popen)
+ (ice-9 exceptions)
+ (ice-9 optargs)
+ (ice-9 string-fun)
+
+ ;;
+ (oop goops)
+ (oop goops describe)
+ ;; (sxml simple)
+ ;; (sxml ssax)
+ ;; (sxml xpath)
+ (json)
+ (system syntax)
+ (system foreign)
+ (system foreign-library)
+
+ ;;
+ ;;(fibers web server)
+ (web server)
+ (web request)
+ (web response)
+ (web uri)
+ ;;
+ (web client)
+ ;;
+ (newarch-utils)
+ (newarch-schema-manager)
+ (client-lisp client)
+ (postgresql)
+ (mtfa-jwt)
+ )
+;;
+;;Recursively find a key and changes its value
+;;i tipi json sono
+;;
+;; string string
+;; number	number
+;; object	alist
+;; array	vector
+;; true	#t
+;; false	#f
+;; null	'null
+;;
+;;Per imparare!!!
+;; (define (BrowseJsonData json)
+;;   (cond
+;;    ((number? json) json)
+;;    ((string? json) json)
+;;    ((boolean? json) json)
+;;    ((eqv? 'null json) json)
+;;    ((vector? json) (vector-map (lambda (i v)
+;; 				 (BrowseJsonData v)) json))
+;;    ((pair? json) (map (lambda (x) (cons (car x) (BrowseJsonData (cdr x)))) json))))
+;;
+(define* (BrowseJsonDataAndUpdate json fun key . keys)
+  (let loop ((k (cons key keys)) (found '()) (json json))
+    (cond
+     ((or (eqv? 'null json) (boolean? json) (string? json) (number? json))
+      (if (equal? k found) (fun json) json))
+     ((vector? json) (vector-map (lambda (i v)
+				   (loop k found v)) json))
+     ((pair? json)
+      (map (lambda (x) (cons (car x) (loop k (append found `(,(car x))) (cdr x)))) json)))))
+;;
+;;collegamento alla blockchain, eseguito a tempo di call delle API
+(define-public ConnectedToTheBlockchain #f)
+(define-public (ConnectToTheBlockchain)
+  (mtfa-noerr
+   #f
+   (if ConnectedToTheBlockchain
+       #t
+       (let ((connected (json-string->scm (mtfa-bc::Connect cfg::requester cfg::org-to-connect cfg::channel-to-connect cfg::domain-to-connect))))
+	 (when (assoc-ref connected "result")
+	   (set! ConnectedToTheBlockchain #t))
+	 ConnectedToTheBlockchain))))
+;;
+;;
+;;Esportiamo le api basiche
+;;per prima cosa scriviamo il corpo delle funzioni e poi le indicizziamo
+(define (AddKV json pbuf actionl auxiliary-info)
+  (ifnot (ConnectToTheBlockchain)
+	 (JSON-ANSWER::error "Not connected to the blockchain")
+	 (receive (authorized username) (CheckJwtToken pbuf cfg::FUNUF::secret "AddKV")
+	   (ifnot authorized
+		  (JSON-ANSWER::error "Not authorized")
+		  (let* ((class (assoc-ref json "class"))
+			 (key (assoc-ref json "key"))
+			 (value (assoc-ref json "value"))
+			 (answer (json-string->scm (mtfa-bc::AddKV username class key value))))
+		    (JSON-ANSWER::success "Ok" `("answer" . ,answer)))))))
+;;
+(define (GetKV json pbuf actionl auxiliary-info)
+  (ifnot (ConnectToTheBlockchain)
+	 (JSON-ANSWER::error "Not connected to the blockchain")
+	 (receive (authorized username) (CheckJwtToken pbuf cfg::FUNUF::secret "GetKV")
+	   (ifnot authorized
+		  (JSON-ANSWER::error "Not authorized")
+		  (let* ((class (assoc-ref json "class"))
+			 (key (assoc-ref json "key"))
+			 (answer (BrowseJsonDataAndUpdate (json-string->scm (mtfa-bc::GetKV username class key)) (lambda (x) (if (string-null? x) x (vector (json-string->scm x)))) "value")))
+		    (JSON-ANSWER::success "Ok" `("answer" . ,answer)))))))
+;;
+(define (GetKeyHistory json pbuf actionl auxiliary-info)
+  (ifnot (ConnectToTheBlockchain)
+	 (JSON-ANSWER::error "Not connected to the blockchain")
+	 (receive (authorized username) (CheckJwtToken pbuf cfg::FUNUF::secret "GetKeyHistory")
+	   (ifnot authorized
+		  (JSON-ANSWER::error "Not authorized")
+		  (let* ((class (assoc-ref json "class"))
+			 (key (assoc-ref json "key"))
+			 (answer (BrowseJsonDataAndUpdate (json-string->scm (mtfa-bc::GetKeyHistory username class key))
+							  (lambda (x) (if (string-null? x) x (vector (json-string->scm x)))) "vdata" "data")))
+		    (JSON-ANSWER::success "Ok" `("answer" . ,answer)))))))
+;;
+(define (DelKV json pbuf actionl auxiliary-info)
+  (ifnot (ConnectToTheBlockchain)
+	 (JSON-ANSWER::error "Not connected to the blockchain")
+	 (receive (authorized username) (CheckJwtToken pbuf cfg::FUNUF::secret "DelKV")
+	     (ifnot authorized
+		    (JSON-ANSWER::error "Not authorized")
+		    (let* ((class (assoc-ref json "class"))
+			   (key (assoc-ref json "key"))
+			   (answer (json-string->scm (mtfa-bc::DelKV username class key))))
+		      (JSON-ANSWER::success "Ok" `("answer" . ,answer)))))))
+;;
+(define (GetClasses json pbuf actionl auxiliary-info)
+  (ifnot (ConnectToTheBlockchain)
+	 (JSON-ANSWER::error "Not connected to the blockchain")
+	 (receive (authorized username) (CheckJwtToken pbuf cfg::FUNUF::secret "GetClasses")
+	     (ifnot authorized
+		    (JSON-ANSWER::error "Not authorized")
+		    (JSON-ANSWER::success "Ok" `("answer" . ,(json-string->scm (mtfa-bc::GetClasses username))))))))
+;;
+(define (GetNumKeys json pbuf actionl auxiliary-info)
+  (ifnot (ConnectToTheBlockchain)
+	 (JSON-ANSWER::error "Not connected to the blockchain")
+	 (receive (authorized username) (CheckJwtToken pbuf cfg::FUNUF::secret "GetNumKeys")
+	     (ifnot authorized
+		    (JSON-ANSWER::error "Not authorized")
+		    (let* ((class (assoc-ref json "class"))
+			   (key (assoc-ref json "key"))
+			   (answer (json-string->scm (mtfa-bc::GetNumKeys username class key))))
+		      (JSON-ANSWER::success "Ok" `("answer" . ,answer)))))))
+;;
+(define* (GetKeys json pbuf actionl auxiliary-info)
+  (ifnot (ConnectToTheBlockchain)
+	 (JSON-ANSWER::error "Not connected to the blockchain")
+	 (receive (authorized username) (CheckJwtToken pbuf cfg::FUNUF::secret "GetKeys")
+	     (ifnot authorized
+		    (JSON-ANSWER::error "Not authorized")
+		    (let ((class (assoc-ref json "class"))
+			  (key (assoc-ref json "key"))
+			  (howmany (assoc-ref json "howmany"))
+			  (value (assoc-ref json "value")))
+		      (unless howmany (set! howmany 10000))
+		      (unless value (set! value ""))
+		      (JSON-ANSWER::success "Ok" `("answer" . ,(json-string->scm (mtfa-bc::GetKeys username class key howmany value)))))))))
+;;
+(define (GetTxData json pbuf actionl auxiliary-info)
+  (ifnot (ConnectToTheBlockchain)
+	 (JSON-ANSWER::error "Not connected to the blockchain")
+	 (receive (authorized username) (CheckJwtToken pbuf cfg::FUNUF::secret "GetTxData")
+	     (ifnot authorized
+		    (JSON-ANSWER::error "Not authorized")
+		    (let ((txid (assoc-ref json "txid")))
+		      (JSON-ANSWER::success "Ok" `("answer" . ,(json-string->scm (mtfa-bc::GetTxData username txid cfg::channel-to-connect)))))))))
+;;
+;;e qui la struttura di ricerca
+(mtfa-fs3-add getFunction "AddKV"         AddKV)
+(mtfa-fs3-add getFunction "GetKV"         GetKV)
+(mtfa-fs3-add getFunction "GetKeyHistory" GetKeyHistory)
+(mtfa-fs3-add getFunction "DelKV"         DelKV)
+(mtfa-fs3-add getFunction "GetClasses"    GetClasses)
+(mtfa-fs3-add getFunction "GetNumKeys"    GetNumKeys)
+(mtfa-fs3-add getFunction "GetKeys"       GetKeys)
+(mtfa-fs3-add getFunction "GetTxData"     GetTxData)
+;;
+;;Sono le singole funzioni a verificare l'autorizzazione!!!
+;;Dovrebbe essere il livello ARS ma mi manca il JWT a livello ARS
+(define (GestioneAPIBackEnd json-body pbuf actionl auxiliary-info)
+  ;;(Show! "Got: " json-body "=>" (json-string->scm json-body))
+  (let* ((json-body (json-string->scm json-body)) ;;Converte in json
+	 (cmd (assoc-ref json-body "cmd"))
+	 (fun (mtfa-fs3-get getFunction cmd)))
+    ;;(Show! "Fun: " fun)
+    (if (null? fun)
+	(JSON-ANSWER::error (string-append "Command: " cmd " not found"))
+	(let ((ans (fun json-body pbuf actionl auxiliary-info)))
+	  ans))))
+
+(define api-manager (mtfa-web-make-general-api-manager "API" #:default-manager GestioneAPIBackEnd))
+;;
+;;E qui inizializziamo il sistema
+;;Ma lo faccio solo se sono nell'ambiente target (dentro docker)
+;;quindi se la cartella corrente è /vapps e se il nome del processo è va
+;;se command line non è ("guile")!!
+;; (when (and (not (null? (command-line))) (not (equal? (car (command-line)) "guile")))
+(Show! "Connecting...")
+(ConnectToTheBlockchain)
+(Show! "Connected!")
+;;by default per ora inserisco nella blockchain utenti e pwd accettati
+;;Se non ci sono e se abilitato, li inserisce
+;;Elenco dei servizi basici erogati
+'("AddKV" "GetKV" "GetKeyHistory" "DelKV" "GetClasses" "GetNumKeys" "GetKeys" "GetTxData")
+;;Elenco dei servizi di repository erogti
+'("GeneralizedSelect" "GetValidation" "GetDocument" "AddSchema" "DropSchema" "GetSchema" "ListSchemi" "DoQuery" "RegQuery" schema-name ":" tname ":" "insert"
+ )
+;; e poi i servizi andrebbero erogati su base utente, cioè l'utente ciccio non può vedere i dati dell'utente pluto
+;; ma questo è fattibile attribuendo lo schema!
+;; ogni utente ha uno schema differente
+;; quindi già in questo modo ci saremmo!!
+;;
+(if cfg::BCCLASS::credenziali::add-update-insert
+    (begin
+      (mtfa-bc::AddKV cfg::requester cfg::BCCLASS::credenziali "root" `(("password" . ,(mtfa-hash-hs 2 "root"))))
+      (mtfa-bc::AddKV cfg::requester cfg::BCCLASS::credenziali "developer-01" `(("password" . ,(mtfa-hash-hs 2 "axPoiuaa,:1!"))))
+      (mtfa-bc::AddKV cfg::requester cfg::BCCLASS::credenziali "developer-02" `(("password" . ,(mtfa-hash-hs 2 "axPqoaua,:2!"))))
+      (mtfa-bc::AddKV cfg::requester cfg::BCCLASS::credenziali "developer-03" `(("password" . ,(mtfa-hash-hs 2 "axPdasdd,:3!"))))
+      (mtfa-bc::AddKV cfg::requester cfg::BCCLASS::credenziali "developer-04" `(("password" . ,(mtfa-hash-hs 2 "axPoiqeq,:4!"))))
+      ))
+;;In questo modo leggo da file di configurazione!!
+;; (vector-for-each (lambda (i v)
+;; 		   (set! v (json-string->scm (scm->json-string v)))
+;; 		   (Show! i ") "  (assoc-ref v "username") ", " (assoc-ref v "password")))
+;; 		 (list->vector cfg::BCCLASS::credenziali::users))
+;; (Show! "aggiorno? " cfg::BCCLASS::credenziali::add-update-insert)
+
+(if cfg::SYSTEM::initialize
+    (FUNUF::Initialize))
+
+
+;; (define-syntax push!
+;;   (syntax-rules ()
+;;     ((_ var obj)
+;;      (set! var (cons obj var)))))
+
+;; (define-syntax pop!
+;;   (syntax-rules ()
+;;     ((_ var)
+;;      (let ((top (car var)))
+;;        (set! var (cdr var))
+;;        top))))
+
+;; (define (find-stride p . a*)
+;;   (letrec
+;;     ((car-of
+;;        (lambda (a)
+;;          (map car a)))
+;;      (cdr-of
+;;        (lambda (a)
+;;          (map cdr a)))
+;;      (any-null
+;;        (lambda (a)
+;;          (memq '() a)))
+;;      (find*
+;;        (lambda (a*)
+;;          (and (not (any-null a*))
+;;               (or (apply p (car-of a*))
+;;                   (find* (cdr-of a*)))))))
+;;     (find* a*)))
+
+
+;; ;;;Usiamo la AMB!!
+;; (define *amb-stack* '())
+
+;; (define *amb-done* (list 'amb-done))
+
+;; (define (amb-reset)
+;;   (set! *amb-stack* '()))
+
+;; (define (amb-done? x)
+;;   (eq? *amb-done* x))
+
+;; (define-syntax amb
+;;   (syntax-rules ()
+;;     ((_ expr ...)
+;;      (letrec-syntax
+;;          ((unfold-alternatives
+;;            (syntax-rules ::: ()
+;;              ((_)
+;;               (begin
+;;                 (pop! *amb-stack*)
+;;                 (if (null? *amb-stack*)
+;;                     *amb-done*
+;;                     ((car *amb-stack*) *amb-done*))))
+;;              ((_ a b :::)
+;;               (let ((x (call/cc
+;;                         (lambda (k)
+;;                           (set-car! *amb-stack* k)
+;;                           a))))
+;;                 (if (amb-done? x)
+;;                     (unfold-alternatives b :::)
+;;                     x))))))
+;;        (begin
+;;          (push! *amb-stack* #f)
+;;          (unfold-alternatives expr ...))))))
+
+;; (define (amb-collector)
+;;   (let ((values '()))
+;;     (lambda (p . v*)
+;;       (if (find-stride amb-done? v*)
+;;           values
+;;           (begin
+;;             (if (apply p v*)
+;;                 (push! values v*))
+;;             (amb))))))
+
+
+;; ;;; returns arbitrary number between a and b
+;; (define (number-between a b)
+;;   (let loop ((i a))
+;;     (if (> i b)
+;;         (amb)
+;;       (amb i (loop (1+ i))))))
+;; ;;
+;; (define (amb-require condition)
+;;         (unless condition
+;;           (amb)))
+
+;; (define (factor n)
+;;   (mtfa-noerr
+;;    (Show! n " è primo")
+;;       (let* ((a (number-between 2 (floor (sqrt n)))))
+;; 	;;(Show! a ": " (modulo n a) ". " (= 0 (modulo n a)))
+;; 	(amb-require (= 0 (modulo n a)))
+;; 	(Show! (list `(,n "Non è primo") a (/ n a)))
+;; 	(amb-collector)
+;; 	;;l'ultimo (amb) è per svuotare la sequenza
+;; 	)))
+
+;;
+;;Proviamo a risolvere il problemino di andrea
+;;20 persone, media 30
+;;22 ricchi media 45
+;;41 in totale, media 38
+;;trovare l'età del ricco, uomo
+;;trovare una mappatura
+
+;; (define (permute l)
+;;   (define (insert l n e)
+;;     (if (= 0 n)
+;; 	(cons e l)
+;; 	(cons (car l) 
+;;               (insert (cdr l) (- n 1) e))))
+
+;;   (define (seq start end)
+;;     (if (= start end)
+;; 	(list end)
+;; 	(cons start (seq (+ start 1) end))))
+;;   (if (null? l)
+;;       '(())
+;;       (map (lambda (p)
+;;                            (map (lambda (n)
+;;                                   (insert p n (car l)))
+;;                                 (seq 0 (length p))))
+;;                          (permute (cdr l)))))
+;; (define (permute l)
+;;   https://www.geeksforgeeks.org/johnson-trotter-algorithm/
+;;   (define (find-mobile vp)
+;;     ;;vado dal successivo di mobile al termine del vettore
+;;     (let loop ((max-mobile -1) (i 0))
+;;       (if (= i (vector-length vp))
+;; 	  max-mobile
+;; 	  (let ((current (vector-ref vp i)))
+;; 	    (if (cdr current) ;;guarda a sinistra
+;; 		(if (or (zero? i) (<= (car current) (car (vector-ref vp (1- i)))))
+;; 		    (loop max-mobile (1+ i)) ;;non è un mobile
+;; 		    (begin
+;; 		      ;;è un mobile, ma è il più grande o è il primo che trovo?
+;; 		      (if (or (< max-mobile 0)
+;; 			      (> (car current) (car (vector-ref vp max-mobile))))
+;; 			  (loop i (1+ i))
+;; 			  (loop max-mobile (1+ i)))))
+;; 		;;Qui guarda a destra
+;; 		(if (or () (<= (car current) (car (vector-ref vp (1- i)))))
+;; 		    (loop max-mobile (1+ i)) ;;non è un mobile
+;; 		    (begin
+;; 		      ;;è un mobile, ma è il più grande o è il primo che trovo?
+;; 		      (if (or (< max-mobile 0)
+;; 			      (> (car current) (car (vector-ref vp max-mobile))))
+;; 			  (loop i (1+ i))
+;; 			  (loop max-mobile (1+ i)))))
+
+	    
+;; 	    ;;faccio una lista analoga di numeri crescenti e di direzioni
+;; 	    ;;se direzione è #t, allora guarda a sinistra
+;; 	    (let ((interna (list->vector (map (lambda (n) (cons n #t)) (iota (length l) 1))))
+;; 		  (v (list->vector l)))
+;; 	      (Show! interna)
+;; 	      ;;Stampiamo la prima permutazione
+;; 	      (Show! (vector->list v))
+;; 	      ;;Ricorda che un numero è "mobile" se è maggiore del numero che sta guardando
+;; 	      ;;cerco il mobile più grande. Se non ci sono mobili, ho terminato
+    
+;; 	      )
+;;   )
+
+;; (define (Problema)
+;;   (let ((persone (make-vector 41 '(#f . #f))) ;;(uomo . ricco)
+;; 	(totale-uomini 20)
+;; 	(totale-ricchi 22)
+;; 	(totale-persone 41)
+;; 	(media-uomini 30)
+;; 	(media-ricchi 45)
+;; 	(media-persone 38)
+;; 	(piazza-uomini '(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1))
+;; 	(piazza-ricchi '(1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1))
+;; 	)
+;;     ;;Per prima cosa vediamo se il programma che calcola le permutazioni le calcola tutte
+;;     (let loop ((v '(#\1 #\2 #\3)) ;; #\4 #\5 #\6 #\7 #\8 #\9 #\0
+;; 	       (ds (mtfa-fs3-make))
+;; 	       (counter 0))
+;;       (Show! v)
+;;       (if (null? (mtfa-fs3-get ds (list->string v)))
+;; 	  (begin
+;; 	    (mtfa-fs3-add ds (list->string v) #t)
+;; 	    (loop (permute v) ds (1+ counter)))
+;; 	  (begin
+;; 	    (Show! "A questo punto dovrei essere arrivato: " counter))))))

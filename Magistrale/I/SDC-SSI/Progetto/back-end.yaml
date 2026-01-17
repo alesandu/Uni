@@ -1,0 +1,41 @@
+# Use postgres/example user/password credentials
+version: "3.1"
+
+services:
+#  db:
+#    image:
+#      postgres
+#      #restart: always
+#    environment:
+#      POSTGRES_USERNAME: postgres
+#      POSTGRES_PASSWORD: postgres
+#      #PGDATA: /var/lib/postgresql/data/pgdata
+#      POSTGRES_MAX_WAL_SIZE: 8GB
+#    volumes:
+#      - ./pgdata:/var/lib/postgresql/data
+#      - ./:/appdata
+#    # ports:
+#    #   - 15432:5432
+#    hostname: postgres
+
+#  adminer:
+#    image: adminer
+#    #restart: always
+#    ports:
+#      - 60080:8080
+
+  back-end:
+    image: dozenapps/frextva:11
+    command: /bin/bash -c "cd /vapps && /va back-end.conf"
+    privileged: true
+    volumes:
+      - ./:/vapps
+      - ./:/myaddons
+    #restart: unless-stopped
+    # network_mode: "host"
+    extra_hosts:
+      - "peer0.org1.kvdevel.com:192.168.122.1"
+      - "peer0.org2.kvdevel.com:192.168.122.1"
+      - "orderer.kvdevel.com:192.168.122.1"
+    ports:
+      - 55556:9999

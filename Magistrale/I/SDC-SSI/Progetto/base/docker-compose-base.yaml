@@ -1,0 +1,66 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  orderer.kvdevel.com:
+    container_name: orderer.kvdevel.com
+    extends:
+      file: peer-base.yaml
+      service: orderer-base
+    volumes:
+        - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ../crypto-config/ordererOrganizations/kvdevel.com/orderers/orderer.kvdevel.com/msp:/var/hyperledger/orderer/msp
+        - ../crypto-config/ordererOrganizations/kvdevel.com/orderers/orderer.kvdevel.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.kvdevel.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+
+  peer0.org1.kvdevel.com:
+    container_name: peer0.org1.kvdevel.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org1.kvdevel.com
+      - CORE_PEER_ADDRESS=peer0.org1.kvdevel.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.kvdevel.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.kvdevel.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.kvdevel.com:7051
+      - CORE_PEER_LOCALMSPID=Org1MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/org1.kvdevel.com/peers/peer0.org1.kvdevel.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org1.kvdevel.com/peers/peer0.org1.kvdevel.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.org1.kvdevel.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
+
+  peer0.org2.kvdevel.com:
+    container_name: peer0.org2.kvdevel.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org2.kvdevel.com
+      - CORE_PEER_ADDRESS=peer0.org2.kvdevel.com:7151
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7151
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org2.kvdevel.com:7152
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7152
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.kvdevel.com:7151
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.kvdevel.com:7151
+      - CORE_PEER_LOCALMSPID=Org2MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/org2.kvdevel.com/peers/peer0.org2.kvdevel.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/org2.kvdevel.com/peers/peer0.org2.kvdevel.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.org2.kvdevel.com:/var/hyperledger/production
+    ports:
+      - 7151:7151
+

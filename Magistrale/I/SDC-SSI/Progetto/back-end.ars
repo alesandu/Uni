@@ -1,0 +1,33 @@
+DEFINE ipset serverip = { *.*.*.*:* };
+
+DEFINE urlset url_io   = { /io, /io/, /io/* };
+DEFINE urlset url_api   = { /api, /api/, /api/* };
+// define urlset url_docs  = { /documents, /documents/, /documents/* }; // */
+// define urlset url_certs = { /certifications, /certifications/, /certifications/* }; // */
+
+
+DEFINE AR risposta
+        CONDITION
+                http.url is in url_io
+                //net.ipdst is in serverip
+        ACTION
+                ANSWER "TU"
+        ;
+
+
+//Le API
+DEFINE AR API
+        CONDITION
+                http.url is in url_api
+                //net.ipdst is in serverip
+        ACTION
+                MANAGE "API"
+        ;
+
+//Un buco nero per tutto il resto
+DEFINE AR HOLE
+        CONDITION
+                net.ipdst is in serverip
+        ACTION
+                ANSWER "Request accepted"  //ma non è vero
+        ;

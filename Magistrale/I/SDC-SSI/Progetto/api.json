@@ -1,0 +1,523 @@
+{
+	"info": {
+		"_postman_id": "2ed470fd-21a3-4386-92e3-cb5b5ce99b07",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3837544",
+		"_collection_link": "https://lunar-shuttle-514366.postman.co/workspace/Team-Workspace~258bcfa2-337f-4ba5-8617-d6f97451b87a/collection/3837544-2ed470fd-21a3-4386-92e3-cb5b5ce99b07?action=share&source=collection_link&creator=3837544"
+	},
+	"item": [
+		{
+			"name": "AddKV Copy",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "payload",
+							"value": "{\"funuf::username\": \"funuf\"}",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "jwt",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "fufun",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cmd\": \"AddKV\",\n    \"class\": \"PROVA\",\n    \"key\": [\"lancia\", \"fiat\"],\n    \"value\": \"fedra\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:55556/api",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "55556",
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetKV Copy",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\"funuf::username\": \"developer-01\", \"funuf::password\": \"axPoiuaa,:1!\"}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "jwt",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "fufun",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cmd\": \"GetKV\",\n    \"class\": \"PROVA\",\n    \"key\": [\"lancia\", \"fiat\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9999/api",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9999",
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetKeyHistory Copy",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\"funuf::username\": \"developer-01\", \"funuf::password\": \"axPoiuaa,:1!\"}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "jwt",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "fufun",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cmd\": \"GetKeyHistory\",\n    \"class\": \"PROVA\",\n    \"key\": \"lancia\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:55556/api",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "55556",
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DelKV Copy",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "payload",
+							"value": "{\"funuf::username\": \"funuf\"}",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "jwt",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "fufun",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cmd\": \"DelKV\",\n    \"class\": \"PROVA\",\n    \"key\": \"lancia\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:55556/api",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "55556",
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetClasses Copy",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\"funuf::username\": \"developer-01\", \"funuf::password\": \"axPoiuaa,:1!\"}",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "jwt",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "fufun",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cmd\": \"GetClasses\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://front-end.va-appliances.eu/api",
+					"protocol": "https",
+					"host": [
+						"front-end",
+						"va-appliances",
+						"eu"
+					],
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetNumKeys Copy",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "payload",
+							"value": "{\"funuf::username\": \"funuf\"}",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "jwt",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "fufun",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cmd\": \"GetNumKeys\",\n    \"class\": \"PROVA\",\n    \"key\": \"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:55556/api",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "55556",
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetKeys Copy",
+			"request": {
+				"auth": {
+					"type": "jwt",
+					"jwt": [
+						{
+							"key": "payload",
+							"value": "{\"funuf::username\": \"developer-01\", \"funuf::password\": \"axPoiuaa,:1!\"}",
+							"type": "string"
+						},
+						{
+							"key": "secret",
+							"value": "fufun",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "queryParamKey",
+							"value": "jwt",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "HS256",
+							"type": "string"
+						},
+						{
+							"key": "isSecretBase64Encoded",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "headerPrefix",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "header",
+							"value": "{}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cmd\": \"GetKeys\",\n    \"class\": \"PROVA\",\n    \"key\": [\"lancia\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:55556/api",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "55556",
+					"path": [
+						"api"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
