@@ -1,0 +1,50 @@
+{
+	"name" : "test-network",
+	"version" : "1.0.0",
+	"client" : {
+		"tlsEnable" : true,
+		"adminCredential" : {
+			"id" : "exploreradmin",
+			"password" : "exploreradminpw"
+		},
+		"enableAuthentication" : true,
+		"organization" : "Org1MSP",
+		"connection" : {
+			"timeout" : {
+				"peer" : {
+					"endorser" : "300"
+				},
+				"orderer" : "300"
+			}
+		}
+	},
+	"channels" : {
+		"kvdevel" : {
+			"peers" : {
+				"peer0.org1.kvdevel.com" : { }
+			}
+		}
+	},
+	"organizations" : {
+		"Org1MSP" : {
+			"mspid" : "Org1MSP",
+			"adminPrivateKey" : {
+				"path" : "/tmp/crypto/peerOrganizations/org1.kvdevel.com/users/Admin@org1.kvdevel.com/msp/keystore/priv_sk"
+			},
+			"peers" : [
+				"peer0.org1.kvdevel.com"
+				],
+			"signedCert" : {
+				"path" : "/tmp/crypto/peerOrganizations/org1.kvdevel.com/users/Admin@org1.kvdevel.com/msp/signcerts/Admin@org1.kvdevel.com-cert.pem"
+			}
+		}
+	},
+	"peers" : {
+		"peer0.org1.kvdevel.com" : {
+			"tlsCACerts" : {
+				"path" : "/tmp/crypto/peerOrganizations/org1.kvdevel.com/peers/peer0.org1.kvdevel.com/tls/ca.crt"
+			},
+			"url" : "grpcs://peer0.org1.kvdevel.com:7051"
+		}
+	}
+}

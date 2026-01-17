@@ -1,0 +1,42 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer2.kvdevel.com:
+  peer0.org2.kvdevel.com:
+
+networks:
+  byfn:
+    external:
+      name: kvdevel
+
+services:
+
+  orderer2.kvdevel.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    environment:
+      - ORDERER_GENERAL_LISTENPORT=7150
+    container_name: orderer2.kvdevel.com
+    networks:
+    - byfn
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/kvdevel.com/orderers/orderer2.kvdevel.com/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/kvdevel.com/orderers/orderer2.kvdevel.com/tls/:/var/hyperledger/orderer/tls
+        - orderer2.kvdevel.com:/var/hyperledger/production/orderer
+    ports:
+    - 7150:7150
+
+  peer0.org2.kvdevel.com:
+    container_name: peer0.org2.kvdevel.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.org2.kvdevel.com
+    networks:
+      - byfn

@@ -1,0 +1,36 @@
+{
+  "log-file-name": "run.log",
+
+  "requester": "back-end",
+  "org-to-connect": "1",
+  "channel-to-connect": "kvdevel",
+  "domain-to-connect": "kvdevel.com",
+
+  "pq-host": "postgres",
+  "pq-port": "5432",
+  "pq-username": "postgres",
+  "pq-password": "postgres",
+  "pq-pgoptions": "",
+  "pq-pgtty": "",
+
+  "schemi": "schemi.json",
+  "FUNUF::username": "funuf",
+  "FUNUF::secret": "private-key",
+  "FUNUF::private": "private-key",
+
+  "BCCLASS::documents": "DOCUMENTS",
+  "BCCLASS::credenziali": "CREDENZIALI",
+  "BCCLASS::query": "QUERY",
+
+  "BCCLASS::credenziali::add-update-insert": false,
+  "BCCLASS::credenziali::users": [
+    { "username": "franco", "password": "francopwd" },
+    { "username": "franco1", "password": "franco1pwd" }
+  ],
+
+  "SYSTEM::initialize": true,
+
+  "archive::path": "/vapps/archive/",
+
+  "END": "END"
+}
