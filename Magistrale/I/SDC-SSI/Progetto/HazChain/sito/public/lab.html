@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>HazChain - Lab Operator</title>
+</head>
+
+<body>
+    <div class="background-glow"></div>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <span class="icon">⚗️</span> HazChain Lab
+            </div>
+            <h1>Lab Dashboard</h1>
+            <nav style="margin-top: 10px;">
+                <a href="index.html" style="color: var(--primary); text-decoration: none; margin-right: 15px;">Main</a>
+                <a href="lab.html" style="color: #fff; font-weight: bold; margin-right: 15px;">Lab</a>
+                <a href="van.html" style="color: var(--text-muted); text-decoration: none; margin-right: 15px;">Van</a>
+                <a href="hub.html" style="color: var(--text-muted); text-decoration: none; margin-right: 15px;">Hub</a>
+                <a href="truck.html"
+                    style="color: var(--text-muted); text-decoration: none; margin-right: 15px;">Truck</a>
+                <a href="landfill.html" style="color: var(--text-muted); text-decoration: none;">Landfill</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="card operations">
+                <h2><span class="step-num">⚡</span> Lab Operations</h2>
+                <div class="workflow-grid">
+                    <div class="step-card">
+                        <h3>Setup</h3>
+                        <button id="btn-tpl-lab" class="btn action">Create Lab Actor</button>
+                    </div>
+                    <div class="step-card">
+                        <h3>Package Management</h3>
+                        <button id="btn-p1-create" class="btn action">1. Create New Package</button>
+                        <button id="btn-p1-start" class="btn action">2. Request Pickup (to Van)</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card builder-section">
+                <h2><span class="step-num">★</span> Manual Builder</h2>
+                <div class="builder-container">
+                    <div class="form-group hidden">
+                        <label>Command</label>
+                        <input type="text" id="builder-cmd" value="AddKV" readonly class="input-readonly">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label>Class</label>
+                            <select id="builder-class" class="input-field">
+                                <option value="ACTOR">ACTOR</option>
+                                <option value="PACKAGE">PACKAGE</option>
+                                <option value="TRANSFER">TRANSFER</option>
+                                <option value="ALERT">ALERT</option>
+                                <option value="OTHER">Other...</option>
+                            </select>
+                            <input type="text" id="builder-class-custom" class="input-field hidden"
+                                placeholder="Custom Class">
+                        </div>
+                        <div class="form-group half">
+                            <label>Key parts (comma values)</label>
+                            <input type="text" id="builder-key" class="input-field" placeholder="e.g. ACT, LAB-01">
+                        </div>
+                    </div>
+                    <div class="attributes-section">
+                        <div class="attr-header">
+                            <label>Value Attributes</label>
+                            <button id="btn-add-attr" class="btn text small">+ Add Field</button>
+                        </div>
+                        <div id="attributes-container"></div>
+                    </div>
+                    <div class="builder-actions">
+                        <button id="btn-execute-builder" class="btn primary">Execute Operation</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card inspector-section">
+                <h2><span class="step-num">🔍</span> Package Inspector</h2>
+                <div class="inspector-container" style="flex-direction: column; gap: 10px;">
+                    <!-- Row 1: Core ID & Status -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; width: 100%;">
+                        <div class="form-group" style="flex: 1 1 150px;">
+                            <input type="text" id="inspector-pkg-id" class="input-field"
+                                placeholder="Package ID (Exact)">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 150px;">
+                            <input type="text" id="inspector-creator" class="input-field"
+                                placeholder="Created By (e.g. LAB-01)">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 150px;">
+                            <input type="text" id="inspector-custodian" class="input-field" placeholder="Custodian">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 150px;">
+                            <select id="inspector-status" class="input-field">
+                                <option value="">Any Status</option>
+                                <option value="IN_LAB">In Lab</option>
+                                <option value="WAITING">Waiting</option>
+                                <option value="SHIPPING">Shipping</option>
+                                <option value="IN_HUB">In Hub</option>
+                                <option value="IN_LANDFILL">In Landfill</option>
+                                <option value="Disposed">Disposed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Row 2: Details & Range -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; width: 100%;">
+                        <div class="form-group" style="flex: 1 1 120px;">
+                            <input type="text" id="inspector-waste" class="input-field" placeholder="Waste Type">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 120px;">
+                            <input type="text" id="inspector-risk" class="input-field" placeholder="Risk Codes">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 80px;">
+                            <input type="number" id="inspector-weight-min" class="input-field" placeholder="Min Kg">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 80px;">
+                            <input type="number" id="inspector-weight-max" class="input-field" placeholder="Max Kg">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 150px;">
+                            <input type="text" id="inspector-transfer" class="input-field"
+                                placeholder="Last Transfer ID">
+                        </div>
+                        <button id="btn-inspect" class="btn primary" style="flex: 0 0 auto;">Search</button>
+                    </div>
+                </div>
+                <div id="inspector-result" class="inspector-results-container hidden" style="margin-top: 1rem;"></div>
+            </section>
+
+            <section class="card log-section">
+                <div class="log-header">
+                    <h2>System Log</h2>
+                    <button id="btn-clear-log" class="btn text">Clear</button>
+                </div>
+                <div id="log-console" class="console">
+                    <div class="log-entry system">System ready. Waiting for commands...</div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            HazChain Project | Cybersecurity | Localhost:9999
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
