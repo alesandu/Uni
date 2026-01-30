@@ -17,6 +17,15 @@
                 <span class="icon">☣</span> HazChain
             </div>
             <h1>Superuser Dashboard</h1>
+            <nav style="margin-top: 10px;">
+                <a href="index.html" style="color: #fff; font-weight: bold; margin-right: 15px;">Main</a>
+                <a href="lab.html" style="color: var(--text-muted); text-decoration: none; margin-right: 15px;">Lab</a>
+                <a href="van.html" style="color: var(--text-muted); text-decoration: none; margin-right: 15px;">Van</a>
+                <a href="hub.html" style="color: var(--text-muted); text-decoration: none; margin-right: 15px;">Hub</a>
+                <a href="truck.html"
+                    style="color: var(--text-muted); text-decoration: none; margin-right: 15px;">Truck</a>
+                <a href="landfill.html" style="color: var(--text-muted); text-decoration: none;">Landfill</a>
+            </nav>
         </header>
 
         <main>
@@ -95,6 +104,58 @@
                         <button id="btn-p2-dispose" class="btn action">4. Dispose Package</button>
                     </div>
                 </div>
+            </section>
+
+            <section class="card inspector-section">
+                <h2><span class="step-num">🔍</span> Package Inspector</h2>
+                <div class="inspector-container" style="flex-direction: column; gap: 10px;">
+                    <!-- Row 1: Core ID & Status -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; width: 100%;">
+                        <div class="form-group" style="flex: 1 1 150px;">
+                            <input type="text" id="inspector-pkg-id" class="input-field"
+                                placeholder="Package ID (Exact)">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 150px;">
+                            <input type="text" id="inspector-creator" class="input-field"
+                                placeholder="Created By (e.g. LAB-01)">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 150px;">
+                            <input type="text" id="inspector-custodian" class="input-field" placeholder="Custodian">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 150px;">
+                            <select id="inspector-status" class="input-field">
+                                <option value="">Any Status</option>
+                                <option value="IN_LAB">In Lab</option>
+                                <option value="WAITING">Waiting</option>
+                                <option value="SHIPPING">Shipping</option>
+                                <option value="IN_HUB">In Hub</option>
+                                <option value="IN_LANDFILL">In Landfill</option>
+                                <option value="Disposed">Disposed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Row 2: Details & Range -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; width: 100%;">
+                        <div class="form-group" style="flex: 1 1 120px;">
+                            <input type="text" id="inspector-waste" class="input-field" placeholder="Waste Type">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 120px;">
+                            <input type="text" id="inspector-risk" class="input-field" placeholder="Risk Codes">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 80px;">
+                            <input type="number" id="inspector-weight-min" class="input-field" placeholder="Min Kg">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 80px;">
+                            <input type="number" id="inspector-weight-max" class="input-field" placeholder="Max Kg">
+                        </div>
+                        <div class="form-group" style="flex: 1 1 150px;">
+                            <input type="text" id="inspector-transfer" class="input-field"
+                                placeholder="Last Transfer ID">
+                        </div>
+                        <button id="btn-inspect" class="btn primary" style="flex: 0 0 auto;">Search</button>
+                    </div>
+                </div>
+                <div id="inspector-result" class="inspector-results-container hidden" style="margin-top: 1rem;"></div>
             </section>
 
             <section class="card log-section">

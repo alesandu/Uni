@@ -316,6 +316,14 @@ function getBuilderPayload() {
 
 // --- Event Listeners ---
 
+// Helper: safe event listener
+function addSafeEventListener(id, event, handler) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.addEventListener(event, handler);
+    }
+}
+
 // Builder Actions
 // Builder Actions
 // document.getElementById("btn-add-attr").addEventListener("click", () => addAttributeRow());
@@ -328,7 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (addBtn) addBtn.style.display = "none";
 });
 
-document.getElementById("builder-class").addEventListener("change", (e) => {
+addSafeEventListener("builder-class", "change", (e) => {
     const customInput = document.getElementById("builder-class-custom");
     if (e.target.value === "OTHER") {
         customInput.classList.remove("hidden");
@@ -337,7 +345,7 @@ document.getElementById("builder-class").addEventListener("change", (e) => {
     }
 });
 
-document.getElementById("btn-execute-builder").addEventListener("click", async () => {
+addSafeEventListener("btn-execute-builder", "click", async () => {
     const payload = getBuilderPayload();
     await callBlockchain(payload, `Custom Op: ${payload.class}`);
 
@@ -348,7 +356,7 @@ document.getElementById("btn-execute-builder").addEventListener("click", async (
 // --- Templates ---
 
 // Actors
-document.getElementById("btn-tpl-lab").addEventListener("click", () => {
+addSafeEventListener("btn-tpl-lab", "click", () => {
     const visibleAttrs = {
         "name": "Laboratorio Chimica",
         "location": "Lab-Edificio-A"
@@ -360,12 +368,12 @@ document.getElementById("btn-tpl-lab").addEventListener("click", () => {
     log("Template Loaded: LAB Actor [Hidden: role]", "info");
 });
 
-document.getElementById("btn-tpl-f1").addEventListener("click", () => {
+addSafeEventListener("btn-tpl-f1", "click", () => {
     const visibleAttrs = {
         "name": "Furgone 1",
         "capacityKg": { type: 'number', value: 1000 },
         "company": "Trasporti Locali SRL",
-        "riskCodesHandled": { type: 'checkbox-group', options: ['R1', 'R2', 'R3', 'R4', 'R5'], selected: ["R1", "R2"] }
+        "riskCodesHandled": { type: 'checkbox-group', options: ['R1', 'R2', 'R3', 'R4', 'R5'] }
     };
     const hiddenAttrs = {
         "role": "TRANSPORT_LIGHT"
@@ -374,11 +382,11 @@ document.getElementById("btn-tpl-f1").addEventListener("click", () => {
     log("Template Loaded: F Actor [Hidden: role]", "info");
 });
 
-document.getElementById("btn-tpl-hub").addEventListener("click", () => {
+addSafeEventListener("btn-tpl-hub", "click", () => {
     const visibleAttrs = {
         "name": "Centro Smistamento",
         "location": "Zona Industriale 3",
-        "riskCodesHandled": { type: 'checkbox-group', options: ['R1', 'R2', 'R3', 'R4', 'R5'], selected: ["R1", "R2"] }
+        "riskCodesHandled": { type: 'checkbox-group', options: ['R1', 'R2', 'R3', 'R4', 'R5'] }
     };
     const hiddenAttrs = {
         "role": "HUB"
@@ -387,7 +395,7 @@ document.getElementById("btn-tpl-hub").addEventListener("click", () => {
     log("Template Loaded: HUB Actor [Hidden: role]", "info");
 });
 
-document.getElementById("btn-tpl-c1").addEventListener("click", () => {
+addSafeEventListener("btn-tpl-c1", "click", () => {
     const visibleAttrs = {
         "name": "Camion Hazard",
         "company": "HazTrans SpA",
@@ -401,7 +409,7 @@ document.getElementById("btn-tpl-c1").addEventListener("click", () => {
     log("Template Loaded: C1 Actor [Hidden: role]", "info");
 });
 
-document.getElementById("btn-tpl-landfill").addEventListener("click", () => {
+addSafeEventListener("btn-tpl-landfill", "click", () => {
     const visibleAttrs = {
         "name": "Discarica Autorizzata",
         "location": "Provincia-X",
@@ -422,7 +430,18 @@ function getBuilderPackageId() {
     const parts = keyInput.split(",").map(p => p.trim());
     // Heuristic: Find part starting with PKG-
     let pkg = parts.find(p => p.startsWith("PKG-"));
-    return pkg || "PKG-2026-0001"; // Fallback
+
+    if (!pkg) {
+        // Try to find it in the inputs
+        const inputs = document.querySelectorAll(".attr-value");
+        inputs.forEach(input => {
+            if (input.value && input.value.startsWith && input.value.startsWith("PKG-")) {
+                pkg = input.value;
+            }
+        });
+    }
+
+    return pkg; // Fallback
 }
 
 async function fetchPackageState(packageId) {
@@ -450,7 +469,7 @@ async function fetchTransferState(packageId, transferId) {
 // --- Phase 1: Lab -> Hub ---
 
 // 1. Create Package
-document.getElementById("btn-p1-create").addEventListener("click", async () => {
+addSafeEventListener("btn-p1-create", "click", async () => {
     // Fetch Actors logic
     log("Fetching LAB actors...", "info");
     const payload = {
@@ -509,7 +528,7 @@ async function fetchActorOptions(filterStr) {
 }
 
 // 2. Start Transfer (Waiting)
-document.getElementById("btn-p1-start").addEventListener("click", async () => {
+addSafeEventListener("btn-p1-start", "click", async () => {
     // Target: Light Transport (F)
     const options = await fetchActorOptions("F");
 
@@ -519,7 +538,10 @@ document.getElementById("btn-p1-start").addEventListener("click", async () => {
     const fromActor = pkgState ? pkgState.currentCustodian : "LAB-01";
 
     const visibleAttrs = {
-        "to": { type: 'select', options: options, selected: options[0] }
+        "packageId": pkgId,
+        "to": { type: 'select', options: options, selected: options[0] },
+        "weightKg": { type: 'number', value: pkgState ? pkgState.weightKg : '' },
+        "wasteType": pkgState ? pkgState.wasteType : ''
     };
     const hiddenAttrs = {
         "from": fromActor,
@@ -527,12 +549,12 @@ document.getElementById("btn-p1-start").addEventListener("click", async () => {
         "status": "WAITING",
         "ts": new Date().toISOString()
     };
-    setBuilderState("TRANSFER", `TR, ${pkgId}, T-0001`, visibleAttrs, hiddenAttrs);
+    setBuilderState("TRANSFER", `TR, TR-F-0001`, visibleAttrs, hiddenAttrs);
     log(`Tpl P1: Start Transfer [From: ${fromActor}]`, "info");
 });
 
 // 3. Transport Pickup (Shipping) -> Chain: Package Update
-document.getElementById("btn-p1-pickup").addEventListener("click", async () => {
+addSafeEventListener("btn-p1-pickup", "click", async () => {
     const pkgId = getBuilderPackageId();
     const pkgState = await fetchPackageState(pkgId);
     let fromActor = "F-01"; // Fallback
@@ -550,7 +572,11 @@ document.getElementById("btn-p1-pickup").addEventListener("click", async () => {
 
     const options = await fetchActorOptions("HUB");
     const visibleAttrs = {
-        "to": { type: 'select', options: options, selected: options[0] }
+        "packageId": pkgId,
+        "to": { type: 'select', options: options, selected: options[0] },
+        "weightKg": { type: 'number', value: pkgState ? pkgState.weightKg : '' },
+        "wasteType": pkgState ? pkgState.wasteType : '',
+        "riskCode": { type: 'checkbox-group', options: ['R1', 'R2', 'R3', 'R4', 'R5'], selected: pkgState ? pkgState.riskCode : [] }
     };
     const hiddenAttrs = {
         "from": fromActor,
@@ -559,26 +585,30 @@ document.getElementById("btn-p1-pickup").addEventListener("click", async () => {
         "ts": new Date().toISOString()
     };
 
-    setBuilderState("TRANSFER", `TR, ${pkgId}, ${transferId}`, visibleAttrs, hiddenAttrs);
+    setBuilderState("TRANSFER", `TR, TR-F-0001`, visibleAttrs, hiddenAttrs);
     log(`Tpl P1: Transport Pickup [From: ${fromActor}]`, "info");
 });
 
 // 4. Arrive Hub (Completed) -> Chain: Package Update
-document.getElementById("btn-p1-arrive").addEventListener("click", async () => {
+addSafeEventListener("btn-p1-arrive", "click", async () => {
     const pkgId = getBuilderPackageId();
     const pkgState = await fetchPackageState(pkgId);
 
     if (pkgState && pkgState.lastTransferId) {
         const transferData = await fetchTransferState(pkgId, pkgState.lastTransferId);
         if (transferData) {
-            const visibleAttrs = {}; // Empty
+            const visibleAttrs = {
+                "packageId": pkgId,
+                "weightKg": { type: 'number', value: pkgState ? pkgState.weightKg : '' },
+                "wasteType": pkgState ? pkgState.wasteType : ''
+            };
             const hiddenAttrs = {
                 ...transferData,
                 "status": "COMPLETED",
                 "action": "DELIVER",
                 "ts": new Date().toISOString()
             };
-            setBuilderState("TRANSFER", `TR, ${pkgId}, ${pkgState.lastTransferId}`, visibleAttrs, hiddenAttrs);
+            setBuilderState("TRANSFER", `TR, ${pkgState.lastTransferId}`, visibleAttrs, hiddenAttrs);
             log(`Tpl P1: Hub Arrival [Closing T-ID: ${pkgState.lastTransferId}]`, "info");
         } else {
             log("Error: Could not fetch Transfer data", "error");
@@ -587,9 +617,9 @@ document.getElementById("btn-p1-arrive").addEventListener("click", async () => {
         log("Error: Package has no lastTransferId or not found", "error");
         // Fallback legacy
         const options = await fetchActorOptions("HUB");
-        const visibleAttrs = { "to": { type: 'select', options: options, selected: options[0] } };
+        const visibleAttrs = { "packageId": pkgId, "to": { type: 'select', options: options, selected: options[0] } };
         const hiddenAttrs = { "from": "F-01", "action": "DELIVER", "status": "COMPLETED", "ts": new Date().toISOString() };
-        setBuilderState("TRANSFER", `TR, ${pkgId}, T-0001`, visibleAttrs, hiddenAttrs);
+        setBuilderState("TRANSFER", `TR, TR-F-0001`, visibleAttrs, hiddenAttrs);
     }
 });
 
@@ -597,7 +627,7 @@ document.getElementById("btn-p1-arrive").addEventListener("click", async () => {
 // --- Phase 2: Hub -> Landfill ---
 
 // 1. Start Haz Transfer (Waiting)
-document.getElementById("btn-p2-start").addEventListener("click", async () => {
+addSafeEventListener("btn-p2-start", "click", async () => {
     const options = await fetchActorOptions("C"); // Matches C-01, C-02...
 
     // Dynamic From: Package Custodian (should be HUB now)
@@ -606,7 +636,10 @@ document.getElementById("btn-p2-start").addEventListener("click", async () => {
     const fromActor = pkgState ? pkgState.currentCustodian : "HUB-01";
 
     const visibleAttrs = {
-        "to": { type: 'select', options: options, selected: options[0] }
+        "packageId": pkgId,
+        "to": { type: 'select', options: options, selected: options[0] },
+        "weightKg": { type: 'number', value: pkgState ? pkgState.weightKg : '' },
+        "wasteType": pkgState ? pkgState.wasteType : ''
     };
     const hiddenAttrs = {
         "from": fromActor,
@@ -614,12 +647,12 @@ document.getElementById("btn-p2-start").addEventListener("click", async () => {
         "status": "WAITING",
         "ts": new Date().toISOString()
     };
-    setBuilderState("TRANSFER", `TR, ${pkgId}, T-0002`, visibleAttrs, hiddenAttrs);
+    setBuilderState("TRANSFER", `TR, TR-C-0002`, visibleAttrs, hiddenAttrs);
     log(`Tpl P2: Hub requests Haz pickup [From: ${fromActor}]`, "info");
 });
 
 // 2. Transport Haz Pickup (Shipping) -> Chain: Package Update
-document.getElementById("btn-p2-pickup").addEventListener("click", async () => {
+addSafeEventListener("btn-p2-pickup", "click", async () => {
     const pkgId = getBuilderPackageId();
     const pkgState = await fetchPackageState(pkgId);
     let fromActor = "C-01"; // Fallback
@@ -635,7 +668,11 @@ document.getElementById("btn-p2-pickup").addEventListener("click", async () => {
 
     const options = await fetchActorOptions("LANDFILL");
     const visibleAttrs = {
-        "to": { type: 'select', options: options, selected: options[0] }
+        "packageId": pkgId,
+        "to": { type: 'select', options: options, selected: options[0] },
+        "weightKg": { type: 'number', value: pkgState ? pkgState.weightKg : '' },
+        "wasteType": pkgState ? pkgState.wasteType : '',
+        "riskCode": { type: 'checkbox-group', options: ['R1', 'R2', 'R3', 'R4', 'R5'], selected: pkgState ? pkgState.riskCode : [] }
     };
     const hiddenAttrs = {
         "from": fromActor,
@@ -643,26 +680,30 @@ document.getElementById("btn-p2-pickup").addEventListener("click", async () => {
         "status": "SHIPPING",
         "ts": new Date().toISOString()
     };
-    setBuilderState("TRANSFER", `TR, ${pkgId}, ${transferId}`, visibleAttrs, hiddenAttrs);
+    setBuilderState("TRANSFER", `TR, TR-C-0001`, visibleAttrs, hiddenAttrs);
     log(`Tpl P2: Haz Pickup [From: ${fromActor}]`, "info");
 });
 
 // 3. Arrive Landfill (Completed) -> Chain: Package Update
-document.getElementById("btn-p2-arrive").addEventListener("click", async () => {
+addSafeEventListener("btn-p2-arrive", "click", async () => {
     const pkgId = getBuilderPackageId();
     const pkgState = await fetchPackageState(pkgId);
 
     if (pkgState && pkgState.lastTransferId) {
         const transferData = await fetchTransferState(pkgId, pkgState.lastTransferId);
         if (transferData) {
-            const visibleAttrs = {}; // Empty
+            const visibleAttrs = {
+                "packageId": pkgId,
+                "weightKg": { type: 'number', value: pkgState ? pkgState.weightKg : '' },
+                "wasteType": pkgState ? pkgState.wasteType : ''
+            };
             const hiddenAttrs = {
                 ...transferData,
                 "status": "COMPLETED",
                 "action": "DELIVER",
                 "ts": new Date().toISOString()
             };
-            setBuilderState("TRANSFER", `TR, ${pkgId}, ${pkgState.lastTransferId}`, visibleAttrs, hiddenAttrs);
+            setBuilderState("TRANSFER", `TR, ${pkgState.lastTransferId}`, visibleAttrs, hiddenAttrs);
             log(`Tpl P2: Landfill Arrival [Closing T-ID: ${pkgState.lastTransferId}]`, "info");
         } else {
             log("Error: Could not fetch Transfer data", "error");
@@ -671,14 +712,14 @@ document.getElementById("btn-p2-arrive").addEventListener("click", async () => {
         log("Error: Package has no lastTransferId or not found", "error");
         // Fallback legacy
         const options = await fetchActorOptions("LANDFILL");
-        const visibleAttrs = { "to": { type: 'select', options: options, selected: options[0] } };
+        const visibleAttrs = { "packageId": pkgId, "to": { type: 'select', options: options, selected: options[0] } };
         const hiddenAttrs = { "from": "C-01", "action": "DELIVER", "status": "COMPLETED", "ts": new Date().toISOString() };
-        setBuilderState("TRANSFER", `TR, ${pkgId}, T-0002`, visibleAttrs, hiddenAttrs);
+        setBuilderState("TRANSFER", `TR, TR-C-0002`, visibleAttrs, hiddenAttrs);
     }
 });
 
 // 4. Dispose Package (Landfill)
-document.getElementById("btn-p2-dispose").addEventListener("click", async () => {
+addSafeEventListener("btn-p2-dispose", "click", async () => {
     // Attempt to parse Package ID from the Key Input field
     // Format is usually "TR, PKG-2026-0001, T-0002" or "PKG, PKG-2026-0001"
     const keyInput = document.getElementById("builder-key").value;
@@ -706,7 +747,11 @@ document.getElementById("btn-p2-dispose").addEventListener("click", async () => 
         const currentPkg = data.answer.value;
 
         // Construct new state
-        const visibleAttrs = {};
+        const visibleAttrs = {
+            "weightKg": { type: 'number', value: currentPkg.weightKg },
+            "wasteType": currentPkg.wasteType,
+            "riskCode": { type: 'checkbox-group', options: ['R1', 'R2', 'R3', 'R4', 'R5'], selected: currentPkg.riskCode || [] }
+        };
 
         const hiddenAttrs = {
             ...currentPkg,
@@ -722,6 +767,166 @@ document.getElementById("btn-p2-dispose").addEventListener("click", async () => 
     }
 });
 
-document.getElementById("btn-clear-log").addEventListener("click", () => {
+addSafeEventListener("btn-clear-log", "click", () => {
     document.getElementById("log-console").innerHTML = '<div class="log-entry system">System ready. Waiting for commands...</div>';
 });
+
+// --- Advanced Package Search ---
+// --- Advanced Package Search ---
+addSafeEventListener("btn-inspect", "click", async () => {
+    const pkgIdInput = document.getElementById("inspector-pkg-id");
+    const creatorInput = document.getElementById("inspector-creator");
+    const custodianInput = document.getElementById("inspector-custodian");
+    const statusInput = document.getElementById("inspector-status");
+    const wasteInput = document.getElementById("inspector-waste");
+    const riskInput = document.getElementById("inspector-risk");
+    const weightMinInput = document.getElementById("inspector-weight-min");
+    const weightMaxInput = document.getElementById("inspector-weight-max");
+    const transferInput = document.getElementById("inspector-transfer");
+    const resultDiv = document.getElementById("inspector-result");
+
+    const pkgId = pkgIdInput.value.trim();
+    const creator = creatorInput ? creatorInput.value.trim() : "";
+    const custodian = custodianInput ? custodianInput.value.trim() : "";
+    const status = statusInput ? statusInput.value : "";
+    const waste = wasteInput ? wasteInput.value.trim() : "";
+    const risk = riskInput ? riskInput.value.trim() : "";
+    const weightMin = weightMinInput ? parseFloat(weightMinInput.value) : null;
+    const weightMax = weightMaxInput ? parseFloat(weightMaxInput.value) : null;
+    const transfer = transferInput ? transferInput.value.trim() : "";
+
+
+    resultDiv.classList.add("hidden");
+    resultDiv.innerHTML = '<div class="log-entry info">Searching...</div>';
+    resultDiv.classList.remove("hidden");
+
+    let packages = [];
+
+    // Strategy 1: Direct ID Lookup (Fastest)
+    if (pkgId) {
+        log(`Searching by ID: ${pkgId}`, "info");
+        const payload = { "cmd": "GetKV", "class": "PACKAGE", "key": ["PKG", pkgId] };
+        const data = await callBlockchain(payload, `Inspect PKG ${pkgId}`);
+        if (data && data.answer && data.answer.value) {
+            const pkg = data.answer.value;
+            pkg.packageId = pkgId; // Ensure ID is attached
+            packages.push(pkg);
+        }
+    } else {
+        // Strategy 2: Scan all packages
+        log("Scanning all packages for filters...", "info");
+        const payload = { "cmd": "GetKeys", "class": "PACKAGE", "key": ["PKG"] };
+        const data = await callBlockchain(payload, "Get All PKG Keys");
+
+        if (data && data.answer && data.answer.keys) {
+            const allKeys = data.answer.keys;
+
+            const promises = allKeys.map(k => {
+                const id = k[1];
+                return callBlockchain({ "cmd": "GetKV", "class": "PACKAGE", "key": ["PKG", id] }, `Fetch ${id}`)
+                    .then(res => {
+                        if (res && res.answer && res.answer.value) {
+                            const pkg = res.answer.value;
+                            pkg.packageId = id; // Inject ID
+                            return pkg;
+                        }
+                        return null;
+                    });
+            });
+
+            const results = await Promise.all(promises);
+            packages = results.filter(p => p !== null);
+        }
+    }
+
+    // Apply Filters (Client-Side)
+    if (creator) {
+        packages = packages.filter(p => p.createdBy && p.createdBy.toLowerCase().includes(creator.toLowerCase()));
+    }
+    if (custodian) {
+        packages = packages.filter(p => p.currentCustodian && p.currentCustodian.toLowerCase().includes(custodian.toLowerCase()));
+    }
+    if (status) {
+        packages = packages.filter(p => p.state === status || p.status === status);
+    }
+    if (waste) {
+        packages = packages.filter(p => p.wasteType && p.wasteType.toLowerCase().includes(waste.toLowerCase()));
+    }
+    if (risk) {
+        // Check both riskCodes (plural) and riskCode (singular)
+        packages = packages.filter(p => {
+            const codes = p.riskCodes || p.riskCode;
+            if (!codes) return false;
+
+            if (Array.isArray(codes)) {
+                return codes.some(r => r.toLowerCase().includes(risk.toLowerCase()));
+            }
+            return String(codes).toLowerCase().includes(risk.toLowerCase());
+        });
+    }
+    if (weightMin !== null && !isNaN(weightMin)) {
+        packages = packages.filter(p => p.weightKg >= weightMin);
+    }
+    if (weightMax !== null && !isNaN(weightMax)) {
+        packages = packages.filter(p => p.weightKg <= weightMax);
+    }
+    if (transfer) {
+        packages = packages.filter(p => p.lastTransferId && p.lastTransferId.includes(transfer));
+    }
+
+    // Render Results
+    resultDiv.innerHTML = "";
+    if (packages.length === 0) {
+        resultDiv.innerHTML = '<div class="log-entry error">No packages found matching criteria.</div>';
+    } else {
+        packages.forEach(pkg => {
+            renderPackageCard(pkg, resultDiv);
+        });
+    }
+});
+
+function renderPackageCard(pkgData, container) {
+    let html = '<div class="inspector-grid" style="margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">';
+
+    // Explicitly show Package ID first
+    if (pkgData.packageId) {
+        html += `
+            <div class="inspector-item" style="border-bottom: 1px dashed var(--border); padding-bottom:5px; margin-bottom:5px; width:100%;">
+                <span class="inspector-label">Package ID</span>
+                <span class="inspector-value" style="font-weight:bold; color:var(--primary);">${pkgData.packageId}</span>
+            </div>
+        `;
+    }
+
+    // Custom sort/display
+    for (const [key, value] of Object.entries(pkgData)) {
+        if (key === "packageId") continue; // Already shown
+
+        let displayValue = value;
+        let badgeClass = "";
+
+        if (key === "state" || key === "status") {
+            const badgeType = String(value).toLowerCase();
+            badgeClass = `badge ${badgeType}`;
+            displayValue = `<span class="${badgeClass}">${value}</span>`;
+        } else if (key.endsWith("Ts") || key === "ts") {
+            displayValue = new Date(value).toLocaleString();
+        } else if (key === "weightKg") {
+            displayValue = `${value} kg`;
+        } else if (typeof value === 'object') {
+            displayValue = JSON.stringify(value);
+        }
+
+        html += `
+            <div class="inspector-item">
+                <span class="inspector-label">${key}</span>
+                <span class="inspector-value">${displayValue}</span>
+            </div>
+        `;
+    }
+    html += '</div>';
+
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = html;
+    container.appendChild(wrapper);
+}

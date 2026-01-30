@@ -69,14 +69,22 @@ app.post("/api/proxy", async (req, res) => {
         if (response.status === 200 && payload.cmd === "AddKV" && payload.class === "TRANSFER") {
             console.log("Intercepted TRANSFER. Attempting automatic Package update...");
 
-            // Extract IDs from Key: ["TR", "PKG-ID", "TRANSFER-ID"]
+            // Extract IDs from Key: ["TR", "TRANSFER-ID"]
             const keyParts = payload.key;
             console.log(`[DEBUG] Key Parts:`, keyParts);
 
-            if (Array.isArray(keyParts) && keyParts.length >= 3) {
-                const packageId = keyParts[1];
-                const transferId = keyParts[2];
+            if (Array.isArray(keyParts) && keyParts.length >= 2) {
+                const transferId = keyParts[1]; // Now index 1 is Transfer ID
                 const transferData = payload.value;
+
+                // Extract Package ID from the payload (form fields)
+                // Note: It might be directly in value or need checking
+                const packageId = transferData.packageId;
+
+                if (!packageId) {
+                    console.log("[DEBUG] No packageId in transfer data. Skipping update.");
+                    return res.status(response.status).json(response.data);
+                }
 
                 // 3. Get current Package data
                 const pkgData = await getPackage(packageId);
@@ -130,6 +138,11 @@ app.post("/api/proxy", async (req, res) => {
                         lastTransferId: transferId,
                         lastUpdateTs: new Date().toISOString()
                     };
+
+                    // [UPDATE] If Transfer has weight/waste info, update Package
+                    if (transferData.weightKg) newPkgValue.weightKg = transferData.weightKg;
+                    if (transferData.wasteType) newPkgValue.wasteType = transferData.wasteType;
+                    if (transferData.riskCode) newPkgValue.riskCode = transferData.riskCode;
 
                     const updatePayload = {
                         cmd: "AddKV",
