@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>HazChain - Login</title>
+</head>
+
+<body>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+    <div class="background-glow"></div>
+    <div class="app-container">
+        <!-- Global Navbar (Simplified for unauthenticated user) -->
+        <nav class="navbar">
+            <div class="nav-brand"><span class="icon">☣</span> HazChain</div>
+            <div class="nav-links">
+                <!-- No links if not logged in -->
+            </div>
+            <div class="nav-auth">
+                <button class="btn-login" title="Login"
+                    style="background: var(--primary); box-shadow: 0 0 15px var(--primary-glow);">👤</button>
+            </div>
+        </nav>
+
+        <header>
+            <h1>HazChain Access</h1>
+            <p class="hero-subtitle">Secure blockchain authentication portal</p>
+        </header>
+
+        <main>
+            <section class="card auth-card">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Login</div>
+                    <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Register</div>
+                </div>
+
+                <div id="error-msg" class="error-message"></div>
+                <div id="success-msg" class="success-message"></div>
+
+                <!-- Login Form -->
+                <form id="form-login" class="auth-form active" onsubmit="handleLogin(event)">
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" class="input-field" placeholder="Enter your username"
+                            required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" class="input-field" placeholder="Enter your password"
+                            required>
+                    </div>
+                    <button type="submit" class="btn primary"
+                        style="width: 100%; font-size: 1.1rem; padding: 1rem;">Access Dashboard</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="form-register" class="auth-form" onsubmit="handleRegister(event)">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="reg-username">Username</label>
+                        <input type="text" id="reg-username" class="input-field" placeholder="Choose a username"
+                            required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label for="reg-password">Password</label>
+                        <input type="password" id="reg-password" class="input-field" placeholder="Create a password"
+                            required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label for="reg-role">Role / Assignment</label>
+                        <select id="reg-role" class="input-field" style="cursor: pointer;" required>
+                            <option value="" disabled selected>Select your operational role...</option>
+                            <option value="LAB">🧪 Laboratory (Generator)</option>
+                            <option value="TRANSPORT_LIGHT">🚐 Light Transport (F1, F2)</option>
+                            <option value="HUB">🏭 Transit Hub</option>
+                            <option value="TRANSPORT_HAZ">🚛 Haz Transport (C1, C2)</option>
+                            <option value="LANDFILL">☢️ Landfill (Disposal)</option>
+                            <option value="SUPERUSER">👑 Superuser (Full Access)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn action"
+                        style="width: 100%; font-size: 1.1rem; padding: 1rem;">Register Account</button>
+                </form>
+            </section>
+        </main>
+
+        <footer>
+            ☣ HazChain Project · Cybersecurity · Blockchain Powered · Localhost:9999
+        </footer>
+    </div>
+
+    <script src="logic.js"></script>
+</body>
+
+</html>

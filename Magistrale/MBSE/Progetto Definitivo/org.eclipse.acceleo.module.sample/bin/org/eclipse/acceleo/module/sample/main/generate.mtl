@@ -1,0 +1,193 @@
+[comment encoding = UTF-8 /]
+[module generate('http://www.eclipse.org/uml2/5.0.0/Types', 'http://www.eclipse.org/uml2/5.0.0/UML')] 
+
+[comment ===================== MAIN (GENERATE ALL TYPES) ===================== /]
+[template public GenerateJava(aPackage : Package)]
+[comment @main/]
+[for (t : Type | aPackage.eAllContents(Package).ownedType)]
+    [if (t.oclIsKindOf(Class))]
+        [t.oclAsType(Class).GenerateJavaImplementation()/]
+    [elseif (t.oclIsKindOf(Interface))]
+        [t.oclAsType(Interface).GenerateJavaInterface()/]
+    [elseif (t.oclIsKindOf(Enumeration))]
+        [t.oclAsType(Enumeration).GenerateJavaEnum()/]
+    [/if]
+[/for]
+[/template]
+
+
+[comment ===================== CLASS ===================== /]
+[template public GenerateJavaImplementation(aClass : Class)]
+[file (aClass.name.concat('.java'), false, 'UTF-8')]
+
+package [aClass.namespace.name/]
+//[protected ('custom imports - preserved on regeneration')]
+import ... // add packages to be imported
+//[/protected]
+
+public class [aClass.name.toUpperFirst()/][if (aClass.generalization->size() > 0)] extends [aClass.generalization->any(true).general.name/][/if][if (aClass.getAllImplementedInterfaces()->size() > 0)] implements [for (i : Interface | aClass.getAllImplementedInterfaces()) separator(', ')][i.name/][/for][/if] {
+
+[comment ATTRIBUTES /]
+    //class attributes
+[for (p : Property | aClass.attribute)]
+    [p.visibility.toString()/] [p.jType()/] [p.name/];
+[/for]
+
+[comment Adding 'budget' attribute for '1000 ms ' PERIODIC STEREOTYPE/]
+[let fmStereotype : Stereotype = aClass.getAppliedStereotypes()->select(s | s.name='Periodic')->any(true)]
+    [if (not fmStereotype.oclIsUndefined() and aClass.getValue(fmStereotype, 'periodMs').toString() = '1000')]
+    private Integer periodMs; //attributo dello stereotipo Periodic
+    [/if]
+[/let]
+
+[comment generazione dell'attributo criticaly presente nel profili "SafetyCritical"/]
+[let st : Stereotype = aClass.getAppliedStereotypes()->select(s | s.name='SafetyCritical')->any(true)]
+[if (not st.oclIsUndefined())]
+  [let attr : Property = st.ownedAttribute->select(a | a.name='criticality')->any(true)]
+  [let lit  : EnumerationLiteral = aClass.getValue(st, 'criticality').oclAsType(EnumerationLiteral)]
+  [if (not attr.oclIsUndefined() and not lit.oclIsUndefined())]
+    private [attr.type.name/] criticality = [attr.type.name/].[lit.name.toUpper()/];
+  [/if]
+  [/let]
+  [/let]
+[/if]
+[/let]
+
+[comment CONSTRUCTORS /]
+    //constructor
+    [if (aClass.attribute->notEmpty())]
+    public [aClass.name.toUpperFirst()/]([for (p : Property | aClass.attribute) separator(', ')][p.jType()/] [p.name/][/for]){
+        [for (p : Property | aClass.attribute)]
+        this.[p.name/] = [p.name/];
+        [/for]
+        [let st : Stereotype = aClass.getAppliedStereotypes()->select(s | s.name='Periodic')->any(true)]
+            [if (not st.oclIsUndefined() and aClass.getValue(st, 'periodMs').toString() = '1000')]
+        this.periodMs = 1000;
+            [/if]
+        [/let]
+    }
+    [/if]
+
+[comment SET-GET METHODS /]
+    //SET and GET methods
+[for (p : Property | aClass.attribute) separator('\n\n')]
+    public [p.jType()/] get[p.name.toUpperFirst()/](){
+        return this.[p.name/];
+    }
+
+    public void set[p.name.toUpperFirst()/]([p.jType()/] value){
+        this.[p.name/] = value;
+    }
+[/for]
+
+[comment OPERATIONS /]
+    //class operations (owned)
+[for (op : Operation | aClass.ownedOperation) separator('\n\n')]
+    [op.visibility.toString()/] [op.jRet()/] [op.name/]([for (par : Parameter | op.ownedParameter->select(pp | pp.direction <> ParameterDirectionKind::return)) separator(', ')][par.jType()/] [par.name/][/for]){
+        //[protected (aClass.name.concat('_').concat(op.name).concat('_body : method body preserved'))]
+        // TODO: corpo non implementato. Inserisci qui l’implementazione (questa sezione non verrà sovrascritta).
+        [if (op.jRet() <> 'void')]return null;[/if]
+        //[/protected]
+    }
+[/for]
+
+[comment OPERATIONS TO IMPLEMENT /]
+    //operations to implement (interfaces + abstract inherited)
+[for (op : Operation |
+        (
+            aClass.getAllImplementedInterfaces()->collect(i | i.ownedOperation)->asSet()
+            ->union(aClass.getAllOperations()->select(o | o.isAbstract = true)->asSet())
+        )
+        ->select(o | not aClass.ownedOperation->exists(oo |
+            oo.name = o.name and
+            oo.ownedParameter->select(p | p.direction <> ParameterDirectionKind::return)->size()
+              = o.ownedParameter->select(p | p.direction <> ParameterDirectionKind::return)->size()
+        ))
+     ) separator('\n\n')]
+    @Override
+    public [op.jRet()/] [op.name/]([for (par : Parameter | op.ownedParameter->select(pp | pp.direction <> ParameterDirectionKind::return)) separator(', ')][par.jType()/] [par.name/][/for]){
+        //[protected(aClass.name.concat('_').concat('body : method body preserved'))]
+        // TODO: corpo non implementato. Inserisci qui l’implementazione (questa sezione non verrà sovrascritta).
+        [if (op.jRet() <> 'void')]return null;[/if]
+        //[/protected]
+    }
+[/for]
+
+}
+[/file]
+[/template]
+
+
+[comment ===================== INTERFACE ===================== /]
+[template public GenerateJavaInterface(aInterface : Interface)]
+[file (aInterface.name.concat('.java'), false, 'UTF-8')]
+
+package [aInterface.namespace.name/]
+//[protected ('custom imports - preserved on regeneration')]
+import ... // add packages to be imported
+//[/protected]
+
+public interface [aInterface.name.toUpperFirst()/]
+[if (aInterface.generalization->size() > 0)] extends [for (g : Generalization | aInterface.generalization) separator(', ')][g.general.name/][/for][/if]{
+
+[for (op : Operation | aInterface.ownedOperation) separator('\n\n')]
+    public [op.jRet()/] [op.name/]([for (par : Parameter | op.ownedParameter->select(pp | pp.direction <> ParameterDirectionKind::return)) separator(', ')][par.jType()/] [par.name/][/for]);
+[/for]
+
+}
+[/file]
+[/template]
+
+
+[comment ===================== ENUM ===================== /]
+[template public GenerateJavaEnum(anEnum : Enumeration)]
+[file (anEnum.name.concat('.java'), false, 'UTF-8')]
+
+package [anEnum.namespace.name/]
+//[protected ('custom imports - preserved on regeneration')]
+import ... // add packages to be imported
+//[/protected]
+
+public enum [anEnum.name.toUpperFirst()/] {
+[for (lit : EnumerationLiteral | anEnum.ownedLiteral) separator(',\n')]
+    [lit.name.toUpper()/]
+[/for]
+}
+[/file]
+[/template]
+
+
+[comment ===================== QUERIES ===================== /]
+
+[query public jRet(op : Operation) : String =
+if (op.getReturnResult().oclIsUndefined())
+then 'void'
+else op.getReturnResult().jType()
+endif
+/]
+
+[query public jType(te : TypedElement) : String =
+let base : String =
+    if (te.type.oclIsUndefined())
+    then 'Object'
+    else if (te.type.name = 'Real')
+        then 'Double'
+        else te.getPropertyType()
+        endif
+    endif
+in
+    if (te.oclIsKindOf(MultiplicityElement) and (te.oclAsType(MultiplicityElement).upper = -1 or te.oclAsType(MultiplicityElement).upper > 1))
+    then 'java.util.List<'.concat(base).concat('>')
+    else base
+    endif
+/]
+
+[query public getPropertyType(te: TypedElement) : String =
+if (te.type.oclIsUndefined())
+then 'Object'
+else if (te.type.toString().contains('String') and te.type.toString().contains('PrimitiveTypeImpl'))
+    then 'String'
+    else te.type.name
+    endif
+endif
+/]

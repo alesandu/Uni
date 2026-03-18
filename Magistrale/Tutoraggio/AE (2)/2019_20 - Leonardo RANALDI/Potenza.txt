@@ -1,0 +1,50 @@
+		;		ESPONENTE n^k
+		;
+		;		int i = 0;
+		;		int result = n;
+		;
+		;		while( i < k - 1 ) {
+		;		result = result * n;
+		;		i ++;
+		;		}
+		
+varN		EQU		3
+varK		EQU		3
+		
+		;		indirizzamento INDIRETTO
+		MOV		R0, #varN		; R0 <- n
+		MOV		R1, #varK		; R0 <- k
+		;		indirizzamento INDIRETTO(op1) IMMEDIATO(op2)
+		SUB		R1, R1, #1	; R1 <- k - 1
+		MOV		R2, #0		; R2 <- 0 ( i = 0 )
+		
+POW
+		;		indirizzamento IMMEDIATO
+		CMP		R2, R1
+		BLT		MUL			; if ( i < k - 1 ) then MUL
+		
+		END		;fine programma
+		
+		
+		
+		
+		
+		
+		;		MOLTIPLICAZIONE ( x * y )
+		
+MUL
+		;		indirizzamento IMMEDIATO
+		MOV		R12, #0		; R12 <- 0 ( risultato = 0 )
+		MOV		R11, #0  		; R11 <- 0 ( indice i = 0 )
+		
+		
+Ciclo
+		ADD		R12, R12, R0 		; risultato = risultato + x
+		ADD		R11, R11, #1		; i ++
+		CMP		R11, #varN		; confronto se i < y
+		BLT		Ciclo			; if conditio = TRUE GOTO Ciclo
+		
+		MOV		R0, R12			; aggiorno R0
+		ADD		R2, R2, #1		; i ++
+		
+		BAL		POW

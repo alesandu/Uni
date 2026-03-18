@@ -1,0 +1,20 @@
+.global _start
+_start:
+
+	MOV R0, #0x1
+	MOV R1, #0x3
+	MOV R2, #0x7
+	MOV R3, #0
+
+	CMP R0, R1
+	BLT else
+	MOV R3, R0
+	B fine
+else:
+	MOV R3, R1
+fine:
+	CMP R2, R3
+	BLT fine_2
+	MOV R3, R2
+	B fine_2
+fine_2:

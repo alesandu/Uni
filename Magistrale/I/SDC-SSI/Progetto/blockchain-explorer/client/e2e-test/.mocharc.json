@@ -1,7 +1,0 @@
-{
-	"watch-extensions": "js",
-	"recursive": true,
-	"spec": ["./specs/**/*.test.js"],
-	"timeout": 20000,
-	"extension": ["js"]
-}

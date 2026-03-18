@@ -1,0 +1,18 @@
+.global _start
+_start:
+	
+	LDR R0, =list
+	MOV R1, #2
+	MOV R2, #3
+	
+	LSL R1, R1, #2
+	LSL R2, R2, #2
+	
+	LDR R3, [R0,R1]
+	LDR R4, [R0,R2]
+	STR R4, [R0,R1]
+	STR R3, [R0,R2]
+
+.data
+list:
+	.word 3,1,5,10

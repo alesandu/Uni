@@ -1,0 +1,33 @@
+		;		SOMMA ELEMENTI DI UN VETTORE CON OPERAZIONI LOGICHE AND E OR
+		;
+		;		int A[] = {1,2,4,8,16,32,64,128};
+		;		int B[] = {1,2,4,8,16,32,64,128};
+		;		int i = 0;
+		;		int risultato = 0;
+		;		int c;						//variabile di appoggio
+		;		while ( i < 8 ) {
+		;		c = A[i] & B[i];
+		;		risultato = riusltato | c;		//equivalente a risultato += c;
+		;		i ++;
+		;		}
+		
+		
+arr_A	DCD		1,2,4,8,16,32,64,128	; array A[] = {1,2,4,8,16,32,64,128};
+arr_B	DCD		1,2,4,8,16,32,64,128	; array B[] = {1,2,4,8,16,32,64,128};
+		
+		
+		LDR		R5, =arr_A	; R5 <- puntatore all'array A
+		LDR		R6, =arr_B	; R6 <- puntatore all'array B
+		MOV		R1, #0		; R1 <- 0, sarà il registro dove salverò il risultato
+		MOV		R2, #0		; R2 <- indice degli array ( i = 0 )
+		MOV		R3, #32		; R3 <- dimensione dell'array di WORD a 32bit
+		
+Loop		LDR		R7, [R5,R2]	; R7 <- l'elemento di A dato da R5 (base array) + offset R2 (indice)
+		LDR		R8, [R6,R2]	; R8 <- B[i]
+		AND		R4, R7, R8	; R4 <- A[indice] AND B[indice]
+		ORR		R1, R1, R4	; R1 <- OR dell'AND attuale col precedente
+		ADD		R2, R2, #4	; i ++
+		CMP		R2, R3		; Guarda se siamo arrivati alla fine
+		BLT		Loop		; Se l'indice i è minore della dimensione dell'array continua
+		
+		END		; con questi valori deve dare 0xFF

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="generate" name="org.eclipse.acceleo.module.sample">
+    <property name="ECLIPSE_HOME" value="../../../../../../../../../usr/lib/eclipse"/>
+    <property name="ECLIPSE_WORKSPACE" value="../.."/>
+
+    <!-- The classpath with only the dependencies used by the project -->
+    <path id="org.eclipse.acceleo.module.sample.libraryclasspath">
+        <pathelement location="${ECLIPSE_WORKSPACE}/org.eclipse.acceleo.module.sample/bin"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.linux.x86_64_21.0.9.v20251105-0741/jre/lib/jrt-fs.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.34.100.v20251111-1421.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.24.0.v20251126-0427.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.osgi.compatibility.state_1.3.0.v20251022-1724.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.20.300.v20251111-0312.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.15.700.v20250725-1147.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.registry_3.12.600.v20250906-0651.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.preferences_3.12.100.v20251111-0704.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.osgi.service.prefs_1.1.2.202109301733.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.core.contenttype_3.9.800.v20251105-1620.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.app_1.7.500.v20250629-0337.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore_2.41.0.v20251025-0946.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.common_2.44.0.v20251025-0946.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.emf.ecore.xmi_2.39.0.v20250910-1205.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/com.google.guava_33.5.0.jre.jar"/>
+    </path>
+
+    <path id="org.eclipse.acceleo.module.sample.classpath">
+        <path refid="org.eclipse.acceleo.module.sample.libraryclasspath"/>
+    </path>
+
+    <!-- The classpath with only the jars available in the plugin folder of Eclipse -->
+    <path id="org.eclipse.acceleo.module.sample.libraryclasspath.alljars">
+        <pathelement location="../org.eclipse.acceleo.module.sample/bin"/>
+        <fileset dir="${ECLIPSE_HOME}/plugins/" includes="*.jar"/>
+    </path>
+
+    <path id="org.eclipse.acceleo.module.sample.classpath.alljars">
+        <path refid="org.eclipse.acceleo.module.sample.libraryclasspath.alljars"/>
+    </path>
+
+    <!-- The default task with the jars used by this project -->
+    <target name="generate">
+        <java classname="org.eclipse.acceleo.module.sample.main.Generate" classpathref="org.eclipse.acceleo.module.sample.classpath">
+            <arg value="${model}"/>
+            <arg value="${target}"/>
+        </java>
+    </target>
+
+    <!--
+        In case of problem you can also try with all the jar available in your Eclipse
+        Keep in mind that having two versions of the same jar can create problems
+    -->
+    <target name="generate.alljars">
+        <java classname="org.eclipse.acceleo.module.sample.main.Generate" classpathref="org.eclipse.acceleo.module.sample.classpath">
+            <arg value="${model}"/>
+            <arg value="${target}"/>
+        </java>
+    </target>
+</project>

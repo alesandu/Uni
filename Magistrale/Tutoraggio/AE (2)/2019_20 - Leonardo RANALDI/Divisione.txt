@@ -1,0 +1,35 @@
+		; DIVISIONE CON SOTTRAZIONI SUCCESSIVE
+		; N / D = Q + R
+		; Alg:
+		; while ( N >= D ) {
+		; 	N = N - D
+		; 	i ++
+		; }
+		; Q = i
+		; R = N
+		; Es: 80 / 15 = 5 + 5
+		
+Quoziente	DCD		0
+Resto		DCD		0
+Num		EQU		80
+Den		EQU		15
+		
+		MOV		R0, #Num	;R2 = Num
+		MOV		R1, #Den	;R1 = Den
+		MOV		R2, #0		;i = 0
+while
+		CMP		R0,R1
+		BGE		do
+		
+		MOV		R3, R2		;Q = i
+		MOV		R4, R0		;R = N
+		LDR		R5, =Quoziente  ;R5 = address Quoziente
+		LDR		R6, =Resto	;R6 = address Resto
+		STR		R3, [R5]	;carico in memoria il risultato
+		STR		R4, [R6]	;carico in memoria il risultato
+		END
+		
+do
+		SUB		R0, R0, R1	;N = N - D
+		ADD		R2, R2, #1	;i ++
+		BAL		while

@@ -1,0 +1,73 @@
+; Calcolo potenza
+; Codice 1
+MOV R0, #0x03;    // X
+MOV R1, #0x03;    // Y
+MOV R2, #0;       // Indice per la moltiplicazione
+MOV R3, #1;       // Indice per la potenza
+MOV R4, R0;       // Variabile temporanea per memorizzare X
+MOV R8, #0;       // Risultato della potenza
+
+
+while:             
+	CMP R3, R1; // Confronta l'indice di potenza con Y
+	BGE end;       // Se R3 >= R1, termina il ciclo
+	ADD R3, #1;    // Incrementa l'indice di potenza
+	B mul;         // Salta a mul per eseguire la moltiplicazione
+
+mul:              
+	CMP R2, R4     // Confronta l'indice di moltiplicazione con X
+	BGE endMul;    // Se R2 >= R4, termina la moltiplicazione
+	ADD R8, R8, R0; // Aggiunge X al risultato corrente
+	ADD R2, #1;    // Incrementa l'indice di moltiplicazione
+	B mul;         // Torna al ciclo di moltiplicazione
+
+endMul:           
+	MOV R0, R8;    // Memorizza il risultato della potenza in R0
+	MOV R2, #1;    // Reimposta l'indice di moltiplicazione a 1
+	B while;       // Torna all'inizio del ciclo principale
+
+end:              
+	NOP;          
+
+; Codice 2
+MOV R0, #4;       // X
+MOV R1, #3;       // Y
+MOV R2, #1;       // Indice per il secondo ciclo esterno
+MOV R3, #1;       // Indice per il secondo ciclo interno
+MOV R4, R0;       // Variabile temporanea per memorizzare X
+MOV R5, R4;       // Variabile temporanea per memorizzare il risultato
+
+while1:           
+	CMP R2, R1;    // Confronta l'indice esterno con Y
+	BEQ end1;      // Se R2 = R1, termina il ciclo esterno
+	while2:         
+		CMP R0, R3; // Confronta l'indice interno con X
+		BEQ end2;   // Se R0 = R3, termina il ciclo interno
+		ADD R3, #1; // Incrementa l'indice interno
+		ADD R4, R5; // Aggiunge il valore di X al risultato temporaneo
+		B while2;   // Torna all'inizio del ciclo interno
+
+	end2:         
+		MOV R3, #1; // Reimposta l'indice interno a 1
+		ADD R2, #1; // Incrementa l'indice esterno
+		MOV R5, R4; // Memorizza il risultato temporaneo in R5
+		B while1;   // Torna all'inizio del ciclo esterno
+
+end1:              
+	NOP;          
+	
+//Codice 3
+
+MOV R0, #3;
+MOV R1, #3;
+MOV R2, #1;
+MOV R3, #1;
+
+while:
+	CMP R2, R1;
+	BGT end;
+	MUL R3, R3, R0;
+	ADD R2, #1;
+	B while;
+end:
+	NOP;
