@@ -1,108 +1,45 @@
-#programma per calcola l'hamming de simonetta (tacci sua)
-#(alesandu_)
-
-def calcRedundantBits(m):
-
-	#calcolo dei bit
-	for i in range(m):
-		if(2**i >= m + i + 1):
-			return i
-
-def posRedundantBits(data, r):
-
-	#metti i bit nella posizione giusta
-	j = 0
-	k = 1
-	m = len(data)
-	res = ''
- 
-
-	#se non è potenza di 2 metti 0
-	for i in range(1, m + r+1):
-		if(i == 2**j):
-			res = res + '0'
-			j += 1
-		else:
-			res = res + data[-1 * k]
-			k += 1
-
-	#posizione rigirata
-	return res[::-1]
-
-
-def calcParityBits(arr, r):
-	n = len(arr)
-
-	#trova il bit di parità
-	for i in range(r):
-		val = 0
-		for j in range(1, n + 1):
-
-			if(j & (2**i) == (2**i)):
-				val = val ^ int(arr[-1 * j])
-
-		#concatena con il bit di parità
-		arr = arr[:n-(2**i)] + str(val) + arr[n-(2**i)+1:]
-	return arr
-
-
-def detectError(arr, nr):
-	n = len(arr)
-	res = 0
-
-	#ricalcola il bit di parità
-	for i in range(nr):
-		val = 0
-		for j in range(1, n + 1):
-			if(j & (2**i) == (2**i)):
-				val = val ^ int(arr[-1 * j])
-
-		res = res + val*(10**i)
-
-	#converti in decimale
-	return int(str(res), 2)
-
-def convert(x):
-    solv =''
+def calcola_sindrome(hex_string):
+    # Determina il numero di bit dalla lunghezza della stringa esadecimale
+    num_bits = len(hex_string) * 4
+    # Converte in binario e formatta per avere tutti i bit (inclusi gli zeri iniziali)
+    bin_string = bin(int(hex_string, 16))[2:].zfill(num_bits)
     
-    d = {'0': '0000', '1': '0001', '2': '0010', '3': '0011',
-         '4': '0100', '5': '0101', '6': '0110', '7': '0111',
-         '8': '1000', '9': '1001', 'A': '1010', 'B': '1011',
-         'C': '1100', 'D': '1101', 'E': '1110', 'F': '1111'}
+    # Determina quanti bit di parità (r) servono (cioè coprono fino a num_bits)
+    r = 0
+    while (2 ** r) <= num_bits:
+        r += 1
+        
+    syndrome_bits = []
     
-    for i in range(len(x)):
-        solv = solv + d[x[i]]
+    # Calcola il bit di parità per ogni posizione potenza di 2
+    # partendo dal più significativo fino al meno significativo (c8, c4, c2, c1...)
+    for i in range(r - 1, -1, -1):
+        pos = 2 ** i
+        parity = 0
+        for j in range(1, num_bits + 1):
+            # Controlla se il bit in posizione j (1-based da destra) appartiene a questo bit di parità
+            if (j & pos) != 0:
+                # Prende il j-esimo bit partendo da destra
+                bit_val = int(bin_string[-j])
+                parity ^= bit_val
+        syndrome_bits.append(str(parity))
+        
+    return "".join(syndrome_bits)
 
-    return solv
-
-data = input("Inserire seq in esadecimale: ")
-data = data.upper()
-data = convert(data)
-m = len(data)
-r = calcRedundantBits(m)
-print(r)
-arr = posRedundantBits(data, r)
-print(arr)
-arr = calcParityBits(arr, r)
-print(arr)
-print("L'array con i bit inseriti è: " + arr)
-print("i bit delle diverse posizioni sono: ")
-
-i = 1
-c = 0
-x = len(arr)
-while(i < x-1):
-    y = x-i
-    print("b"+str(c)+": ",arr[y])
-    i=2*i
-    c+=1
-
-arr = input("Inserire la sequenza di bit mandati dopo: ")
-i = 1
-c = 0
-x = len(arr)
-while(i < x-1):
-    y = x-i
-    print("b"+str(c)+": ",arr[y])
-    i=2*i
-    c+=1
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) > 1:
+        valore_hex = sys.argv[1].strip()
+        if valore_hex:
+            print(calcola_sindrome(valore_hex))
+    else:
+        while True:
+            try:
+                hex_input = input("Inserisci il valore esadecimale (o 'q' per uscire): ").strip()
+                if hex_input.lower() == 'q':
+                    break
+                if hex_input:
+                    print(calcola_sindrome(hex_input))
+            except (KeyboardInterrupt, EOFError):
+                print()
+                break

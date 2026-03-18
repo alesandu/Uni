@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Profile xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_BJNzcAOnEfGy6NgcnzyaXg" name="ATC_Profile" metaclassReference="_tEMJcAOnEfGy6NgcnzyaXg _-d1V0AOnEfGy6NgcnzyaXg">
+  <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_woJWAAXkEfGy6NgcnzyaXg" source="http://www.eclipse.org/uml2/2.0.0/UML">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_nXYCcA4tEfG9YuwUWA6G1Q" source="PapyrusVersion">
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_nXYpgA4tEfG9YuwUWA6G1Q" key="Version" value="0.0.0"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_nXYpgQ4tEfG9YuwUWA6G1Q" key="Comment" value="&lt;undefined>"/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_nXYpgg4tEfG9YuwUWA6G1Q" key="Copyright" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_nXYpgw4tEfG9YuwUWA6G1Q" key="Date" value=""/>
+      <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_nXYphA4tEfG9YuwUWA6G1Q" key="Author" value="&lt;undefined>"/>
+    </eAnnotations>
+    <contents xmi:type="ecore:EPackage" xmi:id="_7gcXkA4vEfG9YuwUWA6G1Q" name="ATC_Profile" nsURI="http:///schemas/ATC_Profile/_7gUbwA4vEfG9YuwUWA6G1Q/1" nsPrefix="ATC_Profile">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7gfa4A4vEfG9YuwUWA6G1Q" source="PapyrusVersion">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_7gfa4Q4vEfG9YuwUWA6G1Q" key="Version" value="0.0.2"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_7gfa4g4vEfG9YuwUWA6G1Q" key="Comment" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_7gfa4w4vEfG9YuwUWA6G1Q" key="Copyright" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_7gfa5A4vEfG9YuwUWA6G1Q" key="Date" value="2026-02-20"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_7gfa5Q4vEfG9YuwUWA6G1Q" key="Author" value=""/>
+      </eAnnotations>
+      <eClassifiers xmi:type="ecore:EClass" xmi:id="_7gcXkQ4vEfG9YuwUWA6G1Q" name="Subsystem">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7gcXkg4vEfG9YuwUWA6G1Q" source="http://www.eclipse.org/uml2/2.0.0/UML" references="_V0z4wAOnEfGy6NgcnzyaXg"/>
+        <eStructuralFeatures xmi:type="ecore:EReference" xmi:id="_7gcXkw4vEfG9YuwUWA6G1Q" name="base_Package" ordered="false">
+          <eType xmi:type="ecore:EClass" href="http://www.eclipse.org/uml2/5.0.0/UML#//Package"/>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xmi:type="ecore:EClass" xmi:id="_7gcXlQ4vEfG9YuwUWA6G1Q" name="Periodic">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7gcXlg4vEfG9YuwUWA6G1Q" source="http://www.eclipse.org/uml2/2.0.0/UML" references="_6bOcAAOnEfGy6NgcnzyaXg"/>
+        <eStructuralFeatures xmi:type="ecore:EReference" xmi:id="_7gcXlw4vEfG9YuwUWA6G1Q" name="base_Class" ordered="false">
+          <eType xmi:type="ecore:EClass" href="http://www.eclipse.org/uml2/5.0.0/UML#//Class"/>
+        </eStructuralFeatures>
+        <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="_7gcXmQ4vEfG9YuwUWA6G1Q" name="periodMs" ordered="false" lowerBound="1">
+          <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/uml2/5.0.0/Types#//Integer"/>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xmi:type="ecore:EClass" xmi:id="_7gcXmw4vEfG9YuwUWA6G1Q" name="SafetyCritical">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7gcXnA4vEfG9YuwUWA6G1Q" source="http://www.eclipse.org/uml2/2.0.0/UML" references="_nXCEMA4tEfG9YuwUWA6G1Q"/>
+        <eStructuralFeatures xmi:type="ecore:EReference" xmi:id="_7gcXnQ4vEfG9YuwUWA6G1Q" name="base_Class" ordered="false">
+          <eType xmi:type="ecore:EClass" href="http://www.eclipse.org/uml2/5.0.0/UML#//Class"/>
+        </eStructuralFeatures>
+        <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="_7gcXnw4vEfG9YuwUWA6G1Q" name="criticality" ordered="false" lowerBound="1" eType="_7gcXoQ4vEfG9YuwUWA6G1Q"/>
+      </eClassifiers>
+      <eClassifiers xmi:type="ecore:EEnum" xmi:id="_7gcXoQ4vEfG9YuwUWA6G1Q" name="CriticalityLevel">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_7gcXog4vEfG9YuwUWA6G1Q" source="http://www.eclipse.org/uml2/2.0.0/UML" references="_Cmb0wA4uEfG9YuwUWA6G1Q"/>
+        <eLiterals xmi:type="ecore:EEnumLiteral" xmi:id="_7gcXow4vEfG9YuwUWA6G1Q" name="HIGH"/>
+        <eLiterals xmi:type="ecore:EEnumLiteral" xmi:id="_7gcXpA4vEfG9YuwUWA6G1Q" name="MEDIUM" value="1"/>
+        <eLiterals xmi:type="ecore:EEnumLiteral" xmi:id="_7gcXpQ4vEfG9YuwUWA6G1Q" name="LOW" value="2"/>
+      </eClassifiers>
+    </contents>
+    <contents xmi:type="ecore:EPackage" xmi:id="_woNAYAXkEfGy6NgcnzyaXg" name="ATC_Profile" nsURI="http:///schemas/ATC_Profile/_woGSsAXkEfGy6NgcnzyaXg/0" nsPrefix="ATC_Profile">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_woO1kAXkEfGy6NgcnzyaXg" source="PapyrusVersion">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_woO1kQXkEfGy6NgcnzyaXg" key="Version" value="0.0.1"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_woO1kgXkEfGy6NgcnzyaXg" key="Comment" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_woO1kwXkEfGy6NgcnzyaXg" key="Copyright" value=""/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_woO1lAXkEfGy6NgcnzyaXg" key="Date" value="2026-02-09"/>
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_woO1lQXkEfGy6NgcnzyaXg" key="Author" value=""/>
+      </eAnnotations>
+      <eClassifiers xmi:type="ecore:EClass" xmi:id="_woNAYQXkEfGy6NgcnzyaXg" name="Subsystem">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_woNAYgXkEfGy6NgcnzyaXg" source="http://www.eclipse.org/uml2/2.0.0/UML" references="_V0z4wAOnEfGy6NgcnzyaXg"/>
+        <eStructuralFeatures xmi:type="ecore:EReference" xmi:id="_woNAYwXkEfGy6NgcnzyaXg" name="base_Package" ordered="false">
+          <eType xmi:type="ecore:EClass" href="http://www.eclipse.org/uml2/5.0.0/UML#//Package"/>
+        </eStructuralFeatures>
+      </eClassifiers>
+      <eClassifiers xmi:type="ecore:EClass" xmi:id="_woNAZQXkEfGy6NgcnzyaXg" name="Periodic">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_woNAZgXkEfGy6NgcnzyaXg" source="http://www.eclipse.org/uml2/2.0.0/UML" references="_6bOcAAOnEfGy6NgcnzyaXg"/>
+        <eStructuralFeatures xmi:type="ecore:EReference" xmi:id="_woNAZwXkEfGy6NgcnzyaXg" name="base_Class" ordered="false">
+          <eType xmi:type="ecore:EClass" href="http://www.eclipse.org/uml2/5.0.0/UML#//Class"/>
+        </eStructuralFeatures>
+        <eStructuralFeatures xmi:type="ecore:EAttribute" xmi:id="_woNAaQXkEfGy6NgcnzyaXg" name="periodMs" ordered="false" lowerBound="1">
+          <eType xmi:type="ecore:EDataType" href="http://www.eclipse.org/uml2/5.0.0/Types#//Integer"/>
+        </eStructuralFeatures>
+      </eClassifiers>
+    </contents>
+  </eAnnotations>
+  <elementImport xmi:type="uml:ElementImport" xmi:id="_tEMJcAOnEfGy6NgcnzyaXg" alias="Package">
+    <importedElement xmi:type="uml:Class" href="pathmap://UML_METAMODELS/UML.metamodel.uml#Package"/>
+  </elementImport>
+  <elementImport xmi:type="uml:ElementImport" xmi:id="_-d1V0AOnEfGy6NgcnzyaXg" alias="Class">
+    <importedElement xmi:type="uml:Class" href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class"/>
+  </elementImport>
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_BUG00AOnEfGy6NgcnzyaXg">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_BUM7cAOnEfGy6NgcnzyaXg">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_METAMODELS/UML.metamodel.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Stereotype" xmi:id="_V0z4wAOnEfGy6NgcnzyaXg" name="Subsystem">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_3JVNcAOnEfGy6NgcnzyaXg" name="base_Package" association="_3JSxMAOnEfGy6NgcnzyaXg">
+      <type xmi:type="uml:Class" href="pathmap://UML_METAMODELS/UML.metamodel.uml#Package"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_3JVNcQOnEfGy6NgcnzyaXg"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Extension" xmi:id="_3JSxMAOnEfGy6NgcnzyaXg" name="E_Subsystem_Package5" memberEnd="_3JT_UAOnEfGy6NgcnzyaXg _3JVNcAOnEfGy6NgcnzyaXg">
+    <ownedEnd xmi:type="uml:ExtensionEnd" xmi:id="_3JT_UAOnEfGy6NgcnzyaXg" name="extension_Subsystem" type="_V0z4wAOnEfGy6NgcnzyaXg" aggregation="composite" association="_3JSxMAOnEfGy6NgcnzyaXg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Stereotype" xmi:id="_6bOcAAOnEfGy6NgcnzyaXg" name="Periodic">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="__g7KgAOnEfGy6NgcnzyaXg" name="base_Class" association="__g58YAOnEfGy6NgcnzyaXg">
+      <type xmi:type="uml:Class" href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="__g7KgQOnEfGy6NgcnzyaXg"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_7wrWkAOoEfGy6NgcnzyaXg" name="periodMs">
+      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Extension" xmi:id="__g58YAOnEfGy6NgcnzyaXg" name="E_Periodic_Class8" memberEnd="__g6jcAOnEfGy6NgcnzyaXg __g7KgAOnEfGy6NgcnzyaXg">
+    <ownedEnd xmi:type="uml:ExtensionEnd" xmi:id="__g6jcAOnEfGy6NgcnzyaXg" name="extension_Periodic" type="_6bOcAAOnEfGy6NgcnzyaXg" aggregation="composite" association="__g58YAOnEfGy6NgcnzyaXg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Stereotype" xmi:id="_nXCEMA4tEfG9YuwUWA6G1Q" name="SafetyCritical">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_1qcfcA4tEfG9YuwUWA6G1Q" name="base_Class" association="_1qKyoA4tEfG9YuwUWA6G1Q">
+      <type xmi:type="uml:Class" href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_1qdGgA4tEfG9YuwUWA6G1Q"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_XwmP8A4vEfG9YuwUWA6G1Q" name="criticality" type="_Cmb0wA4uEfG9YuwUWA6G1Q"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Extension" xmi:id="_1qKyoA4tEfG9YuwUWA6G1Q" name="E_SafetyCritical_Class1" memberEnd="_1qbRUA4tEfG9YuwUWA6G1Q _1qcfcA4tEfG9YuwUWA6G1Q">
+    <ownedEnd xmi:type="uml:ExtensionEnd" xmi:id="_1qbRUA4tEfG9YuwUWA6G1Q" name="extension_SafetyCritical" type="_nXCEMA4tEfG9YuwUWA6G1Q" aggregation="composite" association="_1qKyoA4tEfG9YuwUWA6G1Q"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Enumeration" xmi:id="_Cmb0wA4uEfG9YuwUWA6G1Q" name="CriticalityLevel">
+    <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_HGaAAA4uEfG9YuwUWA6G1Q" name="HIGH"/>
+    <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_aLurEA4uEfG9YuwUWA6G1Q" name="MEDIUM"/>
+    <ownedLiteral xmi:type="uml:EnumerationLiteral" xmi:id="_caaJIA4uEfG9YuwUWA6G1Q" name="LOW"/>
+  </packagedElement>
+  <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_pYxLIAOoEfGy6NgcnzyaXg">
+    <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_pY01gAOoEfGy6NgcnzyaXg" source="http://www.eclipse.org/uml2/2.0.0/UML">
+      <references xmi:type="ecore:EPackage" href="pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#_Kv8EIKFXEeS_KNX0nfvIVQ"/>
+    </eAnnotations>
+    <appliedProfile xmi:type="uml:Profile" href="pathmap://PAPYRUS_ACTIONLANGUAGE_PROFILE/ActionLanguage-Profile.profile.uml#ActionLanguage"/>
+  </profileApplication>
+</uml:Profile>

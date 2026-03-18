@@ -1,0 +1,16 @@
+		;		ESEMPIO MOLTIPLICAZIONE PER 36
+		;
+		;		n * 36 =
+		;		= n * (32 + 4) =
+		;		= (n * 2^5) + (n * 2^2)
+		;		= x5Left_shift(n) + x2Left_shift(n)
+		
+varN		EQU		5
+		
+		MOV		R0, #varN	; R0 <- n
+		LSL		R1, R0, #5	; R1 <- x5Left_shift(n)  ( shift sinistro 5 volte )
+		LSL		R2, R0, #2	; R2 <- x2Left_shift(n)  ( shift sinistro 2 volte )
+		ADD		R3, R1, R2	; R3 <- x5Left_shift(n) + x2Left_shift(n)   ( risultato finale )
+
+		END
+		

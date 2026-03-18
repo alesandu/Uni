@@ -1,0 +1,27 @@
+		;		SOMMA ELEMENTI DI UN VETTORE
+		;		int A[]= {1,2,3,4,5,6,7,8,9,10};
+		;		int i = 0;
+		;		int sum = 0;
+		;		while( i < 10 ){
+		;		sum = sum + A[i];
+		;		i ++;
+		;		}
+		
+		
+arr_A	DCD		1,2,3,4,5,6,7,8,9,10	; inizializzo un array e ne definisco un indirizzo in maniera INDIRETTA
+		
+		; 		indirizzamento INDIRETTO
+		LDR		R2, =arr_A	; carico in R2 l'indirizzo dell'array
+		MOV		R1, #0		; R0 <- 0 ( summ )
+		;		indirizzamento a registro
+		MOV		R3, R2		; R3 = R2
+		ADD		R3, R3, #40	; R3 = R2 + 40 (size(array) * 4byte) UPPERBOUND ULTIMO INDIRIZZO IN MEMORIA DI A
+		
+		; 		indirizzamento a REGISTRO INDIRETTO ( R2 è il PUNTATORE all'array )
+Loop		LDR		R4, [R2]	; R4 <- A[0]
+		ADD		R1, R1, R4	; R1 <- R1 + R4 ( sum = sum + A[i] )
+		ADD		R2, R2, #4	; R2 <- R2 + 4 ( i ++ )
+		CMP		R2, R3		; confronto indice puntato da R2 con il mio upperbound puntato da R3
+		BLT		Loop		; se R2 < R3 allora vado ( GOTO ) a Loop
+		
+		END

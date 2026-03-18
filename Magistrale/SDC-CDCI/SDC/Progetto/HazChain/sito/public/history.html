@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>HazChain - Package History</title>
+    <style>
+        /* ── History-specific styles ── */
+        .history-search-bar {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .history-search-bar .input-field {
+            flex: 1 1 240px;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .history-search-bar .btn {
+            flex: 0 0 auto;
+        }
+
+        /* Timeline */
+        .history-timeline {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.85rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--primary), transparent);
+            border-radius: 2px;
+        }
+
+        .timeline-entry {
+            position: relative;
+            margin-bottom: 1.25rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .timeline-entry:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -2rem;
+            top: 1rem;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid var(--bg);
+            box-shadow: 0 0 8px var(--primary);
+        }
+
+        .timeline-dot.deleted {
+            background: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-ts {
+            font-size: 0.78rem;
+            color: var(--text-muted, #888);
+            letter-spacing: 0.3px;
+        }
+
+        .timeline-txid {
+            font-size: 0.7rem;
+            color: #666;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .timeline-state-badge {
+            display: inline-block;
+            padding: 0.2rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: rgba(var(--primary-rgb, 99, 102, 241), 0.18);
+            color: var(--primary);
+            border: 1px solid rgba(var(--primary-rgb, 99, 102, 241), 0.35);
+        }
+
+        .timeline-state-badge.deleted-badge {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .timeline-fields {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        .timeline-field {
+            font-size: 0.82rem;
+            color: var(--text-secondary, #aaa);
+        }
+
+        .timeline-field span {
+            color: var(--text-primary, #eee);
+            font-weight: 600;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted, #666);
+            font-size: 1rem;
+        }
+
+        .history-empty .big-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pkg-summary-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 0.85rem 1.2rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .pkg-summary-bar .pill {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: var(--text-secondary, #aaa);
+        }
+
+        .pkg-summary-bar .pill span {
+            color: var(--text-primary, #eee);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background-glow"></div>
+    <div class="app-container">
+        <!-- Global Navbar -->
+        <nav class="navbar">
+            <div class="nav-brand"><span class="icon">☣</span> HazChain</div>
+            <div class="nav-links">
+                <a href="alerts.html">Alerts</a>
+                <a href="lab.html">Lab</a>
+                <a href="van.html">Van</a>
+                <a href="hub.html">Hub</a>
+                <a href="truck.html">Truck</a>
+                <a href="landfill.html">Landfill</a>
+                <a href="history.html" class="active">History</a>
+            </div>
+            <div class="nav-auth">
+                <button class="btn-login" title="Login">👤</button>
+            </div>
+        </nav>
+
+        <header>
+            <h1>Storico Pacchi</h1>
+            <p class="hero-subtitle">Audit trail immutabile di ogni pacco di rifiuti pericolosi</p>
+        </header>
+
+        <main>
+            <div class="hero-banner">
+                <div class="hero-icon">📜</div>
+                <div class="hero-text">
+                    <h2>Tracciabilità Immutabile</h2>
+                    <p>Ogni record è una transazione blockchain. Inserisci un ID pacco per vedere ogni
+                        cambio di stato dalla creazione allo smaltimento, in ordine cronologico inverso.</p>
+                </div>
+            </div>
+
+            <!-- Search Card -->
+            <section class="card">
+                <h2><span class="step-num">🔍</span> Search Package History</h2>
+                <div class="history-search-bar" style="margin-top:1rem;">
+                    <input type="text" id="history-pkg-id" class="input-field"
+                        placeholder="Package ID  e.g. PKG-2026-10056" autocomplete="off">
+                    <button id="btn-history-search" class="btn primary">Load History</button>
+                    <button id="btn-history-clear" class="btn text">Clear</button>
+                </div>
+            </section>
+
+            <!-- Results Card -->
+            <section class="card" id="history-results-card" style="display:none;">
+                <div class="log-header">
+                    <h2 id="history-results-title">History</h2>
+                    <span id="history-entry-count" style="font-size:0.85rem;color:var(--text-muted,#888);"></span>
+                </div>
+
+                <!-- Package summary bar (populated dynamically) -->
+                <div id="history-pkg-summary" class="pkg-summary-bar" style="display:none;"></div>
+
+                <!-- Timeline -->
+                <div class="history-timeline" id="history-timeline">
+                    <div class="history-empty">
+                        <div class="big-icon">📭</div>
+                        No records loaded yet.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Log -->
+            <section class="card log-section">
+                <div class="log-header">
+                    <h2><span class="status-dot"></span> System Log</h2>
+                    <button id="btn-clear-log" class="btn text">Clear</button>
+                </div>
+                <div id="log-console" class="console">
+                    <div class="log-entry system">History module ready. Enter a Package ID to begin.</div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            ☣ HazChain Project · Cybersecurity · Blockchain Powered · Localhost:9999
+        </footer>
+    </div>
+    <script src="ui.js"></script>
+    <script src="logic.js"></script>
+    <script>
+        // ── History page controller ──
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('history-pkg-id');
+            const searchBtn = document.getElementById('btn-history-search');
+            const clearBtn = document.getElementById('btn-history-clear');
+
+            searchBtn.addEventListener('click', () => {
+                const raw = searchInput.value.trim();
+                if (!raw) return;
+                // Accept bare numbers like "10056" → expand to "PKG-2026-10056"
+                const pkgId = /^\d+$/.test(raw) ? `PKG-2026-${raw}` : raw;
+                fetchPackageHistory(pkgId);
+            });
+
+            searchInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') searchBtn.click();
+            });
+
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                document.getElementById('history-results-card').style.display = 'none';
+                document.getElementById('history-timeline').innerHTML =
+                    '<div class="history-empty"><div class="big-icon">📭</div>No records loaded yet.</div>';
+            });
+
+            // Support ?pkg=PKG-2026-XXXXX in URL
+            const params = new URLSearchParams(window.location.search);
+            const pkgParam = params.get('pkg');
+            if (pkgParam) {
+                searchInput.value = pkgParam;
+                fetchPackageHistory(pkgParam);
+            }
+        });
+    </script>
+</body>
+
+</html>

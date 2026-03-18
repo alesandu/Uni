@@ -1,3 +1,31 @@
+# 1. Ignora tutto
 *
-!*.*
+
+# 2. Permetti di esplorare le directory
 !*/
+
+# 3. Includi tutti i file con estensione (REGOLA GENERALE)
+!*.*
+
+# 4. ECCEZIONI SPECIFICHE (Queste vincono su !*.* perché scritte dopo)
+# Rimuove node_modules ovunque sia nel progetto
+**/node_modules/
+**/.venv/
+**/.env
+**/.metadata/
+
+# Altre esclusioni specifiche
+Magistrale/SDC-CDCI/SDC/Progetto/*
+!Magistrale/SDC-CDCI/SDC/Progetto/HazChain/
+!Magistrale/SDC-CDCI/SDC/Progetto/clean-start.sh
+!Magistrale/SDC-CDCI/SDC/Progetto/clean-blockchain.sh
+!Magistrale/SDC-CDCI/SDC/Progetto/clean-all.sh
+!Magistrale/SDC-CDCI/SDC/Progetto/generatore.json
+!Magistrale/SDC-CDCI/SDC/Progetto/RunMeFirst
+!Magistrale/SDC-CDCI/SDC/Progetto/README.md
+!Magistrale/SDC-CDCI/SDC/Progetto/simply-start.sh
+Triennale/Tesi/Documenti/
+Triennale/Tesi/hash_outputs/
+Triennale/Tesi/TesiRingraziamenti.pdf
+Triennale/Tesi/TesiSandu.pdf
+Magistrale/MBSE/Progetto Definitivo.zip

@@ -1,0 +1,13 @@
+.global _start
+_start:
+	MOV R0, #0xF
+	MOV R1, #0x5
+	MOV R2, #0
+while_0:
+	CMP R0,R1
+	BLT end_0
+	SUB R0, R0, R1
+	ADD R2, R2, #1
+	B while_0 // Branch senza condizione 
+end_0:
+	

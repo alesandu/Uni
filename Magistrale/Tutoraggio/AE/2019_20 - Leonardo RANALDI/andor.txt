@@ -1,0 +1,16 @@
+Aarr		DCD		1,2,4,8,16,32,64,128
+Barr		DCD		1,2,4,8,16,32,64,128
+		LDR		R5, =Aarr		; R5 puntatore all'array A
+		LDR		R6, =Barr		; R6 puntatore all'array B
+		MOV		R1,#0			; In R1 il risultato
+		MOV		R2,#0			; In R2 l'indice degli array
+		MOV		R3, R2			; In R3 La dimensione dell'array di WORD a 32bit	
+		ADD		R3,R3,#32		; array di 8 elementi
+Loop		LDR		R7,[R5,R2]	; in R7 l'elemento di A dato da R5 ( base array) + offset R2 (indice)
+		LDR		R8,[R6,R2]		; In R8 l'elemento di B
+		AND		R4,R7,R8		; A[indice] AND B[indice]
+		ORR		R1,R1,R4		; OR dell'AND attuale col precedente
+		ADD		R2,R2,#4		; Avanti l'indice R2 al successivo
+		CMP		R2,R3			; Guarda se siamo arrivati alla fine
+		BLT		Loop				; Se l'indice è minore della dimensione dell'array continua
+		END		; con questi valori deve dare 0xFF
