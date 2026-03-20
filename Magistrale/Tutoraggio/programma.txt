@@ -1,0 +1,61 @@
+Le invio di seguito l’indice completo degli esercizi svolti.
+
+x) CSA1.pptx (FIUSCO)
+x) Un esercizio base 2 -> base 8
+x) Un esercizio base 2 -> base 16
+x) Un esercizio base 2 -> base 10
+x) Un esercizio base 8 -> base 2
+x) Un esercizio base 8 -> base 16
+x) Un esercizio base 8 -> base 10
+x) Un esercizio base 16 -> base 10
+x) Un esercizio base 10 -> base 2
+x) Un esercizio base 10 -> base 16
+
+x) CSA2.pptx (FIUSCO)
+x) Un esercizio Hamming per calcolare i bit di correzione dell errore da aggiugnere
+x) Esercizio Hamming 1: data una sequenza calcolare i bit di controllo
+x) Esercizio Hamming 2: data una sequenza calcolare i bit di controllo
+x) Esercizio Hamming 3: data una sequenza calcolare i bit di controllo
+x) Un esercizio sulla risoluzione equazione tramite tavola di verità
+x) Un esercizio di uguaglianza tra espressioni usando proprietà di DeMorgan e Assorbimento
+(Anche la Lezione 2 di BONIFATI contiene altri esercizi di Hamming)
+
+x) CSA3.pptx (FIUSCO)
+x) Un esercizio di uguagliazna tra espressioni booleane usando proprietà Complementi, Idempotenza, Distributiva
+x) Un esercizio sulle Mappe di Karnaugh
+
+4) Lezione1 (BONIFATI)
+4.1) Tutte le proprietà della algebra booleana
+4.2) Esercizio 1: da espressione logica a tavola di verità
+4.3) Esercizio 2: da espressione logica a tavola di verità
+4.4) Esercizio 3: da espressione logica a tavola di verità
+4.5) Equivalenze tra operatori e operatori unviersali
+4.6) Esercizio Passaggio da tavola di verità a forma canonica
+
+5) Lezione 2 (BONIFATI) e Algebra di Boole (CIASCO)
+5.1) Un esercizio di trasformazione da espressione logica a circuito usando esclusivamente porte universali
+5.2) Un esercizio di trasformazione da espressione logica a circuito digitale e utilizzando un multiplexer
+
+6) EX4 (STRAZULLA)
+6.1) Esercizio notazione polacca inversa
+6.2) Esercizio decodifica dell'indirizzo indirizzamento (memory mapped IO, IO mapped ed ibrido)
+
+z) Introduzione ARM pdf (RINALDI)
+x) Architettura base ARM e registri
+x) Set di istruzioni aritmetiche-logiche ADD, ADC, SUB, SBC, RSB, RSC, MUL, AND, OR, XOR, BIC
+x) Set di istruzioni memorizzazione MOV, MVN
+x) Set istruzioni shift LSL, LSR, ASR, ROR, RRX
+x) Set di istruzione comparazione CMP, xLT, xGT, TEQ, TST
+
+x) ARM e NSD (CIASCO)
+x) DNS (Diagrammi Nassi Shneiderman) con sequenza, selezione e iterazione
+8.1) esercizio in ARM Divisione intera in ARM
+8.2) esercizio in ARM Somma dei primi N numeri naturali
+
+9) Esercizi ARM txt (RINALDI)
+9.1) esercizio in ARM Potenza
+9.2) esercizio in ARM Somma_vettore
+
+10) ARM e NSD (CIASCO)
+10.1) esercizio in ARM N-esimo termine della successione di Fibonacci
+10.2) esercizio in ARM scambiare elementi di due array
