@@ -1,1 +1,0 @@
-docker run -ti --net host --volume "$PWD":/vapps -v /:/altro dozenapps/va:20250925 /bin/bash -c 'cd /vapps; guile -C . -c "(load \"generatore.scm\")(generate-all)"'
