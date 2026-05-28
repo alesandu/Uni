@@ -11,6 +11,16 @@ function addSafeEventListener(id, event, handler) {
 }
 
 /**
+ * Funzione di escaping per prevenire XSS
+ */
+function escapeHtml(str) {
+    if (str == null) return "";
+    const div = document.createElement('div');
+    div.textContent = String(str);
+    return div.innerHTML;
+}
+
+/**
  * Scrive un messaggio nella console log visuale.
  */
 function log(message, type = "info") {
@@ -20,7 +30,8 @@ function log(message, type = "info") {
     entry.className = `log-entry ${type}`;
 
     const time = new Date().toLocaleTimeString();
-    entry.innerHTML = `<span class="time">[${time}]</span> ${message}`;
+    const safeMessage = escapeHtml(message);
+    entry.innerHTML = `<span class="time">[${time}]</span> ${safeMessage}`;
 
     consoleDiv.appendChild(entry);
     consoleDiv.scrollTop = consoleDiv.scrollHeight;

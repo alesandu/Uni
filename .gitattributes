@@ -1,0 +1,19 @@
+# Tratta le immagini come binari
+*.png binary
+*.jpg binary
+*.gif binary
+
+# File critici della Blockchain e compilati
+*.block binary
+*.so binary
+*.key binary
+*.crt binary
+*.pem binary
+
+# Forza LF per il codice sorgente (Go, Lisp, Java, ecc)
+*.go text eol=lf
+*.java text eol=lf
+*.xml text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf

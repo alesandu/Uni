@@ -13,9 +13,11 @@
 **/.venv/
 **/.env
 **/.metadata/
+**/__pycache__/
 
 # Altre esclusioni specifiche
 Magistrale/SDC-CDCI/SDC/Progetto/*
+Magistrale/MBSE/Progetto\ Definitivo
 !Magistrale/SDC-CDCI/SDC/Progetto/HazChain/
 !Magistrale/SDC-CDCI/SDC/Progetto/clean-start.sh
 !Magistrale/SDC-CDCI/SDC/Progetto/clean-blockchain.sh
@@ -29,3 +31,14 @@ Triennale/Tesi/hash_outputs/
 Triennale/Tesi/TesiRingraziamenti.pdf
 Triennale/Tesi/TesiSandu.pdf
 Magistrale/MBSE/Progetto Definitivo.zip
+Magistrale/SDC-CDCI/CDCI/kali-linux-2026.1-qemu-amd64.7z
+Magistrale/SDC-CDCI/CDCI/kali-linux-2026.1-qemu-amd64.qcow2
+Magistrale/SDC-CDCI/SDC/Progetto/*
+Magistrale/PCD/pcd2526
+Magistrale/PCD/Prova
+HackathonAvalanche2025/cache/*
+HackathonAvalanche2025/broadcast/*
+HackathonAvalanche2025/artifacts/*
+*.mp3
+Triennale/II/ASD/Algoritmi_mod1.pdf
+Triennale/II/FO/Teoria/Fondamenti 2.pdf

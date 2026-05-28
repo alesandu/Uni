@@ -94,9 +94,9 @@ async function getActorOptions(filterStr) {
 
 /**
  * Genera il prossimo ID sequenziale.
- * @param {string} className - "PACKAGE", "TRANSFER", "ALERT"
- * @param {string} bucket - "PKG", "TR", "AL"
- * @param {string} prefix - "PKG-2026-", "TR-F-", "TR-C-", "AL-"
+ * @param {string} className - "PACKAGE", "TRANSFER", "ALERT", "LOG"
+ * @param {string} bucket - "PKG", "TR", "AL", "LOG-NORMAL", ecc.
+ * @param {string} prefix - "PKG-2026-", "TR-F-", "LOG-NORMAL-", ecc.
  * @returns {string} Il prossimo ID, es. "PKG-2026-0001"
  */
 async function generateNextId(className, bucket, prefix) {
@@ -115,6 +115,69 @@ async function generateNextId(className, bucket, prefix) {
     return prefix + String(nextNum).padStart(4, '0');
 }
 
+// --- LOGIN (credenziali su blockchain) ---
+
+/** Recupera credenziali utente per username. */
+async function getLogin(username) {
+    return getKV("LOGIN", ["LGN", username]);
+}
+
+/** Salva/aggiorna credenziali utente. */
+async function setLogin(username, loginData) {
+    return addKV("LOGIN", ["LGN", username], loginData);
+}
+
+/** Lista di tutti gli utenti registrati. */
+async function getAllLogins() {
+    const keys = await getKeys("LOGIN", ["LGN"]);
+    return keys.map(k => k[1]);
+}
+
+// --- LOG (registro operazioni su blockchain) ---
+
+/**
+ * Scrive un entry nel LOG con criticità nella chiave.
+ * @param {"NORMAL"|"WARNING"|"CRITICAL"} level
+ * @param {Object} logData
+ * @returns {string} logId generato
+ */
+async function writeLog(level, logData) {
+    const bucket = `LOG-${level}`;
+    const prefix = `${bucket}-`;
+    const logId = await generateNextId("LOG", bucket, prefix);
+    logData.ts = new Date().toISOString();
+    logData.level = level;
+    await addKV("LOG", [bucket, logId], logData);
+    return logId;
+}
+
+/**
+ * Recupera tutti i log di un livello.
+ * @param {"NORMAL"|"WARNING"|"CRITICAL"} level
+ */
+async function getLogs(level) {
+    const bucket = `LOG-${level}`;
+    const keys = await getKeys("LOG", [bucket]);
+    const promises = keys.map(k => {
+        const id = k[1];
+        return getKV("LOG", [bucket, id]).then(data => {
+            if (data) { data.id = id; return data; }
+            return null;
+        });
+    });
+    return (await Promise.all(promises)).filter(l => l !== null);
+}
+
+/**
+ * Recupera un singolo log entry.
+ */
+async function getLogEntry(logId) {
+    let bucket = "LOG-NORMAL";
+    if (logId.startsWith("LOG-WARNING-")) bucket = "LOG-WARNING";
+    else if (logId.startsWith("LOG-CRITICAL-")) bucket = "LOG-CRITICAL";
+    return getKV("LOG", [bucket, logId]);
+}
+
 module.exports = {
     fabricCall,
     addKV,
@@ -126,5 +189,14 @@ module.exports = {
     getTransfer,
     getActor,
     getActorOptions,
-    generateNextId
+    generateNextId,
+    // LOGIN
+    getLogin,
+    setLogin,
+    getAllLogins,
+    // LOG
+    writeLog,
+    getLogs,
+    getLogEntry
 };
+

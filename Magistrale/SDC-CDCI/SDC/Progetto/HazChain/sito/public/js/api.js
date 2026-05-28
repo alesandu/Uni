@@ -1,20 +1,19 @@
 // --- Client HTTP per comunicare col backend ---
 // Nessuna logica di business, solo fetch wrapper.
 
-const API_BASE = "http://localhost:3000";
+const API_BASE = "";
 
 function getAuthHeaders() {
-    const token = localStorage.getItem("token");
     return {
-        "Content-Type": "application/json",
-        ...(token ? { "Authorization": `Bearer ${token}` } : {})
+        "Content-Type": "application/json"
     };
 }
 
 async function apiCall(method, path, body = null) {
     const options = {
         method,
-        headers: getAuthHeaders()
+        headers: getAuthHeaders(),
+        credentials: "include"
     };
     if (body) {
         options.body = JSON.stringify(body);
@@ -41,6 +40,8 @@ const API = {
     disposePackage: (data) => apiCall("POST", "/api/operations/dispose-package", data),
     createActor: (data) => apiCall("POST", "/api/operations/create-actor", data),
     dismissAlert: (data) => apiCall("POST", "/api/operations/dismiss-alert", data),
+    purgeAllAlerts: () => apiCall("POST", "/api/operations/purge-all-alerts"),
+    purgeAllLogs: () => apiCall("POST", "/api/operations/purge-all-logs"),
 
     // Query
     getPackage: (id) => apiCall("GET", `/api/query/package/${encodeURIComponent(id)}`),
@@ -59,7 +60,19 @@ const API = {
     getTransfer: (id) => apiCall("GET", `/api/query/transfer/${encodeURIComponent(id)}`),
     getNextId: (className, bucket, prefix) => apiCall("GET", `/api/query/next-id?class=${encodeURIComponent(className)}&bucket=${encodeURIComponent(bucket)}&prefix=${encodeURIComponent(prefix)}`),
 
+    // LOG
+    getLogs: (level = "NORMAL") => apiCall("GET", `/api/query/logs?level=${encodeURIComponent(level)}`),
+    getLogChain: (logId) => apiCall("GET", `/api/query/log-chain/${encodeURIComponent(logId)}`),
+
     // Auth
     login: (username, password) => apiCall("POST", "/api/login", { username, password }),
-    register: (username, password, role) => apiCall("POST", "/api/register", { username, password, role })
+    register: (data) => apiCall("POST", "/api/register", data),
+    logout: () => apiCall("POST", "/api/logout"),
+    me: () => apiCall("GET", "/api/me"),
+
+    // Admin (SUPERUSER only)
+    createUser: (data) => apiCall("POST", "/api/admin/create-user", data),
+    getUsers: () => apiCall("GET", "/api/admin/users"),
+    updateUser: (data) => apiCall("PUT", "/api/admin/update-user", data),
+    deleteUser: (username) => apiCall("DELETE", `/api/admin/delete-user/${encodeURIComponent(username)}`)
 };

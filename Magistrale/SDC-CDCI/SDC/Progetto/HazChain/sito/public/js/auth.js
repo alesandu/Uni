@@ -1,65 +1,122 @@
 // --- Auth UI: Login, Register, Session Management ---
 
-// Gestione sessione
-const token = localStorage.getItem('token');
-const userStr = localStorage.getItem('user');
+// Mappa ruolo → pagina
+const ROLE_PAGES = {
+    'LAB': 'lab.html',
+    'TRANSPORT_LIGHT': 'van.html',
+    'HUB': 'hub.html',
+    'TRANSPORT_HAZ': 'truck.html',
+    'LANDFILL': 'landfill.html',
+    'OPERATOR': 'history.html',
+    'SUPERUSER': 'alerts.html'
+};
 
-// Se non c'è token, reindirizza a login.html
-if (!token || !userStr) {
-    if (!window.location.pathname.endsWith('login.html')) {
-        window.location.href = 'login.html';
+const _currentPath = window.location.pathname;
+const _isLoginPage = _currentPath.endsWith('login.html') || _currentPath.endsWith('login-only.html') || _currentPath === '/';
+
+// Verifica la sessione con il server (cookie JWT) — fonte di verità
+(async function checkSession() {
+    let serverUser = null;
+    try {
+        serverUser = await API.me();
+    } catch (_) {
+        // Sessione non valida o assente
+        serverUser = null;
     }
-}
 
-// Utente corrente
-let currentUser = null;
-if (userStr) {
-    currentUser = JSON.parse(userStr);
+    if (!serverUser) {
+        // Sessione non valida: pulisci localStorage e vai al login se necessario
+        localStorage.removeItem('user');
+        if (!_isLoginPage) {
+            window.location.href = 'login-only.html';
+        }
+        return;
+    }
 
-    // Aggiornamento UI navbar
-    window.addEventListener('DOMContentLoaded', () => {
+    // Sessione valida: sincronizza localStorage col server
+    localStorage.setItem('user', JSON.stringify(serverUser));
+    const currentUser = serverUser;
+
+    // --- Access Control: pagine riservate al SUPERUSER ---
+    const isSuperuserPage = _currentPath.endsWith('logs.html') || _currentPath.endsWith('alerts.html') || _currentPath.endsWith('admin.html');
+    if (isSuperuserPage && currentUser.role !== 'SUPERUSER') {
+        window.location.href = ROLE_PAGES[currentUser.role] || 'login-only.html';
+        return;
+    }
+
+    // Se siamo sulla pagina di login ma la sessione è valida → redirect alla pagina del ruolo
+    if (_isLoginPage) {
+        window.location.href = ROLE_PAGES[currentUser.role] || 'lab.html';
+        return;
+    }
+
+    // --- Aggiornamento UI navbar ---
+    // Dopo un await, DOMContentLoaded potrebbe essere già scattato:
+    // eseguiamo subito la callback se il DOM è già pronto.
+    function onReady(fn) {
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', fn, { once: true });
+        } else {
+            fn();
+        }
+    }
+
+    onReady(() => {
+        // Navbar dinamica: nascondi/mostra link in base al ruolo
+        const navLinks = document.querySelector('.nav-links');
+        if (navLinks) {
+            if (currentUser.role !== 'SUPERUSER') {
+                navLinks.querySelectorAll('a').forEach(a => {
+                    const href = a.getAttribute('href');
+                    if (href === 'alerts.html' || href === 'logs.html' || href === 'admin.html') {
+                        a.remove();
+                    }
+                });
+            } else {
+                const existingAdmin = navLinks.querySelector('a[href="admin.html"]');
+                if (!existingAdmin) {
+                    const adminLink = document.createElement('a');
+                    adminLink.href = 'admin.html';
+                    adminLink.textContent = 'Admin';
+                    if (_currentPath.endsWith('admin.html')) adminLink.classList.add('active');
+                    navLinks.appendChild(adminLink);
+                }
+            }
+        }
+
         const authDiv = document.querySelector('.nav-auth');
         if (authDiv) {
             authDiv.innerHTML = `<button id="btn-logout" class="btn text" style="color: white;"> Logout (${currentUser.username})</button>`;
-            document.getElementById('btn-logout').addEventListener('click', () => {
-                localStorage.removeItem('token');
+            document.getElementById('btn-logout').addEventListener('click', async () => {
+                try {
+                    await API.logout();
+                } catch (e) {
+                    // silently handled
+                }
                 localStorage.removeItem('user');
-                window.location.href = 'login.html';
+                window.location.href = 'login-only.html';
             });
         }
     });
-}
+})();
 
-// Redirect se già loggato e su login.html
-if (window.location.pathname.endsWith('login.html')) {
-    const _loginToken = localStorage.getItem('token');
-    const _loginUser = localStorage.getItem('user');
-    if (_loginToken && _loginUser) {
-        const _u = JSON.parse(_loginUser);
-        const _rolePages = {
-            'LAB': 'lab.html',
-            'TRANSPORT_LIGHT': 'van.html',
-            'HUB': 'hub.html',
-            'TRANSPORT_HAZ': 'truck.html',
-            'LANDFILL': 'landfill.html',
-            'SUPERUSER': 'alerts.html'
-        };
-        window.location.href = _rolePages[_u.role] || 'alerts.html';
-    }
-}
 
 // --- Login Page Functions ---
 
 function switchTab(tab) {
-    document.getElementById('tab-login').classList.remove('active');
-    document.getElementById('tab-register').classList.remove('active');
-    document.getElementById('form-login').classList.remove('active');
-    document.getElementById('form-register').classList.remove('active');
+    try {
+        document.getElementById('tab-login').classList.remove('active');
+        document.getElementById('tab-register').classList.remove('active');
+        document.getElementById('form-login').classList.remove('active');
+        document.getElementById('form-register').classList.remove('active');
 
-    document.getElementById(`tab-${tab}`).classList.add('active');
-    document.getElementById(`form-${tab}`).classList.add('active');
+        document.getElementById(`tab-${tab}`).classList.add('active');
+        document.getElementById(`form-${tab}`).classList.add('active');
 
-    clearMessages();
+        clearMessages();
+    } catch (e) {
+        // silently handled
+    }
 }
 
 function clearMessages() {
@@ -102,7 +159,6 @@ async function handleLogin(e) {
     try {
         const data = await API.login(username, password);
 
-        localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
         const rolePages = {
@@ -111,9 +167,10 @@ async function handleLogin(e) {
             'HUB': 'hub.html',
             'TRANSPORT_HAZ': 'truck.html',
             'LANDFILL': 'landfill.html',
+            'OPERATOR': 'lab.html',
             'SUPERUSER': 'alerts.html'
         };
-        const targetPage = rolePages[data.user.role] || 'alerts.html';
+        const targetPage = rolePages[data.user.role] || 'lab.html';
 
         btn.textContent = 'Access Granted. Redirecting...';
         btn.style.background = 'var(--primary)';
@@ -141,8 +198,10 @@ async function handleRegister(e) {
     const password = document.getElementById('reg-password').value;
     const role = document.getElementById('reg-role').value;
 
+    const regData = { username, password, role };
+
     try {
-        await API.register(username, password, role);
+        await API.register(regData);
 
         showSuccess('Registration successful! You can now access the network.');
         document.getElementById('form-register').reset();

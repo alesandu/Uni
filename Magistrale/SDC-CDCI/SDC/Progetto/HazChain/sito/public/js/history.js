@@ -93,16 +93,16 @@ function renderHistoryTimeline(packageId, entries, elements) {
                 ['CreatedBy', parsedValue.createdBy],
                 ['Updated', parsedValue.lastUpdateTs ? new Date(parsedValue.lastUpdateTs).toLocaleString('it-IT', { dateStyle: 'short', timeStyle: 'medium' }) : null]
             ].filter(([_, v]) => v && v !== 'null');
-            fieldsHtml = fields.map(([k, v]) => `<div class="timeline-field">${k}: <span>${v}</span></div>`).join('');
+            fieldsHtml = fields.map(([k, v]) => `<div class="timeline-field">${escapeHtml(k)}: <span>${escapeHtml(String(v))}</span></div>`).join('');
         }
 
         el.innerHTML = `
             <div class="timeline-header">
                 <div>
-                    <div class="timeline-ts">🕐 ${ts}${idx === 0 ? ' <em style="color:#10b981;font-size:0.7rem;">(latest)</em>' : ''}</div>
-                    <div class="timeline-txid" title="${entry.txId || ''}">TX: ${txShort}</div>
+                    <div class="timeline-ts">🕐 ${escapeHtml(ts)}${idx === 0 ? ' <em style="color:#10b981;font-size:0.7rem;">(latest)</em>' : ''}</div>
+                    <div class="timeline-txid" title="${escapeHtml(entry.txId || '')}">TX: ${escapeHtml(txShort)}</div>
                 </div>
-                <span class="${badgeClass}" style="${entry.isDelete ? '' : `background:${stateColor}22;color:${stateColor};border-color:${stateColor}55;`}">${badgeText}</span>
+                <span class="${escapeHtml(badgeClass)}" style="${entry.isDelete ? '' : `background:${escapeHtml(stateColor)}22;color:${escapeHtml(stateColor)};border-color:${escapeHtml(stateColor)}55;`}">${escapeHtml(badgeText)}</span>
             </div>
             ${fieldsHtml ? `<div class="timeline-fields">${fieldsHtml}</div>` : ''}
         `;

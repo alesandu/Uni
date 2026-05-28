@@ -323,7 +323,7 @@ addSafeEventListener("btn-p1-create", "click", async () => {
 
         setBuilderState("create-package", "Create New Package", {
             "createdBy": { type: 'select', options: labOptions, selected: labOptions[0] },
-            "riskCode": { type: 'checkbox-group', options: ['R1', 'R2', 'R3', 'R4', 'R5'], selected: [] },
+            "riskCode": { type: 'select', options: ['R1', 'R2', 'R3', 'R4', 'R5'], selected: 'R1' },
             "wasteType": "",
             "weightKg": { type: 'number', value: '' }
         }, { entityClass: "PACKAGE", keyString: `PKG, ${nextId}` });
@@ -503,7 +503,7 @@ addSafeEventListener("btn-execute-builder", "click", async () => {
             case "create-package":
                 result = await API.createPackage({
                     createdBy: formValues.createdBy,
-                    riskCode: formValues.riskCode,
+                    riskCode: Array.isArray(formValues.riskCode) ? formValues.riskCode : [formValues.riskCode],
                     wasteType: formValues.wasteType,
                     weightKg: formValues.weightKg
                 });

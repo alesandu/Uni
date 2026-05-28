@@ -1,7 +1,8 @@
 // --- Endpoint di sola lettura (query) ---
 const express = require("express");
 const bc = require("../services/blockchain");
-const { authRequired } = require("../middleware/auth");
+const logger = require("../services/logger");
+const { authRequired, requireRole } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -104,8 +105,8 @@ router.get("/actor/:id", async (req, res) => {
     }
 });
 
-// GET /api/query/alerts — Tutti gli alert attivi
-router.get("/alerts", async (req, res) => {
+// GET /api/query/alerts — Tutti gli alert attivi (SOLO SUPERUSER)
+router.get("/alerts", requireRole("SUPERUSER"), async (req, res) => {
     try {
         const keys = await bc.getKeys("ALERT", ["AL"]);
         const promises = keys.map(k => {
@@ -159,6 +160,32 @@ router.get("/next-id", async (req, res) => {
         res.json({ nextId });
     } catch (error) {
         console.error("Next-id error:", error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/query/logs?level=NORMAL|WARNING|CRITICAL — Log per livello (SOLO SUPERUSER)
+router.get("/logs", requireRole("SUPERUSER"), async (req, res) => {
+    try {
+        const level = (req.query.level || "NORMAL").toUpperCase();
+        if (!["NORMAL", "WARNING", "CRITICAL"].includes(level)) {
+            return res.status(400).json({ error: "Invalid level. Use NORMAL, WARNING, or CRITICAL" });
+        }
+        const logs = await bc.getLogs(level);
+        res.json(logs);
+    } catch (error) {
+        console.error("Query logs error:", error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET /api/query/log-chain/:logId — Catena gerarchica di un flusso operativo (SOLO SUPERUSER)
+router.get("/log-chain/:logId", requireRole("SUPERUSER"), async (req, res) => {
+    try {
+        const chain = await logger.getLogChain(req.params.logId);
+        res.json(chain);
+    } catch (error) {
+        console.error("Query log-chain error:", error.message);
         res.status(500).json({ error: error.message });
     }
 });

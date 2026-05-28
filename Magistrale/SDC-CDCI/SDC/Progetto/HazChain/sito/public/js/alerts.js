@@ -1,17 +1,31 @@
 // --- Alerts: Rendering dashboard allarmi ---
 // Pura UI — i dati arrivano da GET /api/query/alerts
+// Due sezioni: OPERATIONAL (flusso produttivo) e SECURITY (violazioni sicurezza)
 
 // Global store of categorized alerts for detail panel
-let _categorizedAlerts = { time: [], sequence: [], risk: [], integrity: [], duplicate: [], capacity: [], auth: [] };
+let _categorizedAlerts = { time: [], sequence: [], risk: [], integrity: [], duplicate: [], capacity: [], auth: [], security: [] };
+
+// Mappa categorie → sezione (operational vs security)
+const OPERATIONAL_CATEGORIES = ["time", "sequence", "risk", "integrity", "duplicate", "capacity"];
+const SECURITY_CATEGORIES = ["auth", "security"];
 
 function categorizeAlert(alert) {
+    // Usa il campo category dal backend se presente
+    const category = (alert.category || "").toUpperCase();
     const type = (alert.type || "").toUpperCase();
+
+    // Security category — dal backend o per tipo
+    if (category === "SECURITY" || type === "SECURITY_VIOLATION" || type === "UNAUTHORIZED_ACTION") {
+        if (type === "UNAUTHORIZED_ACTION") return "auth";
+        return "security";
+    }
+
+    // Operational category — dal backend o per tipo
     if (type === "SEQUENCE_VIOLATION") return "sequence";
     if (type === "RISK_CODE_INCOMPATIBLE") return "risk";
     if (type === "INTEGRITY_MISMATCH") return "integrity";
     if (type === "DUPLICATE_ENTITY" || type === "DUPLICATE_PACKAGE") return "duplicate";
     if (type === "CAPACITY_EXCEEDED") return "capacity";
-    if (type === "UNAUTHORIZED_ACTION") return "auth";
     return "time";
 }
 
@@ -58,6 +72,9 @@ function renderAlertDetailPanel(category, alerts) {
 
     if (!alerts || alerts.length === 0) return;
 
+    // Sort alerts by timestamp, newest first
+    alerts.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+
     const categoryLabels = {
         time: "Time Compliance",
         sequence: "Sequence Integrity",
@@ -65,17 +82,23 @@ function renderAlertDetailPanel(category, alerts) {
         integrity: "Data Integrity",
         duplicate: "Duplicate Entity",
         capacity: "Vehicle Capacity",
-        auth: "Role Authorization"
+        auth: "Role Authorization",
+        security: "Security Violation"
     };
+
+    const isSecurityCategory = SECURITY_CATEGORIES.includes(category);
 
     const panel = document.createElement("section");
     panel.id = "alert-detail-panel";
     panel.className = "card";
-    panel.style.cssText = "border: 2px solid var(--danger); animation: fadeIn 0.3s ease; margin-top: 1.5rem;";
+    const borderColor = isSecurityCategory ? "var(--danger, #ff2222)" : "var(--warning, #ffaa00)";
+    panel.style.cssText = `border: 2px solid ${borderColor}; animation: fadeIn 0.3s ease; margin-top: 1.5rem;`;
+
+    const icon = isSecurityCategory ? "🛡" : "⚠️";
 
     let html = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2 style="margin-bottom: 0;"><span class="step-num">⚠️</span> ${categoryLabels[category] || category} — ${alerts.length} Alert(s)</h2>
+            <h2 style="margin-bottom: 0;"><span class="step-num">${icon}</span> ${categoryLabels[category] || category} — ${alerts.length} Alert(s)</h2>
             <button id="btn-close-alert-panel" class="btn text" style="font-size: 1.5rem; padding: 0.25rem 0.5rem;">✕</button>
         </div>
     `;
@@ -85,10 +108,18 @@ function renderAlertDetailPanel(category, alerts) {
         html += `<div class="alert-detail-header">`;
         html += `<span class="alert-detail-id">${alert.id}</span>`;
         html += `<span class="badge disposed">${alert.type || 'ALERT'}</span>`;
+        if (alert.criticality) {
+            const critColor = alert.criticality === 'CRITICAL' ? '#ff2222' : alert.criticality === 'WARNING' ? '#ffaa00' : '#44cc44';
+            html += `<span class="badge" style="background: ${critColor}; color: #000; font-weight: 700;">${alert.criticality}</span>`;
+        }
+        if (alert.category) {
+            const catColor = alert.category === 'SECURITY' ? '#ff2222' : '#ffaa00';
+            html += `<span class="badge" style="background: ${catColor}22; color: ${catColor}; border: 1px solid ${catColor}44; font-weight: 600;">${alert.category}</span>`;
+        }
         html += `</div>`;
 
         if (alert.msg || alert.description) {
-            html += `<div class="alert-detail-msg">${alert.msg || alert.description}</div>`;
+            html += `<div class="alert-detail-msg">${escapeHtml(alert.msg || alert.description)}</div>`;
         }
 
         html += `<div class="alert-detail-grid">`;
@@ -125,6 +156,10 @@ function renderAlertDetailPanel(category, alerts) {
 
         if (alert.userRole) html += `<div class="alert-detail-field"><span class="inspector-label">User Role</span><span class="inspector-value" style="color: var(--danger);">${alert.userRole}</span></div>`;
         if (alert.requiredRole) html += `<div class="alert-detail-field"><span class="inspector-label">Required Role</span><span class="inspector-value" style="color: var(--primary);">${alert.requiredRole}</span></div>`;
+        if (alert.user) html += `<div class="alert-detail-field"><span class="inspector-label">User</span><span class="inspector-value">${alert.user}</span></div>`;
+        if (alert.action) html += `<div class="alert-detail-field"><span class="inspector-label">Action</span><span class="inspector-value" style="color: var(--danger);">${alert.action}</span></div>`;
+        if (alert.reason) html += `<div class="alert-detail-field"><span class="inspector-label">Reason</span><span class="inspector-value">${alert.reason}</span></div>`;
+        if (alert.sourceLogId) html += `<div class="alert-detail-field"><span class="inspector-label">Source Log</span><span class="inspector-value"><a href="logs.html?logId=${encodeURIComponent(alert.sourceLogId)}" style="font-family: monospace; color: var(--primary); text-decoration: underline; cursor: pointer;" title="View log ${alert.sourceLogId}">📋 ${alert.sourceLogId}</a></span></div>`;
 
         html += `</div>`; // close grid
         html += `<div style="text-align: right; margin-top: 0.75rem;">
@@ -135,9 +170,13 @@ function renderAlertDetailPanel(category, alerts) {
 
     panel.innerHTML = html;
 
-    const gridCard = document.getElementById("alerts-grid");
-    if (gridCard && gridCard.closest(".card")) {
-        gridCard.closest(".card").insertAdjacentElement("afterend", panel);
+    // Insert panel after the appropriate section
+    const isSecAlert = SECURITY_CATEGORIES.includes(category);
+    const targetSectionId = isSecAlert ? "section-security" : "section-operational";
+    const targetSection = document.getElementById(targetSectionId);
+
+    if (targetSection) {
+        targetSection.insertAdjacentElement("afterend", panel);
     } else {
         const main = document.querySelector("main");
         if (main) main.appendChild(panel);
@@ -158,11 +197,13 @@ function renderAlerts(alerts, container) {
         integrity: { id: "monitor-integrity", count: 0 },
         duplicate: { id: "monitor-duplicate", count: 0 },
         capacity: { id: "monitor-capacity", count: 0 },
-        auth: { id: "monitor-auth", count: 0 }
+        auth: { id: "monitor-auth", count: 0 },
+        security: { id: "monitor-security", count: 0 }
     };
 
-    _categorizedAlerts = { time: [], sequence: [], risk: [], integrity: [], duplicate: [], capacity: [], auth: [] };
+    _categorizedAlerts = { time: [], sequence: [], risk: [], integrity: [], duplicate: [], capacity: [], auth: [], security: [] };
 
+    // Reset all monitors to hidden
     Object.values(monitors).forEach(m => {
         const el = document.getElementById(m.id);
         if (el) {
@@ -174,37 +215,23 @@ function renderAlerts(alerts, container) {
         }
     });
 
-    let healthyMsg = document.getElementById("system-healthy-msg");
-    if (!healthyMsg) {
-        const grid = document.getElementById("alerts-grid");
-        if (grid) {
-            healthyMsg = document.createElement("div");
-            healthyMsg.id = "system-healthy-msg";
-            healthyMsg.className = "log-entry success";
-            healthyMsg.style.gridColumn = "1 / -1";
-            healthyMsg.style.textAlign = "center";
-            healthyMsg.style.fontSize = "1.5rem";
-            healthyMsg.style.padding = "2rem";
-            healthyMsg.innerText = "System Healthy. No active alerts.";
-            grid.appendChild(healthyMsg);
-        }
-    }
-
-    if (alerts.length === 0) {
-        if (healthyMsg) healthyMsg.style.display = "block";
-        return;
-    }
-
+    // Categorize all alerts
     alerts.forEach(alert => {
         const cat = categorizeAlert(alert);
         monitors[cat].count++;
         _categorizedAlerts[cat].push(alert);
     });
 
-    let hasActive = false;
+    // Activate monitors with alerts
+    let hasOperational = false;
+    let hasSecurity = false;
+
     Object.entries(monitors).forEach(([cat, m]) => {
         if (m.count > 0) {
-            hasActive = true;
+            const isSecCat = SECURITY_CATEGORIES.includes(cat);
+            if (isSecCat) hasSecurity = true;
+            else hasOperational = true;
+
             const el = document.getElementById(m.id);
             if (el) {
                 el.style.display = "flex";
@@ -226,17 +253,12 @@ function renderAlerts(alerts, container) {
         }
     });
 
-    if (healthyMsg) {
-        healthyMsg.style.display = hasActive ? "none" : "block";
-    }
+    // Healthy messages per sezione
+    const opHealthy = document.getElementById("operational-healthy-msg");
+    const secHealthy = document.getElementById("security-healthy-msg");
 
-    const logConsole = document.getElementById("log-console");
-    if (logConsole) {
-        logConsole.innerHTML = `<div class="log-entry system">Scan complete. ${alerts.length} active signals.</div>`;
-        alerts.forEach(a => {
-            logConsole.innerHTML += `<div class="log-entry error">[${a.id}] ${a.type || 'Alert'}: ${a.msg || a.description}</div>`;
-        });
-    }
+    if (opHealthy) opHealthy.style.display = hasOperational ? "none" : "block";
+    if (secHealthy) secHealthy.style.display = hasSecurity ? "none" : "block";
 }
 
 // ====================================================================
@@ -244,7 +266,27 @@ function renderAlerts(alerts, container) {
 // ====================================================================
 if (window.location.pathname.endsWith("alerts.html")) {
     fetchAlerts();
-    setInterval(() => { fetchAlerts(); }, 10000);
+    setInterval(() => {
+        fetchAlerts();
+    }, 10000);
 }
 
-addSafeEventListener("btn-refresh-alerts", "click", () => { fetchAlerts(); });
+addSafeEventListener("btn-refresh-alerts", "click", () => {
+    fetchAlerts();
+});
+
+// ====================================================================
+// Purge All Alerts
+// ====================================================================
+async function purgeAllAlerts() {
+    if (!confirm("Sei sicuro di voler eliminare TUTTI gli alert?")) return;
+    try {
+        const result = await API.purgeAllAlerts();
+        alert(`Eliminati ${result.deleted} alert.`);
+        fetchAlerts();
+    } catch (err) {
+        alert(`Errore: ${err.message}`);
+    }
+}
+
+addSafeEventListener("btn-purge-alerts", "click", () => purgeAllAlerts());

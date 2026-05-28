@@ -16,19 +16,19 @@ function renderPackageCard(pkgData, container) {
     for (const [key, value] of Object.entries(pkgData)) {
         if (key === "packageId") continue;
 
-        let displayValue = value;
+        let displayValue = escapeHtml(String(value));
         let badgeClass = "";
 
         if (key === "state" || key === "status") {
-            const badgeType = String(value).toLowerCase();
+            const badgeType = escapeHtml(String(value).toLowerCase());
             badgeClass = `badge ${badgeType}`;
-            displayValue = `<span class="${badgeClass}">${value}</span>`;
+            displayValue = `<span class="${badgeClass}">${escapeHtml(String(value))}</span>`;
         } else if (key.endsWith("Ts") || key === "ts") {
-            displayValue = new Date(value).toLocaleString();
+            displayValue = escapeHtml(new Date(value).toLocaleString());
         } else if (key === "weightKg") {
-            displayValue = `${value} kg`;
+            displayValue = `${escapeHtml(String(value))} kg`;
         } else if (typeof value === 'object') {
-            displayValue = JSON.stringify(value);
+            displayValue = escapeHtml(JSON.stringify(value));
         }
 
         html += `
@@ -104,7 +104,7 @@ addSafeEventListener("btn-inspect", "click", async () => {
         renderInspectorResults(packages, resultDiv);
         log(`Found ${packages.length} package(s).`, packages.length > 0 ? "success" : "warning");
     } catch (err) {
-        resultDiv.innerHTML = `<div class="log-entry error">Search failed: ${err.message}</div>`;
+        resultDiv.innerHTML = `<div class="log-entry error">Search failed: ${escapeHtml(err.message)}</div>`;
         log(`Inspector error: ${err.message}`, "error");
     }
 });
